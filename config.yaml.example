@@ -1,5 +1,5 @@
 # All these support html
-title: "Cool monitors"
+title: "Cool monitors" # Will also be username in embed
 description: "is stuff down?"
 footer: 'Made with ❤️ by <a href="https://cyteon.tech">Cyteon</a>'
 
@@ -22,9 +22,10 @@ monitors:
     interval: 2
   - name: "Localhost"
     unique_id: "localhost"
-    url: "http:/localhost:8000/"
+    url: "http://localhost:8000"
     paused: false
     interval: 1
+    webhook: "https://discord.com/api/webhooks/xxxxxxxxx/xxxxxxxxx" # Will send a POST request to this webhook when the monitor goes down/up
   - name: "Reddit"
     unique_id: "reddit"
     url: "https://reddit.com"
