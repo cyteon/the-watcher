@@ -1,0 +1,37 @@
+# All these support html
+title: "Cool monitors"
+description: "is stuff down?"
+footer: 'Made with ❤️ by <a href="https://cyteon.tech">Cyteon</a>'
+
+okRanges:
+  - start: 200
+    end: 299
+  - start: 401
+    end: 401
+
+monitors:
+  - name: "Google"
+    unique_id: "google"
+    url: "https://google.com"
+    paused: false
+    interval: 1 # In minutes
+  - name: "GitHub"
+    unique_id: "github"
+    url: "https://github.com"
+    paused: false
+    interval: 2
+  - name: "Localhost"
+    unique_id: "localhost"
+    url: "http:/localhost:8000/"
+    paused: false
+    interval: 1
+  - name: "Reddit"
+    unique_id: "reddit"
+    url: "https://reddit.com"
+    paused: true
+    interval: 1
+  - name: "fake"
+    unique_id: "fake"
+    url: "https://nfiuwaebfawjkengoiwe.com"
+    paused: false
+    interval: 1
