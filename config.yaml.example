@@ -1,5 +1,5 @@
 # All these support html
-title: "Cool monitors" # Will also be username in embed
+title: "Cool monitors" # Will also be username in webhook embed
 description: "is stuff down?"
 footer: 'Made with ❤️ by <a href="https://cyteon.tech">Cyteon</a>'
 

@@ -24,6 +24,7 @@ export async function GET() {
       name: data.monitors[i].name,
       interval: data.monitors[i].interval,
       paused: data.monitors[i].paused,
+      unique_id: data.monitors[i].unique_id,
       heartbeats: pings,
     });
   }

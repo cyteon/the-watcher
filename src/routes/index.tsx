@@ -17,6 +17,7 @@ export default function Index() {
   const [data, setData] = createSignal({});
 
   const [visibleHeartbeats, setVisibleHeartbeats] = createSignal(50);
+  const [infoLabels, setInfoLabels] = createSignal({});
 
   onMount(() => {
     const updateScreenSize = () => {
@@ -68,21 +69,16 @@ export default function Index() {
                   }`}
                 >
                   <div class="flex items-center">
-                    <h1 class="font-bold text-lg">{monitor.name}</h1>
                     <Show when={monitor.heartbeats[0]?.status == "up"}>
-                      <Badge class="bg-green-400 ml-2 h-fit">Online</Badge>
+                      <Badge class="bg-green-400 mr-2 rounded-full h-6 w-6"></Badge>
                     </Show>
                     <Show when={monitor.heartbeats[0]?.status == "paused"}>
-                      <Badge class="bg-gray-400 ml-2 h-fit">Paused</Badge>
+                      <Badge class="bg-gray-400 mr-2 rounded-full h-6 w-6"></Badge>
                     </Show>
                     <Show when={monitor.heartbeats[0]?.status == "down"}>
-                      <Badge class="bg-red-400 ml-2 h-fit">
-                        {monitor.heartbeats[0]?.status == "down" &&
-                        monitor.heartbeats[0]?.code == 0
-                          ? "Offline"
-                          : `Status: ${monitor.heartbeats[0]?.status}`}
-                      </Badge>
+                      <Badge class="bg-red-400 mr-2 rounded-full h-6 w-6"></Badge>
                     </Show>
+                    <h1 class="font-bold text-lg mt-1">{monitor.name}</h1>
                   </div>
                   <div class="ml-auto flex flex-col min-h-4">
                     <div class="self-end">
@@ -98,7 +94,17 @@ export default function Index() {
                         ?.slice(0, visibleHeartbeats())
                         .toReversed()
                         .map((ping) => (
-                          <div class="mt-1 min-h-8">
+                          <div
+                            class="mt-1 min-h-8"
+                            onMouseOver={() => {
+                              setInfoLabels({
+                                [monitor.unique_id]: ping,
+                              });
+                            }}
+                            onMouseLeave={() => {
+                              setInfoLabels({});
+                            }}
+                          >
                             <Show when={ping.status == "up"}>
                               <div class="w-1 h-full mx-0.5 rounded-full bg-green-400"></div>
                             </Show>
@@ -111,6 +117,26 @@ export default function Index() {
                           </div>
                         ))}
                     </div>
+                    <Show when={infoLabels()[monitor.unique_id]}>
+                      <Show
+                        when={infoLabels()[monitor.unique_id].status == "up"}
+                      >
+                        <p class="text-sm mt-1 text-green-400">{`${infoLabels()[monitor.unique_id].time} - ${infoLabels()[monitor.unique_id].ping}ms`}</p>
+                      </Show>
+                      <Show
+                        when={infoLabels()[monitor.unique_id].status == "down"}
+                      >
+                        <p class="text-sm mt-1 text-red-400">{`${infoLabels()[monitor.unique_id].time} -
+                          ${infoLabels()[monitor.unique_id].code != 0 ? "Status: " + infoLabels()[monitor.unique_id].code : "Down"}`}</p>
+                      </Show>
+                      <Show
+                        when={
+                          infoLabels()[monitor.unique_id].status == "paused"
+                        }
+                      >
+                        <p class="text-sm mt-1 text-gray-400">{`${infoLabels()[monitor.unique_id].time} - Paused`}</p>
+                      </Show>
+                    </Show>
                   </div>
                 </div>
               ))}
