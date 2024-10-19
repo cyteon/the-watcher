@@ -1,0 +1,21 @@
+CREATE TABLE Monitors (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name STRING NOT NULL,
+    url STRING NOT NULL,
+    paused BOOLEAN NOT NULL DEFAULT FALSE,
+    interval INTEGER NOT NULL,
+    webhook STRING
+);
+
+
+/* Rip pings data */
+DROP TABLE IF EXISTS Pings;
+
+CREATE TABLE Pings (
+    id INT NOT NULL,
+    code INT NOT NULL,
+    status STRING NOT NULL,
+    ping INT NOT NULL DEFAULT 0,
+    time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id) REFERENCES Monitors(id)
+);

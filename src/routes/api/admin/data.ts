@@ -3,21 +3,44 @@ import fs from "fs";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 
-export async function GET() {
-  const raw = fs.readFileSync("config.yaml").toString();
-  const data = YAML.parse(raw);
+export async function GET({ request }) {
+  const auth = request.headers.get("Authorization");
+  if (!auth) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const token = auth.split(" ")[1];
 
   const db = await open({
     filename: "database.db",
     driver: sqlite3.Database,
   });
 
-  const monitors = await db.all("SELECT * FROM Monitors");
+  const session = await db.get("SELECT * FROM Sessions WHERE token = ?", [
+    token,
+  ]);
+
+  if (!session) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const user = await db.get("SELECT * FROM Users WHERE id = ?", [
+    session.user_id,
+  ]);
+
+  if (!user) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const raw = fs.readFileSync("config.yaml").toString();
+  const data = YAML.parse(raw);
+
   var monitors_data = [];
+  const monitors = await db.all("SELECT * FROM Monitors");
 
   for (var i = 0; i < monitors.length; i++) {
     var pings = await db.all(
-      "SELECT * FROM Pings WHERE id = ? ORDER BY time DESC limit 100",
+      "SELECT * FROM Pings WHERE id = ? ORDER BY time DESC limit 200",
       monitors[i].id,
     );
 
@@ -34,10 +57,7 @@ export async function GET() {
     const percentage = (uptime.up / uptime.total) * 100;
 
     monitors_data.push({
-      name: monitors[i].name,
-      interval: monitors[i].interval,
-      paused: monitors[i].paused,
-      id: monitors[i].id,
+      ...monitors[i],
       avg_ping: avgPing.avg,
       uptime: percentage,
       heartbeats: pings,
@@ -45,10 +65,7 @@ export async function GET() {
   }
 
   return {
-    title: data.title,
-    description: data.description,
-    footer: data.footer,
-    online_statuses: data.onlineStatuses,
+    data: data,
     monitors: monitors_data,
   };
 }
