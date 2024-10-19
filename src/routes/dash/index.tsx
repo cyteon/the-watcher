@@ -1,5 +1,5 @@
 import { createSignal, onMount } from "solid-js";
-import { getCookie } from "typescript-cookie";
+import { getCookie, removeCookie } from "typescript-cookie";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -20,16 +20,6 @@ import {
   AlertDialogAction,
 } from "~/components/ui/alert-dialog";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/dialog";
-
 export default function Dash() {
   const [data, setData] = createSignal({});
 
@@ -42,6 +32,10 @@ export default function Dash() {
   const [newURL, setNewURL] = createSignal("");
   const [newInterval, setNewInterval] = createSignal(1);
   const [newWebhook, setNewWebhook] = createSignal("");
+
+  const [username, setUsername] = createSignal("");
+  const [newPassword, setNewPassword] = createSignal("");
+  const [oldPassword, setOldPassword] = createSignal("");
 
   onMount(() => {
     const updateScreenSize = () => {
@@ -84,6 +78,44 @@ export default function Dash() {
 
     return () => window.removeEventListener("resize", updateScreenSize);
   });
+
+  async function logOut() {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie("token")}`,
+      },
+    });
+
+    removeCookie("token");
+
+    window.location.href = "/";
+  }
+
+  async function editUser() {
+    const res = await fetch("/api/auth/change", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie("token")}`,
+      },
+      body: JSON.stringify({
+        username: username(),
+        oldPassword: oldPassword(),
+        newPassword: newPassword(),
+      }),
+    });
+
+    if (res.ok) {
+      setUsername("");
+      setOldPassword("");
+      setNewPassword("");
+
+      removeCookie("token");
+      window.location.href = "/dash/login";
+    }
+  }
 
   async function togglePaused() {
     await fetch(`/api/admin/monitor/${currentMonitor()?.id}/pause`, {
@@ -172,7 +204,7 @@ export default function Dash() {
 
   return (
     <main class="w-full h-screen flex">
-      <div class="bg-background border-border border-[1px] p-3 m-3 rounded-lg">
+      <div class="bg-background border-border border-[1px] p-3 m-3 rounded-lg flex flex-col">
         {data().monitors?.map((monitor, index) => (
           <button
             onClick={() => {
@@ -214,6 +246,58 @@ export default function Dash() {
         >
           + Add Monitor
         </Button>
+        <div class="mt-auto">
+          <AlertDialog>
+            <AlertDialogTrigger as={Button}>
+              <span class="mt-1 text-[18px]">Profile</span>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle class="text-2xl">
+                  Edit Profile
+                </AlertDialogTitle>
+              </AlertDialogHeader>
+
+              <TextFieldRoot class="mb-4">
+                <TextFieldLabel>Username</TextFieldLabel>
+                <TextField
+                  class="w-full"
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </TextFieldRoot>
+
+              <TextFieldRoot class="mb-4">
+                <TextFieldLabel>New Password</TextFieldLabel>
+                <TextField
+                  class="w-full"
+                  type="password"
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+              </TextFieldRoot>
+
+              <TextFieldRoot class="mb-4">
+                <TextFieldLabel>Old Password</TextFieldLabel>
+                <TextField
+                  class="w-full"
+                  type="password"
+                  onChange={(e) => setOldPassword(e.target.value)}
+                />
+              </TextFieldRoot>
+
+              <AlertDialogFooter>
+                <AlertDialogAction>
+                  <span class="text-[18px] mt-1">Cancel</span>
+                </AlertDialogAction>
+                <AlertDialogAction onClick={() => logOut()}>
+                  <span class="text-[18px] mt-1">Log Out</span>
+                </AlertDialogAction>
+                <AlertDialogAction onClick={() => editUser()}>
+                  <span class="text-[18px] mt-1">Save</span>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </div>
       <Show when={currentMonitor()}>
         <div class="bg-background border-border w-full border-[1px] p-3 m-3 rounded-lg">
