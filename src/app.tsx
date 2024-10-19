@@ -5,15 +5,6 @@ import { FileRoutes } from "@solidjs/start/router";
 import "cal-sans";
 import "./app.css";
 
-import { createSignal, type Signal } from "solid-js";
-
-const [session, setSession]: Signal<{
-  user: any | null;
-  session: any | null;
-}> = createSignal({ user: null, session: null });
-
-export { session };
-
 export default function App() {
   return (
     <Router
