@@ -20,7 +20,6 @@ export default function Dash() {
 
   const [visibleHeartbeatsSmall, setVisibleHeartbeatsSmall] = createSignal(15);
   const [visibleHeartbeatsBig, setVisibleHeartbeatsBig] = createSignal(50);
-  const [infoLabels, setInfoLabels] = createSignal({});
   const [currentMonitor, setCurrentMonitor] = createSignal(null);
   const [currentPing, setCurrentPing] = createSignal(null);
 
@@ -65,6 +64,33 @@ export default function Dash() {
 
     return () => window.removeEventListener("resize", updateScreenSize);
   });
+
+  async function togglePaused() {
+    await fetch(`/api/admin/monitor/${currentMonitor()?.id}/pause`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie("token")}`,
+      },
+    });
+
+    setCurrentPing(null);
+    setData(
+      await (
+        await fetch("/api/admin/data", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        })
+      ).json(),
+    );
+
+    setCurrentMonitor(
+      data().monitors.find((monitor) => monitor.id == currentMonitor()?.id),
+    );
+  }
 
   async function deleteMonitor() {
     await fetch(`/api/admin/monitors`, {
@@ -176,7 +202,7 @@ export default function Dash() {
           <a href={currentMonitor()?.url}>{currentMonitor()?.url}</a>
 
           <div class="my-3 flex">
-            <Button class="mr-1">
+            <Button class="mr-1" onClick={() => togglePaused()}>
               <span class="mt-1 text-lg">
                 {currentMonitor()?.paused ? "Unpause" : "Pause"}
               </span>
