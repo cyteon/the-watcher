@@ -14,8 +14,6 @@ export async function POST({ request }) {
     username,
   ]);
 
-  console.log(user);
-
   if (!user) {
     return new Response("Invalid username or password", { status: 401 });
   }

@@ -16,16 +16,16 @@ export default async function start() {
   const raw = fs.readFileSync("config.yaml").toString();
   const data = YAML.parse(raw);
 
-  const coolDowns = {};
+  const coolDowns = [];
 
-  for (const monitor of data.monitors) {
-    coolDowns[monitor.unique_id] = monitor.interval;
-  }
+  var monitors = await db.all("SELECT * FROM Monitors");
 
   function getCooldown(id) {
-    coolDowns[id] = coolDowns[id] - 1;
+    coolDowns[id - 1] = coolDowns[id - 1] - 1;
 
-    return coolDowns[id];
+    console.log(`Cooldown for monitor ${id} is ${coolDowns[id - 1]}`);
+
+    return coolDowns[id - 1];
   }
 
   var okStatues = [];
@@ -97,18 +97,32 @@ export default async function start() {
   }
 
   setInterval(async () => {
-    for (const monitor of data.monitors) {
+    const monitors = await db.all("SELECT * FROM Monitors");
+
+    console.log(monitors);
+
+    for (const monitor of monitors) {
+      console.log(`Checking monitor ${monitor.name}`);
+
       if (monitor.paused) {
+        console.log(`Monitor ${monitor.name} is paused`);
+
         await db.run(
           "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
-          [monitor.unique_id, -1, "paused", 0],
+          [monitor.id, -1, "paused", 0],
         );
+
         continue;
       }
 
-      if (getCooldown(monitor.unique_id) === 0) {
+      if (coolDowns[monitor.id - 1] == null) {
+        coolDowns[monitor.id - 1] = 0;
+      }
+
+      if (getCooldown(monitor.id) <= 0) {
         console.log(`Pinging ${monitor.url}`);
-        coolDowns[monitor.unique_id] = monitor.interval;
+
+        coolDowns[monitor.id - 1] = monitor.interval;
 
         const start = Date.now();
 
@@ -120,25 +134,25 @@ export default async function start() {
 
               const avgPing = await db.get(
                 "SELECT AVG(ping) as avg FROM Pings WHERE id = ? AND (status = 'up' OR status = 'degraded')",
-                [monitor.unique_id],
+                [monitor.id],
               );
 
               if (avgPing.avg != null) {
                 if (ping > avgPing.avg * data.degradedMultipiler) {
                   await db.run(
                     "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
-                    [monitor.unique_id, res.status, "degraded", ping],
+                    [monitor.id, res.status, "degraded", ping],
                   );
                 } else {
                   await db.run(
                     "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
-                    [monitor.unique_id, res.status, "up", ping],
+                    [monitor.id, res.status, "up", ping],
                   );
                 }
               } else {
                 await db.run(
                   "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
-                  [monitor.unique_id, res.status, "up", ping],
+                  [monitor.id, res.status, "up", ping],
                 );
               }
 
@@ -148,7 +162,7 @@ export default async function start() {
 
               await db.run(
                 "INSERT INTO Pings (id, code, status) VALUES (?, ?, ?)",
-                [monitor.unique_id, res.status, "down"],
+                [monitor.id, res.status, "down"],
               );
 
               await sendEmbed(monitor, "down");
@@ -159,12 +173,12 @@ export default async function start() {
 
             await db.run(
               "INSERT INTO Pings (id, code, status) VALUES (?, ?, ?)",
-              [monitor.unique_id, 0, "down"],
+              [monitor.id, 0, "down"],
             );
 
             await sendEmbed(monitor, "down");
           });
       }
     }
-  }, 60000);
+  }, 6000);
 }

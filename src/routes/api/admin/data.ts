@@ -35,28 +35,29 @@ export async function GET({ request }) {
   const raw = fs.readFileSync("config.yaml").toString();
   const data = YAML.parse(raw);
 
-  var monitors = [];
+  var monitors_data = [];
+  const monitors = await db.all("SELECT * FROM Monitors");
 
-  for (var i = 0; i < data.monitors.length; i++) {
+  for (var i = 0; i < monitors.length; i++) {
     var pings = await db.all(
       "SELECT * FROM Pings WHERE id = ? ORDER BY time DESC limit 200",
-      data.monitors[i].unique_id,
+      monitors[i].id,
     );
 
     const avgPing = await db.get(
       "SELECT AVG(ping) as avg FROM Pings WHERE id = ? AND (status = 'up' OR status = 'degraded')",
-      [data.monitors[i].unique_id],
+      [monitors[i].id],
     );
 
     const uptime = await db.get(
       "SELECT COUNT(*) as up, (SELECT COUNT(*) FROM Pings WHERE id = ? AND status != 'paused' ) as total FROM Pings WHERE id = ? AND (status = 'up' OR status = 'degraded')",
-      [data.monitors[i].unique_id, data.monitors[i].unique_id],
+      [monitors[i].id, monitors[i].id],
     );
 
     const percentage = (uptime.up / uptime.total) * 100;
 
-    monitors.push({
-      ...data.monitors[i],
+    monitors_data.push({
+      ...monitors[i],
       avg_ping: avgPing.avg,
       uptime: percentage,
       heartbeats: pings,
@@ -65,6 +66,6 @@ export async function GET({ request }) {
 
   return {
     data: data,
-    monitors: monitors,
+    monitors: monitors_data,
   };
 }

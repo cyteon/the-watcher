@@ -1,6 +1,19 @@
 import { createSignal, onMount } from "solid-js";
 import { getCookie } from "typescript-cookie";
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
+
+import {
+  AlertDialog,
+  AlertDialogClose,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+  AlertDialogAction,
+} from "~/components/ui/alert-dialog";
 
 export default function Dash() {
   const [data, setData] = createSignal({});
@@ -53,6 +66,30 @@ export default function Dash() {
     return () => window.removeEventListener("resize", updateScreenSize);
   });
 
+  async function deleteMonitor() {
+    await fetch(`/api/admin/monitors`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie("token")}`,
+      },
+      body: JSON.stringify({ id: currentMonitor()?.id }),
+    });
+
+    setCurrentMonitor(null);
+    setData(
+      await (
+        await fetch("/api/admin/data", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        })
+      ).json(),
+    );
+  }
+
   return (
     <main class="w-full h-screen flex">
       <div class="bg-background border-border border-[1px] p-3 m-3 rounded-lg">
@@ -91,6 +128,12 @@ export default function Dash() {
             </div>
           </button>
         ))}
+        <Button
+          class="w-full mt-1"
+          onClick={() => (window.location.href = "/dash/new")}
+        >
+          + Add Monitor
+        </Button>
       </div>
       <Show when={currentMonitor()}>
         <div class="bg-background border-border w-full border-[1px] p-3 m-3 rounded-lg">
@@ -131,6 +174,42 @@ export default function Dash() {
             <h1 class="text-3xl">{currentMonitor()?.name}</h1>
           </div>
           <a href={currentMonitor()?.url}>{currentMonitor()?.url}</a>
+
+          <div class="my-3 flex">
+            <Button class="mr-1">
+              <span class="mt-1 text-lg">
+                {currentMonitor()?.paused ? "Unpause" : "Pause"}
+              </span>
+            </Button>
+            <Button class="mr-1">
+              <span class="mt-1 text-lg">Edit</span>
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger class="bg-red-400 text-primary-foreground h-9 px-4 py-2 rounded-md">
+                <span class="text-[18px]">Delete</span>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. Deleting an monitor will
+                    delete all of its data.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogAction>
+                    <span class="text-[18px] mt-1">Cancel</span>
+                  </AlertDialogAction>
+                  <AlertDialogAction
+                    class="bg-red-400"
+                    onClick={() => deleteMonitor()}
+                  >
+                    <span class="text-[18px] mt-1">Continue</span>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
 
           <div class="p-3 border-border border-[1px] mt-2 rounded-md">
             <div class="self-end">
