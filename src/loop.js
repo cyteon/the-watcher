@@ -46,6 +46,10 @@ export default async function start() {
       return;
     }
 
+    if (lastStatus.status == "degraded") {
+      lastStatus.status = "up";
+    }
+
     if (lastStatus.status == status) {
       return;
     }
@@ -114,10 +118,29 @@ export default async function start() {
               console.log(`Successfully pinged ${monitor.url}`);
               const ping = Date.now() - start;
 
-              await db.run(
-                "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
-                [monitor.unique_id, res.status, "up", ping],
+              const avgPing = await db.get(
+                "SELECT AVG(ping) as avg FROM Pings WHERE id = ? AND (status = 'up' OR status = 'degraded')",
+                [monitor.unique_id],
               );
+
+              if (avgPing.avg != null) {
+                if (ping > avgPing.avg * data.degradedMultipiler) {
+                  await db.run(
+                    "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
+                    [monitor.unique_id, res.status, "degraded", ping],
+                  );
+                } else {
+                  await db.run(
+                    "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
+                    [monitor.unique_id, res.status, "up", ping],
+                  );
+                }
+              } else {
+                await db.run(
+                  "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
+                  [monitor.unique_id, res.status, "up", ping],
+                );
+              }
 
               await sendEmbed(monitor, "up", ping);
             } else {
@@ -132,7 +155,7 @@ export default async function start() {
             }
           })
           .catch(async (err) => {
-            console.error(`Failed to ping ${monitor.url}`);
+            console.error(`Failed to ping ${monitor.url}: ${err}`);
 
             await db.run(
               "INSERT INTO Pings (id, code, status) VALUES (?, ?, ?)",
@@ -143,5 +166,5 @@ export default async function start() {
           });
       }
     }
-  }, 60000);
+  }, 6000);
 }

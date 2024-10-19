@@ -60,6 +60,16 @@ export default function Index() {
         </Show>
         <Show when={data().monitors?.length > 0}>
           <div class="flex flex-col w-full h-full">
+            <Badge variant="outline" class="ml-auto bg-background">
+              <span class="h-3 w-3 rounded-full bg-green-400 mr-1"></span>
+              <span class="mt-[3px]">Online</span>
+              <span class="h-3 w-3 rounded-full bg-yellow-200 ml-2 mr-1"></span>{" "}
+              <span class="mt-[3px]">Degraded</span>
+              <span class="h-3 w-3 rounded-full bg-red-400 ml-2 mr-1"></span>{" "}
+              <span class="mt-[3px]">Down</span>
+              <span class="h-3 w-3 rounded-full bg-gray-400 ml-2 mr-1"></span>{" "}
+              <span class="mt-[3px]">Paused</span>
+            </Badge>
             <div class="mt-2 border-[1px] border-border rounded-lg bg-background">
               {data().monitors?.map((monitor, index) => (
                 <div
@@ -69,18 +79,26 @@ export default function Index() {
                 >
                   <div class="flex items-center">
                     <Show when={monitor.heartbeats[0]?.status == "up"}>
-                      <span class="bg-green-400 mr-2 rounded-full h-6 w-6"></span>
+                      <span class="bg-green-400 mr-2 rounded-full h-5 w-5"></span>
                     </Show>
                     <Show when={monitor.heartbeats[0]?.status == "paused"}>
-                      <span class="bg-gray-400 mr-2 rounded-full h-6 w-6"></span>
+                      <span class="bg-gray-400 mr-2 rounded-full h-5 w-5"></span>
                     </Show>
                     <Show when={monitor.heartbeats[0]?.status == "down"}>
-                      <span class="bg-red-400 mr-2 rounded-full h-6 w-6"></span>
+                      <span class="bg-red-400 mr-2 rounded-full h-5 w-5"></span>
+                    </Show>
+                    <Show when={monitor.heartbeats[0]?.status == "degraded"}>
+                      <span class="bg-yellow-200 mr-2 rounded-full h-5 w-5"></span>
                     </Show>
                     <h1 class="font-bold text-lg mt-1">{monitor.name}</h1>
                   </div>
                   <div class="ml-auto flex flex-col min-h-4">
                     <div class="self-end">
+                      <Show when={monitor.avg_ping}>
+                        <Badge class="self-end mr-2 w-fit rounded-xl">
+                          Avg: {monitor.avg_ping?.toFixed(0)}ms
+                        </Badge>
+                      </Show>
                       <Badge class="self-end mr-2 w-fit rounded-xl">
                         {monitor.heartbeats[0]?.ping}ms
                       </Badge>
@@ -110,6 +128,9 @@ export default function Index() {
                             <Show when={ping.status == "paused"}>
                               <div class="w-1 min-h-4 h-full mx-0.5 rounded-full bg-gray-400"></div>
                             </Show>
+                            <Show when={ping.status == "degraded"}>
+                              <div class="w-1 min-h-4 h-full mx-0.5 rounded-full bg-yellow-200"></div>
+                            </Show>
                             <Show when={ping.status == "down"}>
                               <div class="w-1 min-h-4 h-full mx-0.5 rounded-full bg-red-400"></div>
                             </Show>
@@ -122,6 +143,13 @@ export default function Index() {
                           when={infoLabels()[monitor.unique_id].status == "up"}
                         >
                           <p class="text-sm mt-1 text-green-400">{`${infoLabels()[monitor.unique_id].time} - ${infoLabels()[monitor.unique_id].ping}ms`}</p>
+                        </Show>
+                        <Show
+                          when={
+                            infoLabels()[monitor.unique_id].status == "degraded"
+                          }
+                        >
+                          <p class="text-sm mt-1 text-yellow-200">{`${infoLabels()[monitor.unique_id].time} - ${infoLabels()[monitor.unique_id].ping}ms`}</p>
                         </Show>
                         <Show
                           when={
@@ -144,7 +172,6 @@ export default function Index() {
                 </div>
               ))}
             </div>
-
             <div class="mt-auto">
               <footer
                 class="mt-6 mb-2 text-center text-muted-foreground"

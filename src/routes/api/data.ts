@@ -20,11 +20,17 @@ export async function GET() {
       data.monitors[i].unique_id,
     );
 
+    const avgPing = await db.get(
+      "SELECT AVG(ping) as avg FROM Pings WHERE id = ? AND (status = 'up' OR status = 'degraded')",
+      [data.monitors[i].unique_id],
+    );
+
     monitors.push({
       name: data.monitors[i].name,
       interval: data.monitors[i].interval,
       paused: data.monitors[i].paused,
       unique_id: data.monitors[i].unique_id,
+      avg_ping: avgPing.avg,
       heartbeats: pings,
     });
   }
