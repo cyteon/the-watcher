@@ -23,8 +23,6 @@ export default async function start() {
   function getCooldown(id) {
     coolDowns[id - 1] = coolDowns[id - 1] - 1;
 
-    console.log(`Cooldown for monitor ${id} is ${coolDowns[id - 1]}`);
-
     return coolDowns[id - 1];
   }
 
@@ -39,7 +37,7 @@ export default async function start() {
   async function sendEmbed(monitor, status, ping = 0) {
     const lastStatus = await db.get(
       "SELECT * FROM Pings WHERE id = ? ORDER BY time DESC LIMIT 1, 1",
-      [monitor.unique_id],
+      [monitor.id],
     );
 
     if (lastStatus == null) {
@@ -83,7 +81,7 @@ export default async function start() {
       ];
     }
 
-    if (monitor.webhook != null) {
+    if (monitor.webhook != null && monitor.webhook != "") {
       await fetch(monitor.webhook, {
         method: "POST",
         headers: {
@@ -98,8 +96,6 @@ export default async function start() {
 
   setInterval(async () => {
     const monitors = await db.all("SELECT * FROM Monitors");
-
-    console.log(monitors);
 
     for (const monitor of monitors) {
       console.log(`Checking monitor ${monitor.name}`);
