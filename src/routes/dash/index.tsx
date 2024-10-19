@@ -164,7 +164,12 @@ export default function Dash() {
       <Show when={currentMonitor()}>
         <div class="bg-background border-border w-full border-[1px] p-3 m-3 rounded-lg">
           <div class="flex">
-            <Show when={currentMonitor()?.heartbeats[0]?.status == "up"}>
+            <Show
+              when={
+                currentMonitor()?.heartbeats[0]?.status == "up" &&
+                currentMonitor()?.paused == false
+              }
+            >
               <Badge
                 variant={"noHover"}
                 class="w-fit rounded-lg bg-green-400 my-auto mr-2 p-1"
@@ -172,7 +177,12 @@ export default function Dash() {
                 <span class="mt-1 text-[1rem]">Online</span>
               </Badge>
             </Show>
-            <Show when={currentMonitor()?.heartbeats[0]?.status == "paused"}>
+            <Show
+              when={
+                currentMonitor()?.heartbeats[0]?.status == "paused" ||
+                currentMonitor()?.paused == true
+              }
+            >
               <Badge
                 variant={"noHover"}
                 class="w-fit rounded-lg bg-gray-400 my-auto mr-2 p-1"
