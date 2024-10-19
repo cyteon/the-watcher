@@ -15,27 +15,17 @@ function calculateUptime(heartbeats) {
 
 export default function Index() {
   const [data, setData] = createSignal({});
-  const [screenSize, setScreenSize] = createSignal("small");
 
-  const visibleHeartbeats = createMemo(() => {
-    switch (screenSize()) {
-      case "large":
-        return 60;
-      case "medium":
-        return 50;
-      default:
-        return 40;
-    }
-  });
+  const [visibleHeartbeats, setVisibleHeartbeats] = createSignal(50);
 
   onMount(() => {
     const updateScreenSize = () => {
       if (window.innerWidth >= 1400) {
-        setScreenSize("large");
+        setVisibleHeartbeats(50);
       } else if (window.innerWidth >= 1200) {
-        setScreenSize("medium");
+        setVisibleHeartbeats(40);
       } else {
-        setScreenSize("small");
+        setVisibleHeartbeats(30);
       }
     };
 
