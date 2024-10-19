@@ -70,13 +70,13 @@ export default function Index() {
                 >
                   <div class="flex items-center">
                     <Show when={monitor.heartbeats[0]?.status == "up"}>
-                      <Badge class="bg-green-400 mr-2 rounded-full h-6 w-6"></Badge>
+                      <span class="bg-green-400 mr-2 rounded-full h-6 w-6"></span>
                     </Show>
                     <Show when={monitor.heartbeats[0]?.status == "paused"}>
-                      <Badge class="bg-gray-400 mr-2 rounded-full h-6 w-6"></Badge>
+                      <span class="bg-gray-400 mr-2 rounded-full h-6 w-6"></span>
                     </Show>
                     <Show when={monitor.heartbeats[0]?.status == "down"}>
-                      <Badge class="bg-red-400 mr-2 rounded-full h-6 w-6"></Badge>
+                      <span class="bg-red-400 mr-2 rounded-full h-6 w-6"></span>
                     </Show>
                     <h1 class="font-bold text-lg mt-1">{monitor.name}</h1>
                   </div>
