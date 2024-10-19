@@ -1,0 +1,205 @@
+import { createSignal, onMount } from "solid-js";
+import { getCookie } from "typescript-cookie";
+import { Badge } from "~/components/ui/badge";
+
+export default function Dash() {
+  const [data, setData] = createSignal({});
+
+  const [visibleHeartbeatsSmall, setVisibleHeartbeatsSmall] = createSignal(15);
+  const [visibleHeartbeatsBig, setVisibleHeartbeatsBig] = createSignal(50);
+  const [infoLabels, setInfoLabels] = createSignal({});
+  const [currentMonitor, setCurrentMonitor] = createSignal(null);
+  const [currentPing, setCurrentPing] = createSignal(null);
+
+  onMount(() => {
+    const updateScreenSize = () => {
+      if (window.innerWidth >= 1400) {
+        setVisibleHeartbeatsSmall(15);
+        setVisibleHeartbeatsBig(100);
+      } else if (window.innerWidth >= 1200) {
+        setVisibleHeartbeatsSmall(10);
+        setVisibleHeartbeatsBig(50);
+      } else {
+        setVisibleHeartbeatsSmall(5);
+        setVisibleHeartbeatsBig(25);
+      }
+    };
+
+    window.addEventListener("resize", updateScreenSize);
+    updateScreenSize();
+
+    fetch("/api/admin/data", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setData(data));
+
+    setInterval(() => {
+      fetch("/api/admin/data", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => setData(data));
+    }, 60000);
+
+    return () => window.removeEventListener("resize", updateScreenSize);
+  });
+
+  return (
+    <main class="w-full h-screen flex">
+      <div class="bg-background border-border border-[1px] p-3 m-3 rounded-lg">
+        {data().monitors?.map((monitor, index) => (
+          <button
+            onClick={() => {
+              setCurrentMonitor(monitor);
+            }}
+            class={`${
+              index < visibleHeartbeatsSmall() ? "" : "hidden"
+            } flex items-center justify-between border-[1px] w-full border-border p-3 mb-1 rounded-md `}
+          >
+            <div>
+              <h2 class="text-xl font-bold">{monitor.name}</h2>
+            </div>
+            <div class="flex justify-end ml-10">
+              {monitor.heartbeats
+                ?.slice(0, visibleHeartbeatsSmall())
+                .toReversed()
+                .map((ping) => (
+                  <div class="mt-1 min-h-5">
+                    <Show when={ping.status == "up"}>
+                      <div class="w-1 h-full mx-0.5 rounded-full bg-green-400"></div>
+                    </Show>
+                    <Show when={ping.status == "paused"}>
+                      <div class="w-1 h-full mx-0.5 rounded-full bg-gray-400"></div>
+                    </Show>
+                    <Show when={ping.status == "degraded"}>
+                      <div class="w-1 h-full mx-0.5 rounded-full bg-yellow-200"></div>
+                    </Show>
+                    <Show when={ping.status == "down"}>
+                      <div class="w-1 h-full mx-0.5 rounded-full bg-red-400"></div>
+                    </Show>
+                  </div>
+                ))}
+            </div>
+          </button>
+        ))}
+      </div>
+      <Show when={currentMonitor()}>
+        <div class="bg-background border-border w-full border-[1px] p-3 m-3 rounded-lg">
+          <div class="flex">
+            <Show when={currentMonitor()?.heartbeats[0]?.status == "up"}>
+              <Badge
+                variant={"noHover"}
+                class="w-fit rounded-lg bg-green-400 my-auto mr-2 p-1"
+              >
+                <span class="mt-1 text-[1rem]">Online</span>
+              </Badge>
+            </Show>
+            <Show when={currentMonitor()?.heartbeats[0]?.status == "paused"}>
+              <Badge
+                variant={"noHover"}
+                class="w-fit rounded-lg bg-gray-400 my-auto mr-2 p-1"
+              >
+                <span class="mt-1 text-[1rem]">Paused</span>
+              </Badge>
+            </Show>
+            <Show when={currentMonitor()?.heartbeats[0]?.status == "degraded"}>
+              <Badge
+                variant={"noHover"}
+                class="w-fit rounded-lg bg-yellow-200 my-auto mr-2 p-1"
+              >
+                <span class="mt-1 text-[1rem] ">Degraded</span>
+              </Badge>
+            </Show>
+            <Show when={currentMonitor()?.heartbeats[0]?.status == "down"}>
+              <Badge
+                variant={"noHover"}
+                class="w-fit rounded-lg bg-red-400 my-auto mr-2 p-1"
+              >
+                <span class="mt-1 text-[1rem] ">Offline</span>
+              </Badge>
+            </Show>
+
+            <h1 class="text-3xl">{currentMonitor()?.name}</h1>
+          </div>
+          <a href={currentMonitor()?.url}>{currentMonitor()?.url}</a>
+
+          <div class="p-3 border-border border-[1px] mt-2 rounded-md">
+            <div class="self-end">
+              <Show when={currentMonitor()?.avg_ping}>
+                <Badge class="self-end mr-2 w-fit rounded-xl">
+                  Avg: {currentMonitor()?.avg_ping?.toFixed(0)}ms
+                </Badge>
+              </Show>
+              <Badge class="self-end mr-2 w-fit rounded-xl">
+                {currentMonitor()?.heartbeats[0]?.ping}ms
+              </Badge>
+              <Badge class="self-end w-fit rounded-xl">
+                {currentMonitor()?.uptime
+                  ? currentMonitor()?.uptime?.toFixed(1) + "%"
+                  : "?"}
+              </Badge>
+            </div>
+            <div class="w-fit">
+              <div class="flex">
+                {currentMonitor()
+                  ?.heartbeats?.slice(0, visibleHeartbeatsBig())
+                  .toReversed()
+                  .map((ping) => (
+                    <div
+                      class="mt-1 min-h-8"
+                      onMouseOver={() => {
+                        setCurrentPing(ping);
+                      }}
+                      onMouseLeave={() => {
+                        setCurrentPing(null);
+                      }}
+                    >
+                      <Show when={ping.status == "up"}>
+                        <div class="w-2 h-full mx-0.5 rounded-full bg-green-400"></div>
+                      </Show>
+                      <Show when={ping.status == "paused"}>
+                        <div class="w-2 min-h-4 h-full mx-0.5 rounded-full bg-gray-400"></div>
+                      </Show>
+                      <Show when={ping.status == "degraded"}>
+                        <div class="w-2 min-h-4 h-full mx-0.5 rounded-full bg-yellow-200"></div>
+                      </Show>
+                      <Show when={ping.status == "down"}>
+                        <div class="w-2 min-h-4 h-full mx-0.5 rounded-full bg-red-400"></div>
+                      </Show>
+                    </div>
+                  ))}
+              </div>
+              <div class="flex mt-1">
+                <Show when={currentPing()}>
+                  <Show when={currentPing()?.status == "up"}>
+                    <p class="text-sm text-green-400">{`${currentPing()?.time} - Status: ${currentPing()?.code} - ${currentPing()?.ping}ms`}</p>
+                  </Show>
+                  <Show when={currentPing()?.status == "degraded"}>
+                    <p class="text-sm text-yellow-200">{`${currentPing()?.time} - Status: ${currentPing()?.code} - ${currentPing()?.ping}ms`}</p>
+                  </Show>
+                  <Show when={currentPing()?.status == "down"}>
+                    <p class="text-sm text-red-400">{`${currentPing()?.time} -
+                        ${currentPing()?.code != 0 ? "Status: " + currentPing()?.code : "Down"}`}</p>
+                  </Show>
+                  <Show when={currentPing()?.status == "paused"}>
+                    <p class="text-sm text-gray-400">{`${currentPing()?.time} - Paused`}</p>
+                  </Show>
+                </Show>
+                <p class="ml-auto text-sm">Now</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Show>
+    </main>
+  );
+}
