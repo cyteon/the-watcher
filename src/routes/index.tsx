@@ -1,17 +1,6 @@
 import { createSignal, onMount, Show, createMemo } from "solid-js";
 import { Badge } from "~/components/ui/badge";
 
-function calculateUptime(heartbeats) {
-  const total = heartbeats.filter((ping) => ping.status != "paused").length;
-  const up = heartbeats.filter((ping) => ping.status == "up").length;
-  const result = ((up / total) * 100).toFixed(2);
-
-  if (isNaN(result)) {
-    return "?";
-  } else {
-    return `${result}%`;
-  }
-}
 export default function Index() {
   const [data, setData] = createSignal({});
 
@@ -103,7 +92,9 @@ export default function Index() {
                         {monitor.heartbeats[0]?.ping}ms
                       </Badge>
                       <Badge class="self-end w-fit rounded-xl">
-                        {calculateUptime(monitor.heartbeats)}
+                        {monitor.uptime
+                          ? monitor.uptime?.toFixed(1) + "%"
+                          : "?"}
                       </Badge>
                     </div>
                     <div class="flex justify-end">

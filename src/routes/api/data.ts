@@ -25,12 +25,20 @@ export async function GET() {
       [data.monitors[i].unique_id],
     );
 
+    const uptime = await db.get(
+      "SELECT COUNT(*) as up, (SELECT COUNT(*) FROM Pings WHERE id = ? AND status != 'paused' ) as total FROM Pings WHERE id = ? AND (status = 'up' OR status = 'degraded')",
+      [data.monitors[i].unique_id, data.monitors[i].unique_id],
+    );
+
+    const percentage = (uptime.up / uptime.total) * 100;
+
     monitors.push({
       name: data.monitors[i].name,
       interval: data.monitors[i].interval,
       paused: data.monitors[i].paused,
       unique_id: data.monitors[i].unique_id,
       avg_ping: avgPing.avg,
+      uptime: percentage,
       heartbeats: pings,
     });
   }
