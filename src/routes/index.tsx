@@ -12,7 +12,6 @@ function calculateUptime(heartbeats) {
     return `${result}%`;
   }
 }
-
 export default function Index() {
   const [data, setData] = createSignal({});
 
@@ -117,26 +116,30 @@ export default function Index() {
                           </div>
                         ))}
                     </div>
-                    <Show when={infoLabels()[monitor.unique_id]}>
-                      <Show
-                        when={infoLabels()[monitor.unique_id].status == "up"}
-                      >
-                        <p class="text-sm mt-1 text-green-400">{`${infoLabels()[monitor.unique_id].time} - ${infoLabels()[monitor.unique_id].ping}ms`}</p>
+                    <div class="min-h-[25px]">
+                      <Show when={infoLabels()[monitor.unique_id]}>
+                        <Show
+                          when={infoLabels()[monitor.unique_id].status == "up"}
+                        >
+                          <p class="text-sm mt-1 text-green-400">{`${infoLabels()[monitor.unique_id].time} - ${infoLabels()[monitor.unique_id].ping}ms`}</p>
+                        </Show>
+                        <Show
+                          when={
+                            infoLabels()[monitor.unique_id].status == "down"
+                          }
+                        >
+                          <p class="text-sm mt-1 text-red-400">{`${infoLabels()[monitor.unique_id].time} -
+                            ${infoLabels()[monitor.unique_id].code != 0 ? "Status: " + infoLabels()[monitor.unique_id].code : "Down"}`}</p>
+                        </Show>
+                        <Show
+                          when={
+                            infoLabels()[monitor.unique_id].status == "paused"
+                          }
+                        >
+                          <p class="text-sm mt-1 text-gray-400">{`${infoLabels()[monitor.unique_id].time} - Paused`}</p>
+                        </Show>
                       </Show>
-                      <Show
-                        when={infoLabels()[monitor.unique_id].status == "down"}
-                      >
-                        <p class="text-sm mt-1 text-red-400">{`${infoLabels()[monitor.unique_id].time} -
-                          ${infoLabels()[monitor.unique_id].code != 0 ? "Status: " + infoLabels()[monitor.unique_id].code : "Down"}`}</p>
-                      </Show>
-                      <Show
-                        when={
-                          infoLabels()[monitor.unique_id].status == "paused"
-                        }
-                      >
-                        <p class="text-sm mt-1 text-gray-400">{`${infoLabels()[monitor.unique_id].time} - Paused`}</p>
-                      </Show>
-                    </Show>
+                    </div>
                   </div>
                 </div>
               ))}
