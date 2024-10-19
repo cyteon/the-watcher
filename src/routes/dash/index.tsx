@@ -2,6 +2,11 @@ import { createSignal, onMount } from "solid-js";
 import { getCookie } from "typescript-cookie";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
+import {
+  TextField,
+  TextFieldRoot,
+  TextFieldLabel,
+} from "~/components/ui/textfield";
 
 import {
   AlertDialog,
@@ -15,6 +20,16 @@ import {
   AlertDialogAction,
 } from "~/components/ui/alert-dialog";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
+
 export default function Dash() {
   const [data, setData] = createSignal({});
 
@@ -22,6 +37,11 @@ export default function Dash() {
   const [visibleHeartbeatsBig, setVisibleHeartbeatsBig] = createSignal(50);
   const [currentMonitor, setCurrentMonitor] = createSignal(null);
   const [currentPing, setCurrentPing] = createSignal(null);
+
+  const [newName, setNewName] = createSignal("");
+  const [newURL, setNewURL] = createSignal("");
+  const [newInterval, setNewInterval] = createSignal(1);
+  const [newWebhook, setNewWebhook] = createSignal("");
 
   onMount(() => {
     const updateScreenSize = () => {
@@ -90,6 +110,40 @@ export default function Dash() {
     setCurrentMonitor(
       data().monitors.find((monitor) => monitor.id == currentMonitor()?.id),
     );
+  }
+
+  async function editMonitor() {
+    const res = await fetch(`/api/admin/monitor/${currentMonitor()?.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getCookie("token")}`,
+      },
+      body: JSON.stringify({
+        name: newName(),
+        url: newURL(),
+        interval: newInterval(),
+        webhook: newWebhook(),
+      }),
+    });
+
+    if (res.ok) {
+      setData(
+        await (
+          await fetch("/api/admin/data", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${getCookie("token")}`,
+            },
+          })
+        ).json(),
+      );
+
+      setCurrentMonitor(
+        data().monitors.find((monitor) => monitor.id == currentMonitor()?.id),
+      );
+    }
   }
 
   async function deleteMonitor() {
@@ -217,12 +271,69 @@ export default function Dash() {
                 {currentMonitor()?.paused ? "Unpause" : "Pause"}
               </span>
             </Button>
-            <Button class="mr-1">
-              <span class="mt-1 text-lg">Edit</span>
-            </Button>
+            <div class="mr-1">
+              <AlertDialog>
+                <AlertDialogTrigger as={Button}>
+                  <span class="mt-1 text-[18px]">Edit</span>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle class="text-2xl">
+                      Edit Monitor: {currentMonitor()?.name}
+                    </AlertDialogTitle>
+                  </AlertDialogHeader>
+
+                  <TextFieldRoot class="mb-4">
+                    <TextFieldLabel>Monitor Name</TextFieldLabel>
+                    <TextField
+                      class="w-full"
+                      value={currentMonitor()?.name}
+                      onChange={(e) => setNewName(e.target.value)}
+                    />
+                  </TextFieldRoot>
+                  <TextFieldRoot class="mb-4">
+                    <TextFieldLabel>Monitor URL</TextFieldLabel>
+                    <TextField
+                      class="w-full"
+                      value={currentMonitor()?.url}
+                      onChange={(e) => setNewURL(e.target.value)}
+                    />
+                  </TextFieldRoot>
+                  <TextFieldRoot class="mb-4">
+                    <TextFieldLabel>Monitor Interval</TextFieldLabel>
+                    <TextField
+                      class="w-full"
+                      type="number"
+                      value={currentMonitor()?.interval}
+                      onChange={(e) => setNewInterval(e.target.value)}
+                    />
+                  </TextFieldRoot>
+                  <TextFieldRoot class="mb-4">
+                    <TextFieldLabel>Notification Webhook</TextFieldLabel>
+                    <TextField
+                      class="w-full"
+                      value={currentMonitor()?.webhook}
+                      onChange={(e) => setNewWebhook(e.target.value)}
+                    />
+                  </TextFieldRoot>
+
+                  <AlertDialogFooter>
+                    <AlertDialogAction>
+                      <span class="text-[18px] mt-1">Cancel</span>
+                    </AlertDialogAction>
+                    <AlertDialogAction onClick={() => editMonitor()}>
+                      <span class="text-[18px] mt-1">Save Changes</span>
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
             <AlertDialog>
-              <AlertDialogTrigger class="bg-red-400 text-primary-foreground h-9 px-4 py-2 rounded-md">
-                <span class="text-[18px]">Delete</span>
+              <AlertDialogTrigger
+                as={Button}
+                class="bg-red-400 hover:bg-red-400"
+              >
+                <span class="mt-1 text-[18px]">Delete</span>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
