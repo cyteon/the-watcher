@@ -166,5 +166,5 @@ export default async function start() {
           });
       }
     }
-  }, 6000);
+  }, 60000);
 }
