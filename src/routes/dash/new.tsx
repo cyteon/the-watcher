@@ -8,11 +8,35 @@ import {
   TextFieldLabel,
 } from "~/components/ui/textfield";
 
+import {
+  Checkbox,
+  CheckboxControl,
+  CheckboxLabel,
+} from "~/components/ui/checkbox";
+
 export default function New() {
   const [name, setName] = createSignal("");
   const [url, setUrl] = createSignal("");
   const [interval, setInterval] = createSignal(5);
+  const [_public, setPublic] = createSignal(false);
   const [webhook, setWebhook] = createSignal("");
+
+  onMount(() => {
+    const token = getCookie("token");
+    if (!token) {
+      window.location.href = "/dash/login";
+    }
+
+    fetch("/api/auth/verify", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res) => {
+      if (!res.ok) {
+        window.location.href = "/dash/login";
+      }
+    });
+  });
 
   const addMonitor = async () => {
     const token = getCookie("token");
@@ -27,6 +51,7 @@ export default function New() {
         url: url(),
         interval: interval(),
         webhook: webhook(),
+        _public: _public(),
       }),
     });
 
@@ -75,9 +100,17 @@ export default function New() {
           />
         </TextFieldRoot>
 
-        <Button class="mt-2" onClick={() => addMonitor()}>
-          Create
-        </Button>
+        <Checkbox class="flex items-center my-4">
+          <CheckboxControl
+            class="hover:cursor-pointer"
+            onChange={(e) => setPublic(e.target.checked)}
+          />
+          <CheckboxLabel class="text-sm ml-1 mt-1 font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Make monitor public
+          </CheckboxLabel>
+        </Checkbox>
+
+        <Button onClick={() => addMonitor()}>Create</Button>
       </div>
     </main>
   );

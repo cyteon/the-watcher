@@ -32,7 +32,7 @@ export async function POST({ request, params }) {
 
   const slug = params.slug;
 
-  const { name, url, interval, webhook } = await request.json();
+  const { name, url, interval, webhook, _public } = await request.json();
 
   if (name) {
     await db.run("UPDATE Monitors SET name = ? WHERE id = ?", [
@@ -58,6 +58,18 @@ export async function POST({ request, params }) {
   if (webhook) {
     await db.run("UPDATE Monitors SET webhook = ? WHERE id = ?", [
       webhook,
+      parseInt(slug),
+    ]);
+  }
+
+  if (_public == true) {
+    await db.run("UPDATE Monitors SET public = ? WHERE id = ?", [
+      _public,
+      parseInt(slug),
+    ]);
+  } else if (_public == false) {
+    await db.run("UPDATE Monitors SET public = ? WHERE id = ?", [
+      _public,
       parseInt(slug),
     ]);
   }

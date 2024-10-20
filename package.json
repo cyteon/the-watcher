@@ -1,5 +1,5 @@
 {
-  "name": "example-bare",
+  "name": "the-watcher",
   "type": "module",
   "scripts": {
     "dev": "vinxi dev",

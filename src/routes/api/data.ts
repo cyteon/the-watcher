@@ -16,6 +16,10 @@ export async function GET() {
   var monitors_data = [];
 
   for (var i = 0; i < monitors.length; i++) {
+    if (!monitors[i].public) {
+      continue;
+    }
+
     var pings = await db.all(
       "SELECT * FROM Pings WHERE id = ? ORDER BY time DESC limit 100",
       monitors[i].id,

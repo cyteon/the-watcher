@@ -20,6 +20,12 @@ import {
   AlertDialogAction,
 } from "~/components/ui/alert-dialog";
 
+import {
+  Checkbox,
+  CheckboxControl,
+  CheckboxLabel,
+} from "~/components/ui/checkbox";
+
 export default function Dash() {
   const [data, setData] = createSignal({});
 
@@ -31,6 +37,7 @@ export default function Dash() {
   const [newName, setNewName] = createSignal("");
   const [newURL, setNewURL] = createSignal("");
   const [newInterval, setNewInterval] = createSignal(1);
+  const [newPublic, setNewPublic] = createSignal(false);
   const [newWebhook, setNewWebhook] = createSignal("");
 
   const [username, setUsername] = createSignal("");
@@ -60,9 +67,17 @@ export default function Dash() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${getCookie("token")}`,
       },
-    })
-      .then((res) => res.json())
-      .then((data) => setData(data));
+    }).then((res) => {
+      if (!res.ok) {
+        removeCookie("token");
+        window.location.href = "/dash/login";
+      }
+
+      res.json().then((data) => {
+        setData(data);
+        setUsername(data.user.username);
+      });
+    });
 
     setInterval(() => {
       fetch("/api/admin/data", {
@@ -156,6 +171,7 @@ export default function Dash() {
         url: newURL(),
         interval: newInterval(),
         webhook: newWebhook(),
+        _public: newPublic(),
       }),
     });
 
@@ -257,15 +273,16 @@ export default function Dash() {
                   Edit Profile
                 </AlertDialogTitle>
               </AlertDialogHeader>
-
+              To change password enter your old password and new password.
+              Changing username does not require old password.
               <TextFieldRoot class="mb-4">
                 <TextFieldLabel>Username</TextFieldLabel>
                 <TextField
                   class="w-full"
                   onChange={(e) => setUsername(e.target.value)}
+                  value={username()}
                 />
               </TextFieldRoot>
-
               <TextFieldRoot class="mb-4">
                 <TextFieldLabel>New Password</TextFieldLabel>
                 <TextField
@@ -274,7 +291,6 @@ export default function Dash() {
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
               </TextFieldRoot>
-
               <TextFieldRoot class="mb-4">
                 <TextFieldLabel>Old Password</TextFieldLabel>
                 <TextField
@@ -283,7 +299,6 @@ export default function Dash() {
                   onChange={(e) => setOldPassword(e.target.value)}
                 />
               </TextFieldRoot>
-
               <AlertDialogFooter>
                 <AlertDialogAction>
                   <span class="text-[18px] mt-1">Cancel</span>
@@ -363,7 +378,7 @@ export default function Dash() {
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle class="text-2xl">
-                      Edit Monitor: {currentMonitor()?.name}
+                      Editing Monitor: {currentMonitor()?.name}
                     </AlertDialogTitle>
                   </AlertDialogHeader>
 
@@ -400,6 +415,17 @@ export default function Dash() {
                       onChange={(e) => setNewWebhook(e.target.value)}
                     />
                   </TextFieldRoot>
+
+                  <Checkbox
+                    class="flex items-center"
+                    defaultChecked={currentMonitor()?.public}
+                    onChange={(e) => setNewPublic(e)}
+                  >
+                    <CheckboxControl class="hover:cursor-pointer" />
+                    <CheckboxLabel class="text-sm ml-1 mt-1 font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                      Public Monitor
+                    </CheckboxLabel>
+                  </Checkbox>
 
                   <AlertDialogFooter>
                     <AlertDialogAction>

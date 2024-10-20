@@ -4,4 +4,4 @@
 Default dashboard credentials:
 - Username: `admin`
 - Password: `admin`
-> Change ASAP!
+Change ASAP!

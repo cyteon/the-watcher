@@ -66,6 +66,9 @@ export async function GET({ request }) {
 
   return {
     data: data,
+    user: {
+      username: user.username,
+    },
     monitors: monitors_data,
   };
 }
