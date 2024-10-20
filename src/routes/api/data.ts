@@ -52,6 +52,7 @@ export async function GET() {
     title: data.title,
     description: data.description,
     footer: data.footer,
+    alert: data.alert,
     online_statuses: data.onlineStatuses,
     monitors: monitors_data,
   };

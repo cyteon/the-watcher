@@ -1,6 +1,8 @@
 import { createSignal, onMount, Show, createMemo } from "solid-js";
 import { Badge } from "~/components/ui/badge";
 
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
+
 export default function Index() {
   const [data, setData] = createSignal({});
 
@@ -42,8 +44,18 @@ export default function Index() {
           innerHTML={data().title}
         ></h1>
         <p class="text-2xl text-center" innerHTML={data().description}></p>
+
+        <Show when={data().alert?.show}>
+          <Alert class="mt-8">
+            <AlertTitle class="text-lg font-bold">
+              {data().alert?.title}
+            </AlertTitle>
+            <AlertDescription>{data().alert?.description}</AlertDescription>
+          </Alert>
+        </Show>
       </div>
-      <div class="mt-20 w-[90%] md:w-1/2 h-full">
+
+      <div class="mt-10 w-[90%] md:w-1/2 ">
         <Show when={data().monitors?.length == 0}>
           <p class="text-center">No monitors found</p>
         </Show>
@@ -59,7 +71,7 @@ export default function Index() {
               <span class="h-3 w-3 rounded-full bg-gray-400 ml-2 mr-1"></span>{" "}
               <span class="mt-[3px]">Paused</span>
             </Badge>
-            <div class="mt-2 border-[1px] border-border rounded-lg bg-background">
+            <div class="mt-2 border-[1px] border-border rounded-lg bg-background h-full">
               {data().monitors?.map((monitor, index) => (
                 <div
                   class={`flex p-5 flex-col lg:flex-row ${
@@ -167,14 +179,14 @@ export default function Index() {
                 </div>
               ))}
             </div>
-            <div class="mt-auto">
-              <footer
-                class="mt-6 mb-2 text-center text-muted-foreground"
-                innerHTML={data().footer}
-              ></footer>
-            </div>
           </div>
         </Show>
+      </div>
+      <div class="mt-auto">
+        <footer
+          class="mt-6 mb-2 text-center text-muted-foreground"
+          innerHTML={data().footer}
+        ></footer>
       </div>
     </main>
   );
