@@ -106,7 +106,7 @@ export default function Index() {
                             class="mt-1 min-h-8"
                             onMouseOver={() => {
                               setInfoLabels({
-                                [monitor.unique_id]: ping,
+                                [monitor.id.toString()]: ping,
                               });
                             }}
                             onMouseLeave={() => {
@@ -129,33 +129,37 @@ export default function Index() {
                         ))}
                     </div>
                     <div class="min-h-[25px]">
-                      <Show when={infoLabels()[monitor.unique_id]}>
+                      <Show when={infoLabels()[monitor.id.toString()]}>
                         <Show
-                          when={infoLabels()[monitor.unique_id].status == "up"}
+                          when={
+                            infoLabels()[monitor.id.toString()].status == "up"
+                          }
                         >
-                          <p class="text-sm mt-1 text-green-400">{`${infoLabels()[monitor.unique_id].time} - ${infoLabels()[monitor.unique_id].ping}ms`}</p>
+                          <p class="text-sm mt-1 text-green-400">{`${infoLabels()[monitor.id.toString()].time} - ${infoLabels()[monitor.id.toString()].ping}ms`}</p>
                         </Show>
                         <Show
                           when={
-                            infoLabels()[monitor.unique_id].status == "degraded"
+                            infoLabels()[monitor.id.toString()].status ==
+                            "degraded"
                           }
                         >
-                          <p class="text-sm mt-1 text-yellow-200">{`${infoLabels()[monitor.unique_id].time} - ${infoLabels()[monitor.unique_id].ping}ms`}</p>
+                          <p class="text-sm mt-1 text-yellow-200">{`${infoLabels()[monitor.id.toString()].time} - ${infoLabels()[monitor.id.toString()].ping}ms`}</p>
                         </Show>
                         <Show
                           when={
-                            infoLabels()[monitor.unique_id].status == "down"
+                            infoLabels()[monitor.id.toString()].status == "down"
                           }
                         >
-                          <p class="text-sm mt-1 text-red-400">{`${infoLabels()[monitor.unique_id].time} -
-                            ${infoLabels()[monitor.unique_id].code != 0 ? "Status: " + infoLabels()[monitor.unique_id].code : "Down"}`}</p>
+                          <p class="text-sm mt-1 text-red-400">{`${infoLabels()[monitor.id.toString()].time} -
+                            ${infoLabels()[monitor.id.toString()].code != 0 ? "Status: " + infoLabels()[monitor.id.toString()].code : "Down"}`}</p>
                         </Show>
                         <Show
                           when={
-                            infoLabels()[monitor.unique_id].status == "paused"
+                            infoLabels()[monitor.id.toString()].status ==
+                            "paused"
                           }
                         >
-                          <p class="text-sm mt-1 text-gray-400">{`${infoLabels()[monitor.unique_id].time} - Paused`}</p>
+                          <p class="text-sm mt-1 text-gray-400">{`${infoLabels()[monitor.id.toString()].time} - Paused`}</p>
                         </Show>
                       </Show>
                     </div>
