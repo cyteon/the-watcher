@@ -3,5 +3,5 @@
 
 Default dashboard credentials:
 - Username: `admin`
-- Password: `admin`
+- Password: `admin` \
 Change ASAP!
