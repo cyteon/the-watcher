@@ -14,9 +14,18 @@ import {
   CheckboxLabel,
 } from "~/components/ui/checkbox";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+
 export default function New() {
   const [name, setName] = createSignal("");
-  const [url, setUrl] = createSignal("");
+  const [type, setType] = createSignal("Web");
+  const [url, setUrl] = createSignal(""); // Also counts as host
   const [interval, setInterval] = createSignal(5);
   const [_public, setPublic] = createSignal(false);
   const [webhook, setWebhook] = createSignal("");
@@ -52,6 +61,7 @@ export default function New() {
         interval: interval(),
         webhook: webhook(),
         _public: _public(),
+        type: type(),
       }),
     });
 
@@ -73,11 +83,29 @@ export default function New() {
           />
         </TextFieldRoot>
 
+        <Select
+          options={["Web", "Ping"]}
+          class="w-full max-w-xs mt-2"
+          itemComponent={(props) => (
+            <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
+          )}
+          onChange={(item) => setType(item)}
+          value={type()}
+        >
+          <label class="text-sm">Monitor Type</label>
+          <SelectTrigger>
+            <SelectValue<string>>
+              {(state) => state.selectedOption()}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent />
+        </Select>
+
         <TextFieldRoot class="w-full max-w-xs mt-2">
-          <TextFieldLabel>URL</TextFieldLabel>
+          <TextFieldLabel>{type() === "Web" ? "URL" : "Host"}</TextFieldLabel>
           <TextField
             type="url"
-            placeholder="URL"
+            placeholder={type() === "Web" ? "URL" : "Host"}
             onInput={(e) => setUrl(e.target.value)}
           />
         </TextFieldRoot>

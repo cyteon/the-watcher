@@ -30,11 +30,11 @@ export async function POST({ request }) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const { name, url, interval, webhook, _public } = await request.json();
+  const { name, url, interval, webhook, _public, type } = await request.json();
 
   await db.run(
-    "INSERT INTO Monitors (name, url, interval, webhook, public) VALUES (?, ?, ?, ?, ?)",
-    [name, url, interval, webhook, _public],
+    "INSERT INTO Monitors (name, url, interval, webhook, public, type) VALUES (?, ?, ?, ?, ?, ?)",
+    [name, url, interval, webhook, _public, type],
   );
 
   return new Response("Monitor added", { status: 200 });

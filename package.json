@@ -16,6 +16,7 @@
     "cal-sans": "^1.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "ping": "^0.4.4",
     "solid-js": "^1.9.1",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
