@@ -30,6 +30,16 @@ export default function New() {
   const [_public, setPublic] = createSignal(false);
   const [webhook, setWebhook] = createSignal("");
 
+  const label = () => {
+    if (type() == "Web") {
+      return "URL";
+    } else if (type() == "Ping") {
+      return "Host";
+    } else if (type() == "MongoDB") {
+      return "Connection String";
+    }
+  };
+
   onMount(() => {
     const token = getCookie("token");
     if (!token) {
@@ -84,7 +94,7 @@ export default function New() {
         </TextFieldRoot>
 
         <Select
-          options={["Web", "Ping"]}
+          options={["Web", "Ping", "MongoDB"]}
           class="w-full max-w-xs mt-2"
           itemComponent={(props) => (
             <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
@@ -102,10 +112,10 @@ export default function New() {
         </Select>
 
         <TextFieldRoot class="w-full max-w-xs mt-2">
-          <TextFieldLabel>{type() === "Web" ? "URL" : "Host"}</TextFieldLabel>
+          <TextFieldLabel>{label()}</TextFieldLabel>
           <TextField
             type="url"
-            placeholder={type() === "Web" ? "URL" : "Host"}
+            placeholder={label()}
             onInput={(e) => setUrl(e.target.value)}
           />
         </TextFieldRoot>
