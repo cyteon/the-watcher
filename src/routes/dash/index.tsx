@@ -2,6 +2,7 @@ import { createSignal, onMount } from "solid-js";
 import { getCookie, removeCookie } from "typescript-cookie";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
+import { createChart } from "lightweight-charts";
 import {
   TextField,
   TextFieldRoot,
@@ -25,6 +26,7 @@ import {
   CheckboxControl,
   CheckboxLabel,
 } from "~/components/ui/checkbox";
+import PingChart from "~/components/PingChart";
 
 export default function Dash() {
   const [data, setData] = createSignal({});
@@ -88,7 +90,17 @@ export default function Dash() {
         },
       })
         .then((res) => res.json())
-        .then((data) => setData(data));
+        .then((data) => {
+          setData(data);
+
+          if (currentMonitor()) {
+            setCurrentMonitor(
+              data.monitors.find(
+                (monitor) => monitor.id == currentMonitor()?.id,
+              ),
+            );
+          }
+        });
     }, 60000);
 
     return () => window.removeEventListener("resize", updateScreenSize);
@@ -363,7 +375,6 @@ export default function Dash() {
             <h1 class="text-3xl">{currentMonitor()?.name}</h1>
           </div>
           <a href={currentMonitor()?.url}>{currentMonitor()?.url}</a>
-
           <div class="my-3 flex">
             <Button class="mr-1" onClick={() => togglePaused()}>
               <span class="mt-1 text-lg">
@@ -467,7 +478,6 @@ export default function Dash() {
               </AlertDialogContent>
             </AlertDialog>
           </div>
-
           <div class="p-3 border-border border-[1px] mt-2 rounded-md">
             <div class="self-end">
               <Show when={currentMonitor()?.avg_ping}>
@@ -533,6 +543,9 @@ export default function Dash() {
                 <p class="ml-auto text-sm">Now</p>
               </div>
             </div>
+          </div>
+          <div class="mt-3 p-3 border rounded-md w-full h-64">
+            <PingChart heartbeats={currentMonitor()?.heartbeats} />
           </div>
         </div>
       </Show>
