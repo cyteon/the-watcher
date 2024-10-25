@@ -78,20 +78,25 @@ export default function Index() {
                     index !== data().monitors.length - 1 ? "border-b-[1px]" : ""
                   }`}
                 >
-                  <div class="flex items-center">
-                    <Show when={monitor.heartbeats[0]?.status == "up"}>
-                      <span class="bg-green-400 mr-2 rounded-full h-5 w-5"></span>
-                    </Show>
-                    <Show when={monitor.heartbeats[0]?.status == "paused"}>
-                      <span class="bg-gray-400 mr-2 rounded-full h-5 w-5"></span>
-                    </Show>
-                    <Show when={monitor.heartbeats[0]?.status == "down"}>
-                      <span class="bg-red-400 mr-2 rounded-full h-5 w-5"></span>
-                    </Show>
-                    <Show when={monitor.heartbeats[0]?.status == "degraded"}>
-                      <span class="bg-yellow-200 mr-2 rounded-full h-5 w-5"></span>
-                    </Show>
-                    <h1 class="font-bold text-lg mt-1">{monitor.name}</h1>
+                  <div class="my-auto">
+                    <div class="flex items-center">
+                      <Show when={monitor.heartbeats[0]?.status == "up"}>
+                        <span class="bg-green-400 mr-2 rounded-full h-5 w-5"></span>
+                      </Show>
+                      <Show when={monitor.heartbeats[0]?.status == "paused"}>
+                        <span class="bg-gray-400 mr-2 rounded-full h-5 w-5"></span>
+                      </Show>
+                      <Show when={monitor.heartbeats[0]?.status == "down"}>
+                        <span class="bg-red-400 mr-2 rounded-full h-5 w-5"></span>
+                      </Show>
+                      <Show when={monitor.heartbeats[0]?.status == "degraded"}>
+                        <span class="bg-yellow-200 mr-2 rounded-full h-5 w-5"></span>
+                      </Show>
+                      <h1 class="font-bold text-lg mt-1">{monitor.name}</h1>
+                    </div>
+                    <a href={"/monitor/" + monitor.id} class="text-sm">
+                      More info
+                    </a>
                   </div>
                   <div class="ml-auto flex flex-col min-h-4">
                     <div class="self-end">
