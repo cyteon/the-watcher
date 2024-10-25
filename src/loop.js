@@ -4,6 +4,7 @@ import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 import ping from "ping";
 import { MongoClient } from "mongodb";
+import net from "net";
 
 export default async function start() {
   const db = await open({
@@ -219,6 +220,74 @@ export default async function start() {
               await sendEmbed(monitor, "down");
             }
           });
+        } else if (monitor.type == "TCP") {
+          const socket = new net.Socket();
+
+          socket.setTimeout(5000);
+
+          socket.on("connect", async () => {
+            console.log(`Successfully pinged ${monitor.url}`);
+            const ping = Date.now() - start;
+
+            const avgPing = await db.get(
+              "SELECT AVG(ping) as avg FROM Pings WHERE id = ? AND (status = 'up' OR status = 'degraded')",
+              [monitor.id],
+            );
+
+            if (avgPing.avg != null) {
+              if (ping > avgPing.avg * data.degradedMultipiler) {
+                await db.run(
+                  "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
+                  [monitor.id, 0, "degraded", ping],
+                );
+              } else {
+                await db.run(
+                  "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
+                  [monitor.id, 0, "up", ping],
+                );
+              }
+            } else {
+              await db.run(
+                "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
+                [monitor.id, 0, "up", ping],
+              );
+            }
+
+            await sendEmbed(monitor, "up", ping);
+
+            socket.destroy();
+          });
+
+          socket.on("timeout", async () => {
+            console.error(`Failed to ping ${monitor.url} (tcp timeout)`);
+
+            await db.run(
+              "INSERT INTO Pings (id, code, status) VALUES (?, ?, ?)",
+              [monitor.id, 0, "down"],
+            );
+
+            await sendEmbed(monitor, "down");
+
+            socket.destroy();
+          });
+
+          socket.on("error", async (err) => {
+            console.error(`Failed to ping ${monitor.url} (tcp error)`);
+
+            await db.run(
+              "INSERT INTO Pings (id, code, status) VALUES (?, ?, ?)",
+              [monitor.id, 0, "down"],
+            );
+
+            await sendEmbed(monitor, "down");
+
+            socket.destroy();
+          });
+
+          const url = monitor.url.split(":")[0];
+          const port = monitor.url.split(":")[1];
+
+          socket.connect(port, url);
         } else if (monitor.type == "MongoDB") {
           const client = new MongoClient(monitor.url);
 

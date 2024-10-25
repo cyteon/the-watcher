@@ -37,6 +37,8 @@ export default function New() {
       return "Host";
     } else if (type() == "MongoDB") {
       return "Connection String";
+    } else if (type() == "TCP") {
+      return "Host";
     }
   };
 
@@ -94,7 +96,7 @@ export default function New() {
         </TextFieldRoot>
 
         <Select
-          options={["Web", "Ping", "MongoDB"]}
+          options={["Web", "Ping", "TCP", "MongoDB"]}
           class="w-full max-w-xs mt-2"
           itemComponent={(props) => (
             <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
