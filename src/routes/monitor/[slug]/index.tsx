@@ -36,7 +36,9 @@ export default function Index() {
 
   return (
     <>
-      <Meta property="og:title" content={data()?.name} />
+      <Show when={data()?.name}>
+        <Meta property="og:title" content={data()?.name} />
+      </Show>
       <main class="h-screen w-full flex flex-col items-center">
         <div>
           <div class="flex p-5 flex-col lg:flex-row border bg-background mt-10 rounded-md">
