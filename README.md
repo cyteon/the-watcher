@@ -3,7 +3,7 @@
 
 Default dashboard credentials:
 - Username: `admin`
-- Password: `admin`
+- Password: `admin` \
 You can access the dashboard at `/dash`. \
 Change the default credentials immediately
 
