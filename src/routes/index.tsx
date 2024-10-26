@@ -9,6 +9,12 @@ export default function Index() {
   const [visibleHeartbeats, setVisibleHeartbeats] = createSignal(50);
   const [infoLabels, setInfoLabels] = createSignal({});
 
+  const timeString = (time) => {
+    return new Date(
+      new Date(time).getTime() - new Date(time).getTimezoneOffset() * 60000,
+    ).toLocaleString();
+  };
+
   onMount(() => {
     const updateScreenSize = () => {
       if (window.innerWidth >= 1400) {
@@ -163,7 +169,7 @@ export default function Index() {
                               infoLabels()[monitor.id.toString()].status == "up"
                             }
                           >
-                            <p class="text-sm mt-1 text-green-400">{`${infoLabels()[monitor.id.toString()].time} - ${infoLabels()[monitor.id.toString()].ping}ms`}</p>
+                            <p class="text-sm mt-1 text-green-400">{`${timeString(infoLabels()[monitor.id.toString()].time)} - ${infoLabels()[monitor.id.toString()].ping}ms`}</p>
                           </Show>
                           <Show
                             when={
@@ -171,7 +177,7 @@ export default function Index() {
                               "degraded"
                             }
                           >
-                            <p class="text-sm mt-1 text-yellow-200">{`${infoLabels()[monitor.id.toString()].time} - ${infoLabels()[monitor.id.toString()].ping}ms`}</p>
+                            <p class="text-sm mt-1 text-yellow-200">{`${timeString(infoLabels()[monitor.id.toString()].time)} - ${infoLabels()[monitor.id.toString()].ping}ms`}</p>
                           </Show>
                           <Show
                             when={
@@ -179,7 +185,7 @@ export default function Index() {
                               "down"
                             }
                           >
-                            <p class="text-sm mt-1 text-red-400">{`${infoLabels()[monitor.id.toString()].time} -
+                            <p class="text-sm mt-1 text-red-400">{`${timeString(infoLabels()[monitor.id.toString()].time)} -
                             ${infoLabels()[monitor.id.toString()].code != 0 ? "Status: " + infoLabels()[monitor.id.toString()].code : "Down"}`}</p>
                           </Show>
                           <Show
@@ -188,7 +194,7 @@ export default function Index() {
                               "paused"
                             }
                           >
-                            <p class="text-sm mt-1 text-gray-400">{`${infoLabels()[monitor.id.toString()].time} - Paused`}</p>
+                            <p class="text-sm mt-1 text-gray-400">{`${timeString(infoLabels()[monitor.id.toString()].time)} - Paused`}</p>
                           </Show>
                         </Show>
                       </div>

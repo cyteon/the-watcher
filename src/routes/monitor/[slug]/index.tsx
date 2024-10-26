@@ -10,6 +10,12 @@ export default function Index() {
   const [data, setData] = createSignal({ heartbeats: [] });
   const [infoLabel, setInfoLabel] = createSignal("");
 
+  const timeString = (time) => {
+    return new Date(
+      new Date(time).getTime() - new Date(time).getTimezoneOffset() * 60000,
+    ).toLocaleString();
+  };
+
   onMount(async () => {
     const updateScreenSize = () => {
       if (window.innerWidth >= 1400) {
@@ -106,17 +112,17 @@ export default function Index() {
               <div class="min-h-[25px]">
                 <Show when={infoLabel()}>
                   <Show when={infoLabel().status == "up"}>
-                    <p class="text-sm mt-1 text-green-400">{`${infoLabel().time} - ${infoLabel().ping}ms`}</p>
+                    <p class="text-sm mt-1 text-green-400">{`${timeString(infoLabel().time)} - ${infoLabel().ping}ms`}</p>
                   </Show>
                   <Show when={infoLabel().status == "degraded"}>
-                    <p class="text-sm mt-1 text-yellow-200">{`${infoLabel().time} - ${infoLabel().ping}ms`}</p>
+                    <p class="text-sm mt-1 text-yellow-200">{`${timeString(infoLabel().time)} - ${infoLabel().ping}ms`}</p>
                   </Show>
                   <Show when={infoLabel().status == "down"}>
-                    <p class="text-sm mt-1 text-red-400">{`${infoLabel().time} -
+                    <p class="text-sm mt-1 text-red-400">{`${timeString(infoLabel().time)} -
                   ${infoLabel().code != 0 ? "Status: " + infoLabel().code : "Down"}`}</p>
                   </Show>
                   <Show when={infoLabel().status == "paused"}>
-                    <p class="text-sm mt-1 text-gray-400">{`${infoLabel().time} - Paused`}</p>
+                    <p class="text-sm mt-1 text-gray-400">{`${timeString(infoLabel().time)} - Paused`}</p>
                   </Show>
                 </Show>
               </div>
