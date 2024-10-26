@@ -13,3 +13,30 @@ Supported Protocols:
 - Host Ping
 - TCP
 - MongoDB
+## Running the monitor
+
+
+Copy `config.yaml.example` to `config.yaml` and modify it to your liking.
+
+Install packages
+
+```bash
+  npm i
+```
+
+Run the Monitor (dev)
+
+```bash
+  node dev.js
+```
+
+Run the Monitor (production)
+
+```bash
+  node prod.js
+```
+
+To specify a port for it to run on do
+```bash
+  PORT=1234 node dev.js # or prod.js
+```
