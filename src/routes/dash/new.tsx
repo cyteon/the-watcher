@@ -24,21 +24,19 @@ import {
 
 export default function New() {
   const [name, setName] = createSignal("");
-  const [type, setType] = createSignal("Web");
+  const [type, setType] = createSignal("HTTP(s)");
   const [url, setUrl] = createSignal(""); // Also counts as host
   const [interval, setInterval] = createSignal(5);
   const [_public, setPublic] = createSignal(false);
   const [webhook, setWebhook] = createSignal("");
 
   const label = () => {
-    if (type() == "Web") {
+    if (type() == "HTTP(s)") {
       return "URL";
-    } else if (type() == "Ping") {
+    } else if (type() == "Ping" || type() == "TCP") {
       return "Host";
     } else if (type() == "MongoDB") {
       return "Connection String";
-    } else if (type() == "TCP") {
-      return "Host";
     }
   };
 
@@ -96,7 +94,7 @@ export default function New() {
         </TextFieldRoot>
 
         <Select
-          options={["Web", "Ping", "TCP", "MongoDB"]}
+          options={["HTTP(s)", "Ping", "TCP", "MongoDB"]}
           class="w-full max-w-xs mt-2"
           itemComponent={(props) => (
             <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>

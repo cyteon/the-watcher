@@ -67,9 +67,14 @@ export default async function start() {
           color: 0x4ade80,
           fields: [
             {
+              name: "Monitor Type",
+              value: `\`\`\`${monitor.type}\`\`\``,
+              inline: true,
+            },
+            {
               name: "Ping",
               value: `\`\`\`${ping}ms\`\`\``,
-              inline: true,
+              inline: false,
             },
           ],
         },
@@ -80,6 +85,13 @@ export default async function start() {
           title: `:x: Service ${monitor.name} is offline :x:`,
           timestamp: new Date().toISOString(),
           color: 0xf87171,
+          fields: [
+            {
+              name: "Monitor Type",
+              value: `\`\`\`${monitor.type}\`\`\``,
+              inline: false,
+            },
+          ],
         },
       ];
     }
@@ -125,7 +137,7 @@ export default async function start() {
 
         const start = Date.now();
 
-        if (monitor.type == "web") {
+        if (monitor.type == "HTTP(s)") {
           await fetch(monitor.url)
             .then(async (res) => {
               if (okStatues.includes(res.status)) {
