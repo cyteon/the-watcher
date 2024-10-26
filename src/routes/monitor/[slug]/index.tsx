@@ -128,9 +128,11 @@ export default function Index() {
               </div>
             </div>
           </div>
-          <div class="p-3 border h-64 mt-3 flex-grow bg-background rounded-md">
-            <PingChart heartbeats={data()?.heartbeats} />
-          </div>
+          <Show when={data()?.type != "Server-Side Agent"}>
+            <div class="p-3 border h-64 mt-3 flex-grow bg-background rounded-md">
+              <PingChart heartbeats={data()?.heartbeats} />
+            </div>
+          </Show>
         </div>
         <div class="mt-auto">
           <footer

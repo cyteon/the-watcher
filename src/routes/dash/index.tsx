@@ -401,14 +401,28 @@ export default function Dash() {
                       onChange={(e) => setNewName(e.target.value)}
                     />
                   </TextFieldRoot>
-                  <TextFieldRoot class="mb-4">
-                    <TextFieldLabel>Monitor URL</TextFieldLabel>
-                    <TextField
-                      class="w-full"
-                      value={currentMonitor()?.url}
-                      onChange={(e) => setNewURL(e.target.value)}
-                    />
-                  </TextFieldRoot>
+                  <Show when={currentMonitor()?.type == "Server-Side Agent"}>
+                    <p class="text-sm mb-[-10px]">Install Command</p>
+                    <code class="p-2 border rounded-md break-all">
+                      curl -OL http://{window.location.host}
+                      /agent_installer.sh && sudo bash agent_installer.sh --key=
+                      {currentMonitor()?.agent?.token} --url=
+                      {window.location.protocol +
+                        "//" +
+                        window.location.host}{" "}
+                      --interval={currentMonitor()?.interval}
+                    </code>
+                  </Show>
+                  <Show when={currentMonitor()?.type != "Server-Side Agent"}>
+                    <TextFieldRoot class="mb-4">
+                      <TextFieldLabel>Monitor URL</TextFieldLabel>
+                      <TextField
+                        class="w-full"
+                        value={currentMonitor()?.url}
+                        onChange={(e) => setNewURL(e.target.value)}
+                      />
+                    </TextFieldRoot>
+                  </Show>
                   <TextFieldRoot class="mb-4">
                     <TextFieldLabel>Monitor Interval</TextFieldLabel>
                     <TextField
@@ -526,8 +540,21 @@ export default function Dash() {
               </div>
               <div class="flex mt-1">
                 <Show when={currentPing()}>
-                  <Show when={currentPing()?.status == "up"}>
+                  <Show
+                    when={
+                      currentPing()?.status == "up" &&
+                      currentMonitor()?.type != "Server-Side Agent"
+                    }
+                  >
                     <p class="text-sm text-green-400">{`${currentPing()?.time} - Status: ${currentPing()?.code} - ${currentPing()?.ping}ms`}</p>
+                  </Show>
+                  <Show
+                    when={
+                      currentPing()?.status == "up" &&
+                      currentMonitor()?.type == "Server-Side Agent"
+                    }
+                  >
+                    <p class="text-sm text-green-400">{`${currentPing()?.time}`}</p>
                   </Show>
                   <Show when={currentPing()?.status == "degraded"}>
                     <p class="text-sm text-yellow-200">{`${currentPing()?.time} - Status: ${currentPing()?.code} - ${currentPing()?.ping}ms`}</p>
@@ -544,9 +571,11 @@ export default function Dash() {
               </div>
             </div>
           </div>
-          <div class="mt-3 p-3 border rounded-md w-full h-64">
-            <PingChart heartbeats={currentMonitor()?.heartbeats} />
-          </div>
+          <Show when={currentMonitor()?.type != "Server-Side Agent"}>
+            <div class="mt-3 p-3 border rounded-md w-full h-64">
+              <PingChart heartbeats={currentMonitor()?.heartbeats} />
+            </div>
+          </Show>
         </div>
       </Show>
     </main>

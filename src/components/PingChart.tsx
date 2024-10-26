@@ -1,6 +1,5 @@
 import { createChart } from "lightweight-charts";
 import { createEffect, onMount } from "solid-js";
-import h from "solid-js/h";
 
 export default function PingChart(props: { heartbeats: any[] }) {
   function updateChart() {
