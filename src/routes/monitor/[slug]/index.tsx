@@ -120,6 +120,12 @@ export default function Index() {
           <PingChart heartbeats={data()?.heartbeats} />
         </div>
       </div>
+      <div class="mt-auto">
+        <footer
+          class="mt-6 mb-2 text-center text-muted-foreground"
+          innerHTML={data()?.other?.footer}
+        ></footer>
+      </div>
     </main>
   );
 }
