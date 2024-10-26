@@ -38,6 +38,7 @@ export default function Index() {
     <>
       <Show when={data()?.name}>
         <Meta property="og:title" content={data()?.name} />
+        <Meta property="twitter:title" content={data().name} />
       </Show>
       <main class="h-screen w-full flex flex-col items-center">
         <div>

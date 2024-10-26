@@ -41,6 +41,8 @@ export default function Index() {
       <Show when={data()?.title}>
         <Meta property="og:title" content={data().title} />
         <Meta property="og:description" content={data().description} />
+        <Meta property="twitter:title" content={data().title} />
+        <Meta property="twitter:description" content={data().description} />
       </Show>
       <main class="h-screen w-full flex flex-col items-center">
         <div class="mt-10 inline-block">
