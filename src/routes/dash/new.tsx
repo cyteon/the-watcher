@@ -138,11 +138,8 @@ export default function New() {
           />
         </TextFieldRoot>
 
-        <Checkbox class="flex items-center my-4">
-          <CheckboxControl
-            class="hover:cursor-pointer"
-            onChange={(e) => setPublic(e.target.checked)}
-          />
+        <Checkbox class="flex items-center my-4" onChange={(e) => setPublic(e)}>
+          <CheckboxControl class="hover:cursor-pointer" />
           <CheckboxLabel class="text-sm ml-1 mt-1 font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
             Make monitor public
           </CheckboxLabel>
