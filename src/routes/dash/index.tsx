@@ -441,7 +441,17 @@ export default function Dash() {
 
             <h1 class="text-3xl">{currentMonitor()?.name}</h1>
           </div>
-          <a href={currentMonitor()?.url}>{currentMonitor()?.url}</a>
+          <Show when={currentMonitor()?.type != "MongoDB"}>
+            <a href={currentMonitor()?.url} target="_blank">
+              {currentMonitor()?.url}
+            </a>
+          </Show>
+
+          <Show when={currentMonitor()?.type == "MongoDB"}>
+            <a href={currentMonitor()?.url} target="_blank">
+              [redacted connection string]
+            </a>
+          </Show>
           <div class="my-3 flex">
             <Button class="mr-1" onClick={() => togglePaused()}>
               <span class="mt-1 text-lg">
@@ -640,7 +650,7 @@ export default function Dash() {
           </div>
           <Show when={currentMonitor()?.type != "Server-Side Agent"}>
             <div class="mt-3 p-3 border rounded-md w-full h-64">
-              <Chart data={currentChartData()} suffix="ms" />
+              <Chart data={currentChartData()} suffix="ms" id="pingChart" />
             </div>
           </Show>
 
@@ -689,7 +699,11 @@ export default function Dash() {
                 <div class="flex flex-col h-64">
                   <h1 class="text-lg mb-2">RAM Usage</h1>
                   <div class="flex-1">
-                    <Chart data={currentRamUsage()} suffix="gb" />
+                    <Chart
+                      data={currentRamUsage()}
+                      suffix="gb"
+                      id="ramUsageChart"
+                    />
                   </div>
                 </div>
               </div>
@@ -697,7 +711,11 @@ export default function Dash() {
                 <div class="flex flex-col h-64">
                   <h1 class="text-lg mb-2">CPU Usage</h1>
                   <div class="flex-1">
-                    <Chart data={currentCpuUsage()} suffix="%" />
+                    <Chart
+                      data={currentCpuUsage()}
+                      suffix="%"
+                      id="cpuUsageChart"
+                    />
                   </div>
                 </div>
               </div>
@@ -705,7 +723,11 @@ export default function Dash() {
                 <div class="flex flex-col h-64">
                   <h1 class="text-lg mb-2">Disk Usage</h1>
                   <div class="flex-1">
-                    <Chart data={currentDiskUsage()} suffix="gb" />
+                    <Chart
+                      data={currentDiskUsage()}
+                      suffix="gb"
+                      id="diskUsageChart"
+                    />
                   </div>
                 </div>
               </div>
@@ -713,7 +735,11 @@ export default function Dash() {
                 <div class="flex flex-col h-64">
                   <h1 class="text-lg mb-2">Load Avg.</h1>
                   <div class="flex-1">
-                    <Chart data={currentLoadAvg()} suffix="%" />
+                    <Chart
+                      data={currentLoadAvg()}
+                      suffix="%"
+                      id="loadAvgChart"
+                    />
                   </div>
                 </div>
               </div>

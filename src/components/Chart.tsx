@@ -40,8 +40,6 @@ export default function Chart(props: {
         lineType: LineType.Curved,
       });
 
-      // sort data by time
-
       const sorted = props.data.sort((a, b) => {
         return a.time - b.time;
       });
