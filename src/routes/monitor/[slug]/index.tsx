@@ -152,7 +152,7 @@ export default function Index() {
                 <h1 class="font-bold text-lg mt-1">{data()?.name}</h1>
               </div>
             </div>
-            <div class="ml-auto flex flex-col min-h-4">
+            <div class="ml-auto pl-5 flex flex-col min-h-4">
               <div class="self-end">
                 <Show when={data()?.avg_ping}>
                   <Badge class="self-end mr-2 w-fit rounded-xl">

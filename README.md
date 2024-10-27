@@ -16,6 +16,12 @@ Supported Protocols:
 - MongoDB
 ## Running the monitor
 
+### With docker:
+```bash
+  docker compose up -d # or docker-compose up -d
+```
+
+### Manually:
 
 Copy `config.yaml.example` to `config.yaml` and modify it to your liking.
 
