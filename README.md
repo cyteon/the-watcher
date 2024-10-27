@@ -8,7 +8,7 @@ You can access the dashboard at `/dash`. \
 Change the default credentials immediately
 
 ## Features
-Supported Protocols:
+Supported Methods:
 - HTTP(s)
 - Host Ping
 - TCP
