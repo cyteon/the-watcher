@@ -68,7 +68,7 @@ export default function Index() {
               new Date(time).getTime() -
                 new Date(time).getTimezoneOffset() * 60000 * 2,
             ).getTime() / 1000,
-          value: heartbeat.ping,
+          value: heartbeat.ping || 0,
         });
 
         lastTimes.add(time);
