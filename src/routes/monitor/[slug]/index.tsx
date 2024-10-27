@@ -115,6 +115,24 @@ export default function Index() {
         <Meta property="twitter:title" content={data().name} />
       </Show>
       <main class="h-screen w-full flex flex-col items-center">
+        <a
+          href="/"
+          class="absolute left-0 top-0 m-3 fill-black bg-foreground p-1 rounded-full"
+        >
+          <svg
+            height="32px"
+            id="Layer_1"
+            style="enable-background:new 0 0 512 512;"
+            version="1.1"
+            viewBox="0 0 512 512"
+            width="32px"
+            xml:space="preserve"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+          >
+            <polygon points="352,128.4 319.7,96 160,256 160,256 160,256 319.7,416 352,383.6 224.7,256 " />
+          </svg>
+        </a>
         <div>
           <div class="flex p-5 flex-col lg:flex-row border bg-background mt-10 rounded-md">
             <div class="my-auto">

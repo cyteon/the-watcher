@@ -41,6 +41,7 @@ if which crontab > /dev/null 2>&1; then
         echo "Downloading script"
 
         wget "$url/agent.sh" -O /usr/local/bin/watcher_agent.sh
+        chmod +x /usr/local/bin/watcher_agent.sh
 
         echo "Setting up script"
 
