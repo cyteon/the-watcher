@@ -662,7 +662,7 @@ export default function Dash() {
               <div class="border border-border p-5 text-lg rounded-lg mr-3 mt-1">
                 <p>CPU Usage</p>
                 <p>
-                  {currentMonitor()?.heartbeats[0]?.cpu_usage.toFixed(2)}% of{" "}
+                  {currentMonitor()?.heartbeats[0]?.cpu_usage?.toFixed(2)}% of{" "}
                   {currentMonitor()?.heartbeats[0]?.cpu_cores} cores
                 </p>
               </div>
