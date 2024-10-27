@@ -45,6 +45,7 @@ export async function GET() {
       avg_ping: avgPing.avg,
       uptime: percentage,
       heartbeats: pings,
+      type: monitors[i].type,
     });
   }
 

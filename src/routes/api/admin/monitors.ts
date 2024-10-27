@@ -32,10 +32,21 @@ export async function POST({ request }) {
 
   const { name, url, interval, webhook, _public, type } = await request.json();
 
-  await db.run(
-    "INSERT INTO Monitors (name, url, interval, webhook, public, type) VALUES (?, ?, ?, ?, ?, ?)",
+  const res = await db.run(
+    "INSERT INTO Monitors (name, url, interval, webhook, public, type) VALUES (?, ?, ?, ?, ?, ?) RETURNING id",
     [name, url, interval, webhook, _public, type],
   );
+
+  if (type == "Server-Side Agent") {
+    const bytes = new Uint8Array(32);
+    crypto.getRandomValues(bytes);
+    const token = btoa(String.fromCharCode(...bytes)).replace("/", "_");
+
+    await db.run("INSERT INTO Agents (id, token) VALUES (?, ?)", [
+      res.lastID,
+      token,
+    ]);
+  }
 
   return new Response("Monitor added", { status: 200 });
 }
@@ -73,6 +84,7 @@ export async function DELETE({ request }) {
 
   await db.run("DELETE FROM Monitors WHERE id = ?", [id]);
   await db.run("DELETE FROM Pings WHERE id = ?", [id]);
+  await db.run("DELETE FROM Agents WHERE id = ?", [id]);
 
   return new Response("Monitor deleted", { status: 200 });
 }

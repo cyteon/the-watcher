@@ -52,6 +52,7 @@ export async function GET({ params }) {
       avg_ping: avgPing.avg,
       uptime: percentage,
       heartbeats: pings,
+      type: monitor.type,
       other: {
         title: data.title,
         description: data.description,

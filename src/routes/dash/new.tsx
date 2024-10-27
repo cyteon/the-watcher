@@ -37,6 +37,8 @@ export default function New() {
       return "Host";
     } else if (type() == "MongoDB") {
       return "Connection String";
+    } else {
+      return "URL";
     }
   };
 
@@ -94,7 +96,7 @@ export default function New() {
         </TextFieldRoot>
 
         <Select
-          options={["HTTP(s)", "Ping", "TCP", "MongoDB"]}
+          options={["HTTP(s)", "Ping", "TCP", "MongoDB", "Server-Side Agent"]}
           class="w-full max-w-xs mt-2"
           itemComponent={(props) => (
             <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
@@ -111,20 +113,22 @@ export default function New() {
           <SelectContent />
         </Select>
 
-        <TextFieldRoot class="w-full max-w-xs mt-2">
-          <TextFieldLabel>{label()}</TextFieldLabel>
-          <TextField
-            type="url"
-            placeholder={label()}
-            onInput={(e) => setUrl(e.target.value)}
-          />
-        </TextFieldRoot>
+        <Show when={type() != "Server-Side Agent"}>
+          <TextFieldRoot class="w-full max-w-xs mt-2">
+            <TextFieldLabel>{label()}</TextFieldLabel>
+            <TextField
+              type="url"
+              placeholder={label()}
+              onInput={(e) => setUrl(e.target.value)}
+            />
+          </TextFieldRoot>
+        </Show>
 
         <TextFieldRoot class="w-full max-w-xs mt-2">
-          <TextFieldLabel>Interval</TextFieldLabel>
+          <TextFieldLabel>Check Interval</TextFieldLabel>
           <TextField
             type="number"
-            placeholder="Interval"
+            placeholder="Check Interval"
             onInput={(e) => setInterval(e.target.value)}
           />
         </TextFieldRoot>
