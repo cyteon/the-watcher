@@ -1,0 +1,13 @@
+services:
+  the-watcher:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: the-watcher
+    restart: always
+    ports:
+      - "3200:3000"
+    environment:
+      - NODE_ENV=development # KEEP AS DEVELOPMENT OR IT GET ANGY
+    volumes:
+      - ./data:/app
