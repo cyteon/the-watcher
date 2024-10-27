@@ -1,7 +1,7 @@
 import { Meta } from "@solidjs/meta";
 import { useParams } from "@solidjs/router";
 import { createSignal, onMount, Show } from "solid-js";
-import PingChart from "~/components/PingChart";
+import Chart from "~/components/Chart";
 import { Badge } from "~/components/ui/badge";
 
 export default function Index() {
@@ -9,6 +9,7 @@ export default function Index() {
   const [visibleHeartbeats, setVisibleHeartbeats] = createSignal(50);
   const [data, setData] = createSignal({ heartbeats: [] });
   const [infoLabel, setInfoLabel] = createSignal("");
+  const [chartData, setChartData] = createSignal([]);
 
   const timeString = (time) => {
     return new Date(
@@ -35,6 +36,32 @@ export default function Index() {
     if (res.ok) {
       const data = await res.json();
       setData(data);
+
+      setChartData([]);
+
+      var heartBeats = [];
+      var lastTimes = new Set();
+
+      data.heartbeats.toReversed().map((heartbeat) => {
+        const time = new Date(heartbeat.time).getTime();
+
+        if (lastTimes.has(time)) {
+          return;
+        }
+
+        heartBeats.push({
+          time:
+            new Date(
+              new Date(time).getTime() -
+                new Date(time).getTimezoneOffset() * 60000 * 2,
+            ).getTime() / 1000,
+          value: heartbeat.ping,
+        });
+
+        lastTimes.add(time);
+      });
+
+      setChartData(heartBeats);
     } else {
       window.location.href = "/";
     }
@@ -130,7 +157,7 @@ export default function Index() {
           </div>
           <Show when={data()?.type != "Server-Side Agent"}>
             <div class="p-3 border h-64 mt-3 flex-grow bg-background rounded-md">
-              <PingChart heartbeats={data()?.heartbeats} />
+              <Chart data={chartData()} suffix="ms" />
             </div>
           </Show>
         </div>

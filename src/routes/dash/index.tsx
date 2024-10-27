@@ -1,8 +1,7 @@
-import { createSignal, onMount } from "solid-js";
+import { createEffect, createSignal, onMount } from "solid-js";
 import { getCookie, removeCookie } from "typescript-cookie";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { createChart } from "lightweight-charts";
 import {
   TextField,
   TextFieldRoot,
@@ -26,7 +25,7 @@ import {
   CheckboxControl,
   CheckboxLabel,
 } from "~/components/ui/checkbox";
-import PingChart from "~/components/PingChart";
+import Chart from "~/components/Chart";
 
 export default function Dash() {
   const [data, setData] = createSignal({});
@@ -35,6 +34,7 @@ export default function Dash() {
   const [visibleHeartbeatsBig, setVisibleHeartbeatsBig] = createSignal(50);
   const [currentMonitor, setCurrentMonitor] = createSignal(null);
   const [currentPing, setCurrentPing] = createSignal(null);
+  const [currentChartData, setCurrentChartData] = createSignal([]);
 
   const [newName, setNewName] = createSignal("");
   const [newURL, setNewURL] = createSignal("");
@@ -45,6 +45,23 @@ export default function Dash() {
   const [username, setUsername] = createSignal("");
   const [newPassword, setNewPassword] = createSignal("");
   const [oldPassword, setOldPassword] = createSignal("");
+
+  createEffect(() => {
+    if (currentMonitor()) {
+      setCurrentChartData(
+        currentMonitor()!
+          .heartbeats!.toReversed()
+          .map((ping) => ({
+            value: ping.ping,
+            time:
+              new Date(
+                new Date(ping.time).getTime() -
+                  new Date(ping.time).getTimezoneOffset() * 60000 * 2,
+              ).getTime() / 1000,
+          })),
+      );
+    }
+  });
 
   onMount(() => {
     const updateScreenSize = () => {
@@ -573,7 +590,7 @@ export default function Dash() {
           </div>
           <Show when={currentMonitor()?.type != "Server-Side Agent"}>
             <div class="mt-3 p-3 border rounded-md w-full h-64">
-              <PingChart heartbeats={currentMonitor()?.heartbeats} />
+              <Chart data={currentChartData()} suffix="ms" />
             </div>
           </Show>
         </div>

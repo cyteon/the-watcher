@@ -1,7 +1,7 @@
 import { createChart } from "lightweight-charts";
 import { createEffect, onMount } from "solid-js";
 
-export default function PingChart(props: { heartbeats: any[] }) {
+export default function Chart(props: { data: any[]; suffix: string }) {
   function updateChart() {
     const div = document.getElementById("chart")!;
     div.innerHTML = "";
@@ -14,7 +14,7 @@ export default function PingChart(props: { heartbeats: any[] }) {
       },
       localization: {
         priceFormatter: (price) => {
-          return `${price.toFixed(2)}ms`;
+          return `${price.toFixed(2)}${props.suffix}`;
         },
       },
       grid: {
@@ -32,25 +32,7 @@ export default function PingChart(props: { heartbeats: any[] }) {
 
     const series = chart.addAreaSeries();
 
-    var heartBeats = [];
-    var lastTimes = new Set();
-
-    props.heartbeats.toReversed().map((heartbeat) => {
-      const time = new Date(heartbeat.time).getTime() / 1000;
-
-      if (lastTimes.has(time)) {
-        return;
-      }
-
-      heartBeats.push({
-        time: time,
-        value: heartbeat.ping,
-      });
-
-      lastTimes.add(time);
-    });
-
-    series.setData(heartBeats);
+    series.setData(props.data);
 
     chart.timeScale().fitContent();
     console.log("chart", chart);
