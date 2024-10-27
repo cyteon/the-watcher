@@ -1,11 +1,13 @@
 import { createChart, LineType } from "lightweight-charts";
-import { createEffect, onMount } from "solid-js";
+import { createEffect, onMount, createSignal } from "solid-js";
 
-export default function Chart(props: { data: any[]; suffix: string }) {
-  const id = "chart-" + Math.random().toString(36).substring(7);
-
+export default function Chart(props: {
+  data: any[];
+  suffix: string;
+  id: string;
+}) {
   function updateChart() {
-    const div = document.getElementById(id)!;
+    const div = document.getElementById(props.id)!;
 
     if (div) {
       div.innerHTML = "";
@@ -51,12 +53,9 @@ export default function Chart(props: { data: any[]; suffix: string }) {
   }
 
   createEffect(() => {
-    const div = document.getElementById(id)!;
-    if (div) {
-      updateChart();
-    }
+    const div = document.getElementById(props.id)!;
 
-    if (props.data) {
+    if (div) {
       updateChart();
     }
   });
@@ -65,5 +64,5 @@ export default function Chart(props: { data: any[]; suffix: string }) {
     updateChart();
   });
 
-  return <div id={id} class="size-full"></div>;
+  return <div id={props.id} class="size-full"></div>;
 }

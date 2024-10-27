@@ -218,7 +218,7 @@ export default function Index() {
           </div>
           <Show when={data()?.type != "Server-Side Agent"}>
             <div class="p-3 border h-64 mt-3 flex-grow bg-background rounded-md">
-              <Chart data={chartData()} suffix="ms" />
+              <Chart data={chartData()} suffix="ms" id="pingChart" />
             </div>
           </Show>
 
@@ -261,7 +261,7 @@ export default function Index() {
                 <div class="flex flex-col h-64">
                   <h1 class="text-lg mb-2">RAM Usage</h1>
                   <div class="flex-1">
-                    <Chart data={ramUsage()} suffix="gb" />
+                    <Chart data={ramUsage()} suffix="gb" id="ramChart" />
                   </div>
                 </div>
               </div>
@@ -269,7 +269,7 @@ export default function Index() {
                 <div class="flex flex-col h-64">
                   <h1 class="text-lg mb-2">CPU Usage</h1>
                   <div class="flex-1">
-                    <Chart data={cpuUsage()} suffix="%" />
+                    <Chart data={cpuUsage()} suffix="%" id="cpuChart" />
                   </div>
                 </div>
               </div>
@@ -277,7 +277,7 @@ export default function Index() {
                 <div class="flex flex-col h-64">
                   <h1 class="text-lg mb-2">Disk Usage</h1>
                   <div class="flex-1">
-                    <Chart data={diskUsage()} suffix="gb" />
+                    <Chart data={diskUsage()} suffix="gb" id="diskChart" />
                   </div>
                 </div>
               </div>
@@ -285,7 +285,7 @@ export default function Index() {
                 <div class="flex flex-col h-64">
                   <h1 class="text-lg mb-2">Load Avg.</h1>
                   <div class="flex-1">
-                    <Chart data={loadAvg()} suffix="%" />
+                    <Chart data={loadAvg()} suffix="%" id="loadAvgChart" />
                   </div>
                 </div>
               </div>
