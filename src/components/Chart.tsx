@@ -40,12 +40,13 @@ export default function Chart(props: {
         lineType: LineType.Curved,
       });
 
-      if (props.data2) {
-        const series2 = chart.addLineSeries();
-        series2.setData(props.data2);
-      }
+      // sort data by time
 
-      series.setData(props.data);
+      const sorted = props.data.sort((a, b) => {
+        return a.time - b.time;
+      });
+
+      series.setData(sorted);
 
       chart.timeScale().fitContent();
       console.log("chart", chart);
