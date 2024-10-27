@@ -12,6 +12,7 @@ Supported Protocols:
 - HTTP(s)
 - Host Ping
 - TCP
+- Server-Side Agent
 - MongoDB
 ## Running the monitor
 

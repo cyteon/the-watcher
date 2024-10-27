@@ -134,16 +134,18 @@ export default function Index() {
                 <h1 class="font-bold text-lg mt-1">{data()?.name}</h1>
               </div>
             </div>
-            <div class="ml-10 flex flex-col min-h-4">
+            <div class="ml-auto flex flex-col min-h-4 ">
               <div class="self-end">
                 <Show when={data()?.avg_ping}>
                   <Badge class="self-end mr-2 w-fit rounded-xl">
                     Avg: {data()?.avg_ping?.toFixed(0)}ms
                   </Badge>
                 </Show>
-                <Badge class="self-end mr-2 w-fit rounded-xl">
-                  {data()?.heartbeats[0]?.ping}ms
-                </Badge>
+                <Show when={data()?.heartbeats[0]?.ping}>
+                  <Badge class="self-end mr-2 w-fit rounded-xl">
+                    {data()?.heartbeats[0]?.ping}ms
+                  </Badge>
+                </Show>
                 <Badge class="self-end w-fit rounded-xl">
                   {data()?.uptime ? data()?.uptime?.toFixed(1) + "%" : "?"}
                 </Badge>
@@ -216,7 +218,7 @@ export default function Index() {
               <div class="stat">
                 <p>CPU Usage</p>
                 <p>
-                  {data()?.heartbeats[0]?.cpu_usage.toFixed(2)}% of{" "}
+                  {data()?.heartbeats[0]?.cpu_usage?.toFixed(2)}% of{" "}
                   {data()?.heartbeats[0]?.cpu_cores} cores
                 </p>
               </div>
