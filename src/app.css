@@ -65,3 +65,7 @@ body {
     color: transparent;
     background-image: linear-gradient(90deg, #89b4fa, #f9e2af);
 }
+
+.stat {
+    @apply border border-border p-5 text-lg rounded-lg mr-2 mt-1 bg-background;
+}

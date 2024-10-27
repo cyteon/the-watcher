@@ -10,7 +10,6 @@ import {
 
 import {
   AlertDialog,
-  AlertDialogClose,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -27,6 +26,14 @@ import {
 } from "~/components/ui/checkbox";
 import Chart from "~/components/Chart";
 
+function getTime(time: string) {
+  return (
+    new Date(
+      new Date(time).getTime() - new Date(time).getTimezoneOffset() * 60000 * 2,
+    ).getTime() / 1000
+  );
+}
+
 export default function Dash() {
   const [data, setData] = createSignal({});
 
@@ -35,6 +42,11 @@ export default function Dash() {
   const [currentMonitor, setCurrentMonitor] = createSignal(null);
   const [currentPing, setCurrentPing] = createSignal(null);
   const [currentChartData, setCurrentChartData] = createSignal([]);
+
+  const [currentRamUsage, setCurrentRamUsage] = createSignal([]);
+  const [currentCpuUsage, setCurrentCpuUsage] = createSignal([]);
+  const [currentDiskUsage, setCurrentDiskUsage] = createSignal([]);
+  const [currentLoadAvg, setCurrentLoadAvg] = createSignal([]);
 
   const [newName, setNewName] = createSignal("");
   const [newURL, setNewURL] = createSignal("");
@@ -60,6 +72,44 @@ export default function Dash() {
               ).getTime() / 1000,
           })),
       );
+
+      if (currentMonitor()!.type == "Server-Side Agent") {
+        setCurrentRamUsage(
+          currentMonitor()!
+            .heartbeats!.toReversed()
+            .map((ping) => ({
+              value: ping.ram_usage / 1000000000 || 0,
+              time: getTime(ping.time),
+            })),
+        );
+
+        setCurrentCpuUsage(
+          currentMonitor()!
+            .heartbeats!.toReversed()
+            .map((ping) => ({
+              value: ping.cpu_usage || 0,
+              time: getTime(ping.time),
+            })),
+        );
+
+        setCurrentDiskUsage(
+          currentMonitor()!
+            .heartbeats!.toReversed()
+            .map((ping) => ({
+              value: ping.disk_usage / 1000000000 || 0,
+              time: getTime(ping.time),
+            })),
+        );
+
+        setCurrentLoadAvg(
+          currentMonitor()!
+            .heartbeats!.toReversed()
+            .map((ping) => ({
+              value: ping.load_avg || 0,
+              time: getTime(ping.time),
+            })),
+        );
+      }
     }
   });
 
@@ -344,8 +394,8 @@ export default function Dash() {
         </div>
       </div>
       <Show when={currentMonitor()}>
-        <div class="bg-background border-border w-full border-[1px] p-3 m-3 rounded-lg">
-          <div class="flex">
+        <div class="bg-background border-border w-full border-[1px] p-3 m-3 rounded-lg flex flex-col h-[calc(100vh-24px)]">
+          <div class="flex-none">
             <Show
               when={
                 currentMonitor()?.heartbeats[0]?.status == "up" &&
@@ -427,7 +477,7 @@ export default function Dash() {
                       {window.location.protocol +
                         "//" +
                         window.location.host}{" "}
-                      --interval={currentMonitor()?.interval}
+                      --interval={newInterval()}
                     </code>
                   </Show>
                   <Show when={currentMonitor()?.type != "Server-Side Agent"}>
@@ -591,6 +641,82 @@ export default function Dash() {
           <Show when={currentMonitor()?.type != "Server-Side Agent"}>
             <div class="mt-3 p-3 border rounded-md w-full h-64">
               <Chart data={currentChartData()} suffix="ms" />
+            </div>
+          </Show>
+
+          <Show when={currentMonitor()?.type == "Server-Side Agent"}>
+            <div class="flex mt-2 flex-wrap">
+              <div class="border border-border p-5 text-lg rounded-lg mr-3 mt-1">
+                <p>Ram Usage</p>
+                <p>
+                  {(
+                    currentMonitor()?.heartbeats[0]?.ram_usage / 1000000000
+                  ).toFixed(2)}
+                  GB /{" "}
+                  {(
+                    currentMonitor()?.heartbeats[0]?.ram_max / 1000000000
+                  ).toFixed(2)}
+                  GB
+                </p>
+              </div>
+              <div class="border border-border p-5 text-lg rounded-lg mr-3 mt-1">
+                <p>CPU Usage</p>
+                <p>
+                  {currentMonitor()?.heartbeats[0]?.cpu_usage.toFixed(2)}% of{" "}
+                  {currentMonitor()?.heartbeats[0]?.cpu_cores} cores
+                </p>
+              </div>
+              <div class="border border-border p-5 text-lg rounded-lg mr-3 mt-1">
+                <p>Disk Usage</p>
+                <p>
+                  {(
+                    currentMonitor()?.heartbeats[0]?.disk_usage / 1000000000
+                  ).toFixed(2)}
+                  GB /
+                  {(
+                    currentMonitor()?.heartbeats[0]?.disk_capacity / 1000000000
+                  ).toFixed(2)}
+                  GB
+                </p>
+              </div>
+              <div class="border border-border p-5 text-lg rounded-lg mt-1">
+                <p>Load Average</p>
+                <p>{currentMonitor()?.heartbeats[0]?.load_avg}%</p>
+              </div>
+            </div>
+            <div class="flex-1 overflow-y-auto mt-3">
+              <div class="p-3 border rounded-md w-full mb-3">
+                <div class="flex flex-col h-64">
+                  <h1 class="text-lg mb-2">RAM Usage</h1>
+                  <div class="flex-1">
+                    <Chart data={currentRamUsage()} suffix="gb" />
+                  </div>
+                </div>
+              </div>
+              <div class="p-3 border rounded-md w-full mb-3">
+                <div class="flex flex-col h-64">
+                  <h1 class="text-lg mb-2">CPU Usage</h1>
+                  <div class="flex-1">
+                    <Chart data={currentCpuUsage()} suffix="%" />
+                  </div>
+                </div>
+              </div>
+              <div class="p-3 border rounded-md w-full mb-3">
+                <div class="flex flex-col h-64">
+                  <h1 class="text-lg mb-2">Disk Usage</h1>
+                  <div class="flex-1">
+                    <Chart data={currentDiskUsage()} suffix="gb" />
+                  </div>
+                </div>
+              </div>
+              <div class="p-3 border rounded-md w-full">
+                <div class="flex flex-col h-64">
+                  <h1 class="text-lg mb-2">Load Avg.</h1>
+                  <div class="flex-1">
+                    <Chart data={currentLoadAvg()} suffix="%" />
+                  </div>
+                </div>
+              </div>
             </div>
           </Show>
         </div>

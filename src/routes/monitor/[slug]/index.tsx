@@ -4,12 +4,25 @@ import { createSignal, onMount, Show } from "solid-js";
 import Chart from "~/components/Chart";
 import { Badge } from "~/components/ui/badge";
 
+function getTime(time: string) {
+  return (
+    new Date(
+      new Date(time).getTime() - new Date(time).getTimezoneOffset() * 60000 * 2,
+    ).getTime() / 1000
+  );
+}
+
 export default function Index() {
   const { slug } = useParams();
   const [visibleHeartbeats, setVisibleHeartbeats] = createSignal(50);
   const [data, setData] = createSignal({ heartbeats: [] });
   const [infoLabel, setInfoLabel] = createSignal("");
   const [chartData, setChartData] = createSignal([]);
+
+  const [ramUsage, setRamUsage] = createSignal([]);
+  const [cpuUsage, setCpuUsage] = createSignal([]);
+  const [diskUsage, setDiskUsage] = createSignal([]);
+  const [loadAvg, setLoadAvg] = createSignal([]);
 
   const timeString = (time) => {
     return new Date(
@@ -62,6 +75,34 @@ export default function Index() {
       });
 
       setChartData(heartBeats);
+
+      setRamUsage(
+        data!.heartbeats!.toReversed().map((ping) => ({
+          value: ping.ram_usage / 1000000000 || 0,
+          time: getTime(ping.time),
+        })),
+      );
+
+      setCpuUsage(
+        data!.heartbeats!.toReversed().map((ping) => ({
+          value: ping.cpu_usage || 0,
+          time: getTime(ping.time),
+        })),
+      );
+
+      setDiskUsage(
+        data!.heartbeats!.toReversed().map((ping) => ({
+          value: ping.disk_usage / 1000000000 || 0,
+          time: getTime(ping.time),
+        })),
+      );
+
+      setLoadAvg(
+        data!.heartbeats!.toReversed().map((ping) => ({
+          value: ping.load_avg || 0,
+          time: getTime(ping.time),
+        })),
+      );
     } else {
       window.location.href = "/";
     }
@@ -158,6 +199,76 @@ export default function Index() {
           <Show when={data()?.type != "Server-Side Agent"}>
             <div class="p-3 border h-64 mt-3 flex-grow bg-background rounded-md">
               <Chart data={chartData()} suffix="ms" />
+            </div>
+          </Show>
+
+          <Show when={data()?.type == "Server-Side Agent"}>
+            <div class="flex mt-2 flex-wrap">
+              <div class="stat">
+                <p>Ram Usage</p>
+                <p>
+                  {(data()?.heartbeats[0]?.ram_usage / 1000000000).toFixed(2)}
+                  GB /{" "}
+                  {(data()?.heartbeats[0]?.ram_max / 1000000000).toFixed(2)}
+                  GB
+                </p>
+              </div>
+              <div class="stat">
+                <p>CPU Usage</p>
+                <p>
+                  {data()?.heartbeats[0]?.cpu_usage.toFixed(2)}% of{" "}
+                  {data()?.heartbeats[0]?.cpu_cores} cores
+                </p>
+              </div>
+              <div class="stat">
+                <p>Disk Usage</p>
+                <p>
+                  {(data()?.heartbeats[0]?.disk_usage / 1000000000).toFixed(2)}
+                  GB /
+                  {(data()?.heartbeats[0]?.disk_capacity / 1000000000).toFixed(
+                    2,
+                  )}
+                  GB
+                </p>
+              </div>
+              <div class="stat">
+                <p>Load Average</p>
+                <p>{data()?.heartbeats[0]?.load_avg}%</p>
+              </div>
+            </div>
+            <div class="flex-1 overflow-y-auto mt-3 bg-background">
+              <div class="p-3 border rounded-md w-full mb-3">
+                <div class="flex flex-col h-64">
+                  <h1 class="text-lg mb-2">RAM Usage</h1>
+                  <div class="flex-1">
+                    <Chart data={ramUsage()} suffix="gb" />
+                  </div>
+                </div>
+              </div>
+              <div class="p-3 border rounded-md w-full mb-3">
+                <div class="flex flex-col h-64">
+                  <h1 class="text-lg mb-2">CPU Usage</h1>
+                  <div class="flex-1">
+                    <Chart data={cpuUsage()} suffix="%" />
+                  </div>
+                </div>
+              </div>
+              <div class="p-3 border rounded-md w-full mb-3">
+                <div class="flex flex-col h-64">
+                  <h1 class="text-lg mb-2">Disk Usage</h1>
+                  <div class="flex-1">
+                    <Chart data={diskUsage()} suffix="gb" />
+                  </div>
+                </div>
+              </div>
+              <div class="p-3 border rounded-md w-full">
+                <div class="flex flex-col h-64">
+                  <h1 class="text-lg mb-2">Load Avg.</h1>
+                  <div class="flex-1">
+                    <Chart data={loadAvg()} suffix="%" />
+                  </div>
+                </div>
+              </div>
             </div>
           </Show>
         </div>
