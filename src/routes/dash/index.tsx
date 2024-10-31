@@ -441,9 +441,24 @@ export default function Dash() {
 
             <h1 class="text-3xl">{currentMonitor()?.name}</h1>
           </div>
-          <Show when={currentMonitor()?.type != "MongoDB"}>
+          <Show
+            when={
+              currentMonitor()?.type != "MongoDB" &&
+              currentMonitor()?.type != "Push to URL"
+            }
+          >
             <a href={currentMonitor()?.url} target="_blank">
               {currentMonitor()?.url}
+            </a>
+          </Show>
+
+          <Show when={currentMonitor()?.type == "Push to URL"}>
+            <a
+              href={`${window.location.protocol}//${window.location.host}/api/push/${currentMonitor()?.url}?status=up&ping=`}
+              target="_blank"
+            >
+              {window.location.protocol}//{window.location.host}
+              /api/push/{currentMonitor()?.url}?status=up&msg=OK&ping=
             </a>
           </Show>
 
@@ -490,7 +505,12 @@ export default function Dash() {
                       --interval={newInterval()}
                     </code>
                   </Show>
-                  <Show when={currentMonitor()?.type != "Server-Side Agent"}>
+                  <Show
+                    when={
+                      currentMonitor()?.type != "Server-Side Agent" &&
+                      currentMonitor()?.type != "Push to URL"
+                    }
+                  >
                     <TextFieldRoot class="mb-4">
                       <TextFieldLabel>Monitor URL</TextFieldLabel>
                       <TextField
@@ -620,7 +640,8 @@ export default function Dash() {
                   <Show
                     when={
                       currentPing()?.status == "up" &&
-                      currentMonitor()?.type != "Server-Side Agent"
+                      currentMonitor()?.type != "Server-Side Agent" &&
+                      currentMonitor()?.type != "Push to URL"
                     }
                   >
                     <p class="text-sm text-green-400">{`${currentPing()?.time} - Status: ${currentPing()?.code} - ${currentPing()?.ping}ms`}</p>
@@ -628,7 +649,8 @@ export default function Dash() {
                   <Show
                     when={
                       currentPing()?.status == "up" &&
-                      currentMonitor()?.type == "Server-Side Agent"
+                      (currentMonitor()?.type == "Server-Side Agent" ||
+                        currentMonitor()?.type == "Push to URL")
                     }
                   >
                     <p class="text-sm text-green-400">{`${currentPing()?.time}`}</p>

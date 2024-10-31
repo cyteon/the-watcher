@@ -30,7 +30,17 @@ export async function POST({ request }) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const { name, url, interval, webhook, _public, type } = await request.json();
+  var { name, url, interval, webhook, _public, type } = await request.json();
+
+  if (type == "Push to URL") {
+    const bytes = new Uint8Array(8);
+    crypto.getRandomValues(bytes);
+    const token = btoa(String.fromCharCode(...bytes))
+      .replace("/", "_")
+      .replace("=", "");
+
+    url = token; // This is id in /api/push/:id
+  }
 
   const res = await db.run(
     "INSERT INTO Monitors (name, url, interval, webhook, public, type) VALUES (?, ?, ?, ?, ?, ?) RETURNING id",
