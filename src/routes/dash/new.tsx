@@ -96,7 +96,14 @@ export default function New() {
         </TextFieldRoot>
 
         <Select
-          options={["HTTP(s)", "Ping", "TCP", "MongoDB", "Server-Side Agent"]}
+          options={[
+            "HTTP(s)",
+            "Ping",
+            "TCP",
+            "MongoDB",
+            "Server-Side Agent",
+            "Push to URL",
+          ]}
           class="w-full max-w-xs mt-2"
           itemComponent={(props) => (
             <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
@@ -113,7 +120,7 @@ export default function New() {
           <SelectContent />
         </Select>
 
-        <Show when={type() != "Server-Side Agent"}>
+        <Show when={type() != "Server-Side Agent" && type() != "Push to URL"}>
           <TextFieldRoot class="w-full max-w-xs mt-2">
             <TextFieldLabel>{label()}</TextFieldLabel>
             <TextField
