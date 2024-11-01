@@ -326,9 +326,7 @@ export default function Dash() {
             onClick={() => {
               setCurrentMonitor(monitor);
             }}
-            class={`${
-              index < visibleHeartbeatsSmall() ? "" : "hidden"
-            } flex items-center justify-between border-[1px] w-full border-border p-3 mb-1 rounded-md `}
+            class="flex items-center justify-between border-[1px] w-full border-border p-3 mb-1 rounded-md "
           >
             <div>
               <h2 class="text-xl font-bold">{monitor.name}</h2>
@@ -737,7 +735,7 @@ export default function Dash() {
                 <p>{currentMonitor()?.heartbeats[0]?.load_avg}%</p>
               </div>
             </div>
-            <div class="flex-1 overflow-y-auto mt-3 grid grid-cols-1 sm:grid-cols-2 gap-4 ">
+            <div class="flex-1 overflow-y-auto mt-3 grid grid-cols-1 md:grid-cols-2 gap-4 ">
               <div class="p-3 border rounded-md w-full mb-3">
                 <div class="flex flex-col h-64">
                   <h1 class="text-lg mb-2">RAM Usage</h1>
@@ -774,7 +772,7 @@ export default function Dash() {
                   </div>
                 </div>
               </div>
-              <div class="p-3 border rounded-md w-full">
+              <div class="p-3 border rounded-md w-full mb-3">
                 <div class="flex flex-col h-64">
                   <h1 class="text-lg mb-2">Load Avg.</h1>
                   <div class="flex-1">
