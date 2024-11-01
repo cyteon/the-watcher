@@ -2,6 +2,7 @@
 
 key=""
 url=""
+version=2 # for automatic updates (to be implemented)
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
@@ -26,6 +27,21 @@ disk_used=$(echo "$disk_usage" | awk '{print $2 * 1024}')
 
 load_avg=$(cat /proc/loadavg | awk '{print $1}')
 
+interface=$(ip route | awk '/default/ {print $5}' | head -n 1)
+
+rx_bytes_old=$(cat /sys/class/net/$interface/statistics/rx_bytes)
+tx_bytes_old=$(cat /sys/class/net/$interface/statistics/tx_bytes)
+
+# We will take avg of 2 seconds
+sleep 2
+
+rx_bytes_new=$(cat /sys/class/net/$interface/statistics/rx_bytes)
+tx_bytes_new=$(cat /sys/class/net/$interface/statistics/tx_bytes)
+
+rx_bytes=$(( (rx_bytes_new - rx_bytes_old) / 2 ))
+tx_bytes=$(( (tx_bytes_new - tx_bytes_old) / 2 ))
+
+
 metrics=$(jq -n \
     --arg ram_usage "$ram_used" \
     --arg ram_max "$ram_total" \
@@ -34,6 +50,8 @@ metrics=$(jq -n \
     --arg disk_capacity "$disk_capacity" \
     --arg disk_used "$disk_used" \
     --arg load_avg "$load_avg" \
+    --arg rx_bytes "$rx_bytes" \
+    --arg tx_bytes "$tx_bytes" \
     '{
         ram_usage: ($ram_usage | tonumber),
         ram_max: ($ram_max | tonumber),
@@ -41,7 +59,9 @@ metrics=$(jq -n \
         cpu_usage: ($cpu_usage | tonumber),
         disk_capacity: ($disk_capacity | tonumber),
         disk_usage: ($disk_used | tonumber),
-        load_avg: ($load_avg | tonumber)
+        load_avg: ($load_avg | tonumber),
+        rx_bytes: ($rx_bytes | tonumber),
+        tx_bytes: ($tx_bytes | tonumber),
     }')
 
 echo "$metrics"

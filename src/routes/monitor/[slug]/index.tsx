@@ -78,7 +78,7 @@ export default function Index() {
 
       setRamUsage(
         data!.heartbeats!.toReversed().map((ping) => ({
-          value: ping.ram_usage / 1000000000 || 0,
+          value: ping.ram_usage / 1073741824 || 0,
           time: getTime(ping.time),
         })),
       );
@@ -92,7 +92,7 @@ export default function Index() {
 
       setDiskUsage(
         data!.heartbeats!.toReversed().map((ping) => ({
-          value: ping.disk_usage / 1000000000 || 0,
+          value: ping.disk_usage / 1073741824 || 0,
           time: getTime(ping.time),
         })),
       );

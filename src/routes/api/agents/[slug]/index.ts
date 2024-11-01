@@ -37,6 +37,8 @@ export async function POST({ request, params }) {
     disk_capacity,
     disk_usage,
     load_avg,
+    rx_bytes,
+    tx_bytes,
   } = await request.json();
 
   const db = await open({
@@ -59,7 +61,7 @@ export async function POST({ request, params }) {
   }
 
   await db.run(
-    "INSERT INTO Pings (id, code, status, ping, ram_usage, ram_max, cpu_cores, cpu_usage, disk_capacity, disk_usage, load_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO Pings (id, code, status, ping, ram_usage, ram_max, cpu_cores, cpu_usage, disk_capacity, disk_usage, load_avg, rx_bytes, tx_bytes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     [
       monitor.id,
       1,
@@ -72,6 +74,8 @@ export async function POST({ request, params }) {
       disk_capacity,
       disk_usage,
       load_avg,
+      rx_bytes,
+      tx_bytes,
     ],
   );
 

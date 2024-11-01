@@ -48,6 +48,9 @@ export default function Dash() {
   const [currentDiskUsage, setCurrentDiskUsage] = createSignal([]);
   const [currentLoadAvg, setCurrentLoadAvg] = createSignal([]);
 
+  const [currentRx, setCurrentRx] = createSignal([]);
+  const [currentTx, setCurrentTx] = createSignal([]);
+
   const [newName, setNewName] = createSignal("");
   const [newURL, setNewURL] = createSignal("");
   const [newInterval, setNewInterval] = createSignal(1);
@@ -78,7 +81,7 @@ export default function Dash() {
           currentMonitor()!
             .heartbeats!.toReversed()
             .map((ping) => ({
-              value: ping.ram_usage / 1000000000 || 0,
+              value: ping.ram_usage / 1073741824 || 0,
               time: getTime(ping.time),
             })),
         );
@@ -96,7 +99,7 @@ export default function Dash() {
           currentMonitor()!
             .heartbeats!.toReversed()
             .map((ping) => ({
-              value: ping.disk_usage / 1000000000 || 0,
+              value: ping.disk_usage / 1073741824 || 0,
               time: getTime(ping.time),
             })),
         );
@@ -106,6 +109,24 @@ export default function Dash() {
             .heartbeats!.toReversed()
             .map((ping) => ({
               value: ping.load_avg || 0,
+              time: getTime(ping.time),
+            })),
+        );
+
+        setCurrentRx(
+          currentMonitor()!
+            .heartbeats!.toReversed()
+            .map((ping) => ({
+              value: ping.rx_bytes / 1048576 || 0,
+              time: getTime(ping.time),
+            })),
+        );
+
+        setCurrentTx(
+          currentMonitor()!
+            .heartbeats!.toReversed()
+            .map((ping) => ({
+              value: ping.tx_bytes / 1048576 || 0,
               time: getTime(ping.time),
             })),
         );
@@ -716,7 +737,7 @@ export default function Dash() {
                 <p>{currentMonitor()?.heartbeats[0]?.load_avg}%</p>
               </div>
             </div>
-            <div class="flex-1 overflow-y-auto mt-3">
+            <div class="flex-1 overflow-y-auto mt-3 grid grid-cols-1 sm:grid-cols-2 gap-4 ">
               <div class="p-3 border rounded-md w-full mb-3">
                 <div class="flex flex-col h-64">
                   <h1 class="text-lg mb-2">RAM Usage</h1>
@@ -761,6 +782,22 @@ export default function Dash() {
                       data={currentLoadAvg()}
                       suffix="%"
                       id="loadAvgChart"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="p-3 border rounded-md w-full">
+                <div class="flex flex-col h-64">
+                  <h1 class="text-lg">Network I/O</h1>
+                  <p class="text-muted-foreground text-sm mb-2">
+                    Green: In, Blue: Out
+                  </p>
+                  <div class="flex-1">
+                    <Chart
+                      data={currentRx()}
+                      data2={currentTx()}
+                      suffix="mb/s"
+                      id="networkChart"
                     />
                   </div>
                 </div>

@@ -3,6 +3,7 @@ import { createEffect, onMount, createSignal } from "solid-js";
 
 export default function Chart(props: {
   data: any[];
+  data2?: any[];
   suffix: string;
   id: string;
 }) {
@@ -45,6 +46,19 @@ export default function Chart(props: {
       });
 
       series.setData(sorted);
+
+      if (props.data2) {
+        const series2 = chart.addAreaSeries({
+          lineType: LineType.Curved,
+          lineColor: "#3b82f6",
+        });
+
+        const sorted2 = props.data2.sort((a, b) => {
+          return a.time - b.time;
+        });
+
+        series2.setData(sorted2);
+      }
 
       chart.timeScale().fitContent();
       console.log("chart", chart);
