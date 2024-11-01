@@ -13,6 +13,7 @@ Supported Methods:
 - Host Ping
 - TCP
 - Server-Side Agent
+- Push to URL
 - MongoDB
 ## Running the monitor
 
