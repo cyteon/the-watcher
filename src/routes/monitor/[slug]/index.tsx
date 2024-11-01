@@ -23,6 +23,8 @@ export default function Index() {
   const [cpuUsage, setCpuUsage] = createSignal([]);
   const [diskUsage, setDiskUsage] = createSignal([]);
   const [loadAvg, setLoadAvg] = createSignal([]);
+  const [rx, setRx] = createSignal([]);
+  const [tx, setTx] = createSignal([]);
 
   const timeString = (time) => {
     return new Date(
@@ -100,6 +102,20 @@ export default function Index() {
       setLoadAvg(
         data!.heartbeats!.toReversed().map((ping) => ({
           value: ping.load_avg || 0,
+          time: getTime(ping.time),
+        })),
+      );
+
+      setRx(
+        data!.heartbeats!.toReversed().map((ping) => ({
+          value: ping.rx_bytes / 1048576 || 0,
+          time: getTime(ping.time),
+        })),
+      );
+
+      setTx(
+        data!.heartbeats!.toReversed().map((ping) => ({
+          value: ping.tx_bytes / 1048576 || 0,
           time: getTime(ping.time),
         })),
       );
@@ -281,11 +297,27 @@ export default function Index() {
                   </div>
                 </div>
               </div>
-              <div class="p-3 border rounded-md w-full">
+              <div class="p-3 border rounded-md w-full mb-3">
                 <div class="flex flex-col h-64">
                   <h1 class="text-lg mb-2">Load Avg.</h1>
                   <div class="flex-1">
                     <Chart data={loadAvg()} suffix="%" id="loadAvgChart" />
+                  </div>
+                </div>
+              </div>
+              <div class="p-3 border rounded-md w-full">
+                <div class="flex flex-col h-64">
+                  <h1 class="text-lg">Network I/O</h1>
+                  <p class="text-muted-foreground text-sm mb-2">
+                    Green: In, Blue: Out
+                  </p>
+                  <div class="flex-1">
+                    <Chart
+                      data={rx()}
+                      data2={tx()}
+                      suffix="mb/s"
+                      id="networkChart"
+                    />
                   </div>
                 </div>
               </div>
