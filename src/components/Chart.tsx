@@ -51,6 +51,8 @@ export default function Chart(props: {
         const series2 = chart.addAreaSeries({
           lineType: LineType.Curved,
           lineColor: "#3b82f6",
+          topColor: "rgba(59, 130, 246, 0.4)",
+          bottomColor: "rgba(59, 130, 246, 0)",
         });
 
         const sorted2 = props.data2.sort((a, b) => {
