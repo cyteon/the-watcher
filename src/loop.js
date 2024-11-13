@@ -376,7 +376,9 @@ export default async function start() {
               [monitor.id, 0, "down"],
             );
 
-            console.error(`Agent for ${monitor.id} is not responding`);
+            console.error(
+              `Agent for monitor ${monitor.name} (${monitor.id}) is not responding`,
+            );
 
             await sendEmbed(monitor, "down");
           }
@@ -410,7 +412,9 @@ export default async function start() {
               [monitor.id, 0, "down"],
             );
 
-            console.error(`Agent for ${monitor.id} is not responding`);
+            console.error(
+              `Monitor with push url, ${monitor.name} (${monitor.id}) is not responding`,
+            );
 
             await sendEmbed(monitor, "down");
           }
