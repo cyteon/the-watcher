@@ -1,6 +1,8 @@
 {
   "name": "the-watcher",
   "type": "module",
+  "version": "1.0.0" // just adding this now so ill just start it from 1.0.0,
+  "author": "cyteon",
   "scripts": {
     "dev": "vinxi dev",
     "build": "vinxi build",
