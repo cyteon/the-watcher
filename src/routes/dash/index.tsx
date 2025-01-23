@@ -701,11 +701,11 @@ export default function Dash() {
                 <p>Ram Usage</p>
                 <p>
                   {(
-                    currentMonitor()?.heartbeats[0]?.ram_usage / 1000000000
+                    currentMonitor()?.heartbeats[0]?.ram_usage / 1073741824
                   ).toFixed(2)}
                   GB /{" "}
                   {(
-                    currentMonitor()?.heartbeats[0]?.ram_max / 1000000000
+                    currentMonitor()?.heartbeats[0]?.ram_max / 1073741824
                   ).toFixed(2)}
                   GB
                 </p>
@@ -721,11 +721,11 @@ export default function Dash() {
                 <p>Disk Usage</p>
                 <p>
                   {(
-                    currentMonitor()?.heartbeats[0]?.disk_usage / 1000000000
+                    currentMonitor()?.heartbeats[0]?.disk_usage / 1073741824
                   ).toFixed(2)}
                   GB /
                   {(
-                    currentMonitor()?.heartbeats[0]?.disk_capacity / 1000000000
+                    currentMonitor()?.heartbeats[0]?.disk_capacity / 1073741824
                   ).toFixed(2)}
                   GB
                 </p>

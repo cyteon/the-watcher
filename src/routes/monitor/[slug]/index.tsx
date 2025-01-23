@@ -243,9 +243,9 @@ export default function Index() {
               <div class="stat">
                 <p>Ram Usage</p>
                 <p>
-                  {(data()?.heartbeats[0]?.ram_usage / 1000000000).toFixed(2)}
+                  {(data()?.heartbeats[0]?.ram_usage / 1073741824).toFixed(2)}
                   GB /{" "}
-                  {(data()?.heartbeats[0]?.ram_max / 1000000000).toFixed(2)}
+                  {(data()?.heartbeats[0]?.ram_max / 1073741824).toFixed(2)}
                   GB
                 </p>
               </div>
@@ -259,9 +259,9 @@ export default function Index() {
               <div class="stat">
                 <p>Disk Usage</p>
                 <p>
-                  {(data()?.heartbeats[0]?.disk_usage / 1000000000).toFixed(2)}
+                  {(data()?.heartbeats[0]?.disk_usage / 1073741824).toFixed(2)}
                   GB /
-                  {(data()?.heartbeats[0]?.disk_capacity / 1000000000).toFixed(
+                  {(data()?.heartbeats[0]?.disk_capacity / 1073741824).toFixed(
                     2,
                   )}
                   GB
