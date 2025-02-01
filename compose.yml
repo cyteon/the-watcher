@@ -6,8 +6,7 @@ services:
     container_name: the-watcher
     restart: always
     ports:
-      - "3200:3000"
-    environment:
-      - NODE_ENV=development # KEEP AS DEVELOPMENT OR IT GET ANGY
+      - "3000:3000"
     volumes:
-      - ./data:/app
+      - ./config.yaml:/app/config.yaml
+    network_mode: bridge
