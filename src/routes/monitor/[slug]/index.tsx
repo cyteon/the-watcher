@@ -243,7 +243,7 @@ export default function Index() {
               <div class="stat">
                 <p>Ram Usage</p>
                 <p>
-                  {(data()?.heartbeats[0]?.ram_usage / 1073741824).toFixed(2)}
+npnpm                   {(data()?.heartbeats[0]?.ram_usage / 1073741824).toFixed(2)}
                   GB /{" "}
                   {(data()?.heartbeats[0]?.ram_max / 1073741824).toFixed(2)}
                   GB
