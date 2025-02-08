@@ -132,10 +132,10 @@ export default function New() {
         </Show>
 
         <TextFieldRoot class="w-full max-w-xs mt-2">
-          <TextFieldLabel>Check Interval</TextFieldLabel>
+          <TextFieldLabel>Monitor Interval (minutes)</TextFieldLabel>
           <TextField
             type="number"
-            placeholder="Check Interval"
+            placeholder="Monitor Interval (minutes)"
             onInput={(e) => setInterval(e.target.value)}
           />
         </TextFieldRoot>

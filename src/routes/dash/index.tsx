@@ -521,7 +521,7 @@ export default function Dash() {
                       {window.location.protocol +
                         "//" +
                         window.location.host}{" "}
-                      --interval={newInterval()}
+                      --interval={currentMonitor()?.interval != newInterval() ? newInterval() : currentMonitor()?.interval}
                     </code>
                   </Show>
                   <Show
@@ -540,7 +540,7 @@ export default function Dash() {
                     </TextFieldRoot>
                   </Show>
                   <TextFieldRoot class="mb-4">
-                    <TextFieldLabel>Monitor Interval</TextFieldLabel>
+                    <TextFieldLabel>Monitor Interval (minutes)</TextFieldLabel>
                     <TextField
                       class="w-full"
                       type="number"
