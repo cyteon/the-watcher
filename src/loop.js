@@ -10,6 +10,17 @@ let db;
 let data;
 
 export async function sendEmbed(monitor, status, ping = 0) {
+  if (!db) {
+    db = await open({
+      filename: "database.db",
+      driver: sqlite3.Database,
+    });
+
+    await db.migrate({
+      migrationsPath: "./migrations",
+    });
+  }
+
   const lastStatus = await db.get(
     "SELECT * FROM Pings WHERE id = ? ORDER BY time DESC LIMIT 1, 1",
     [monitor.id],
