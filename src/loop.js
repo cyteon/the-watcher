@@ -6,8 +6,87 @@ import ping from "ping";
 import { MongoClient } from "mongodb";
 import net from "net";
 
+let db;
+let data;
+
+export async function sendEmbed(monitor, status, ping = 0) {
+  const lastStatus = await db.get(
+    "SELECT * FROM Pings WHERE id = ? ORDER BY time DESC LIMIT 1, 1",
+    [monitor.id],
+  );
+
+  if (lastStatus == null) {
+    return;
+  }
+
+  if (lastStatus.status == "degraded") {
+    lastStatus.status = "up";
+  }
+
+  if (lastStatus.status == status) {
+    return;
+  }
+
+  var payload = {
+    username: data.title,
+  };
+
+  if (status === "up") {
+    payload.embeds = [
+      {
+        title: `:white_check_mark: Service ${monitor.name} is online! :white_check_mark:`,
+        timestamp: new Date().toISOString(),
+        color: 0x4ade80,
+        fields: [
+          {
+            name: "Monitor Type",
+            value: `\`\`\`${monitor.type}\`\`\``,
+            inline: true,
+          },
+          {
+            name: "Ping",
+            value: `\`\`\`${ping}ms\`\`\``,
+            inline: false,
+          },
+        ],
+      },
+    ];
+  } else {
+    payload.embeds = [
+      {
+        title: `:x: Service ${monitor.name} is offline :x:`,
+        timestamp: new Date().toISOString(),
+        color: 0xf87171,
+        fields: [
+          {
+            name: "Monitor Type",
+            value: `\`\`\`${monitor.type}\`\`\``,
+            inline: false,
+          },
+        ],
+      },
+    ];
+  }
+
+  if (monitor.webhook != null && monitor.webhook != "") {
+    try {
+      await fetch(monitor.webhook, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+    } catch (err) {
+      console.error(`Failed to send embed to webhook for ${monitor.name} | ${err}`);
+    }
+
+    console.log(`Sent embed to webhook for ${monitor.name}`);
+  }
+}
+
 export default async function start() {
-  const db = await open({
+  db = await open({
     filename: "database.db",
     driver: sqlite3.Database,
   });
@@ -17,7 +96,7 @@ export default async function start() {
   });
 
   const raw = fs.readFileSync("config.yaml").toString();
-  const data = YAML.parse(raw);
+  data = YAML.parse(raw);
 
   const coolDowns = [];
 
@@ -32,78 +111,6 @@ export default async function start() {
   for (const range of data.okRanges) {
     for (let i = range.start; i <= range.end; i++) {
       okStatues.push(i);
-    }
-  }
-
-  async function sendEmbed(monitor, status, ping = 0) {
-    const lastStatus = await db.get(
-      "SELECT * FROM Pings WHERE id = ? ORDER BY time DESC LIMIT 1, 1",
-      [monitor.id],
-    );
-
-    if (lastStatus == null) {
-      return;
-    }
-
-    if (lastStatus.status == "degraded") {
-      lastStatus.status = "up";
-    }
-
-    if (lastStatus.status == status) {
-      return;
-    }
-
-    var payload = {
-      username: data.title,
-    };
-
-    if (status === "up") {
-      payload.embeds = [
-        {
-          title: `:white_check_mark: Service ${monitor.name} is online! :white_check_mark:`,
-          timestamp: new Date().toISOString(),
-          color: 0x4ade80,
-          fields: [
-            {
-              name: "Monitor Type",
-              value: `\`\`\`${monitor.type}\`\`\``,
-              inline: true,
-            },
-            {
-              name: "Ping",
-              value: `\`\`\`${ping}ms\`\`\``,
-              inline: false,
-            },
-          ],
-        },
-      ];
-    } else {
-      payload.embeds = [
-        {
-          title: `:x: Service ${monitor.name} is offline :x:`,
-          timestamp: new Date().toISOString(),
-          color: 0xf87171,
-          fields: [
-            {
-              name: "Monitor Type",
-              value: `\`\`\`${monitor.type}\`\`\``,
-              inline: false,
-            },
-          ],
-        },
-      ];
-    }
-
-    if (monitor.webhook != null && monitor.webhook != "") {
-      await fetch(monitor.webhook, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      console.log(`Sent embed to webhook for ${monitor.name}`);
     }
   }
 

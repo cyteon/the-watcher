@@ -1,5 +1,6 @@
 import { open } from "sqlite";
 import sqlite3 from "sqlite3";
+import { sendEmbed } from "~/loop";
 
 export async function GET({ params }) {
   const slug = params.slug;
@@ -59,6 +60,8 @@ export async function POST({ request, params }) {
   if (!monitor) {
     return new Response("Unauthorized", { status: 401 });
   }
+
+  sendEmbed(monitor, "up", 0);
 
   await db.run(
     "INSERT INTO Pings (id, code, status, ping, ram_usage, ram_max, cpu_cores, cpu_usage, disk_capacity, disk_usage, load_avg, rx_bytes, tx_bytes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
