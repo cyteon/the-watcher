@@ -6,8 +6,8 @@ import ping from "ping";
 import { MongoClient } from "mongodb";
 import net from "net";
 
-let db;
-let data;
+var db;
+var data;
 
 export async function sendEmbed(monitor, status, ping = 0) {
   if (!db) {
@@ -19,6 +19,11 @@ export async function sendEmbed(monitor, status, ping = 0) {
     await db.migrate({
       migrationsPath: "./migrations",
     });
+  }
+
+  if (!data) {
+    const raw = fs.readFileSync("config.yaml").toString();
+    data = YAML.parse(raw);
   }
 
   const lastStatus = await db.get(
