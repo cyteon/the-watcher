@@ -4,4 +4,4 @@
 
 Hello:)
 If you found a security vulnerability please report it by sending and email to me with all the details.
-Email: me@cyteon.is-a.dev
+Email: me@cyteon.dev
