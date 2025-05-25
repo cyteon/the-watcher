@@ -7,7 +7,7 @@
         --background: 240 10% 3.9%;
         --foreground: 0 0% 98%;
 
-        --dots: #f9e2af66;
+        --dots: #f9e2af33;
 
         --card: 240 10% 3.9%;
         --card-foreground: 0 0% 98%;
@@ -54,7 +54,7 @@ a {
 }
 
 body {
-    background-image: radial-gradient(#f9e2af66 1px, transparent 1px);
+    background-image: radial-gradient(var(--dots) 1px, transparent 1px);
     background-size: 20px 20px;
     background-position: center;
 }

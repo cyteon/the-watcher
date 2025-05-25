@@ -355,15 +355,15 @@ export default function Dash() {
           </button>
         ))}
         <Button
-          class="w-full mt-1"
+          class="w-full mt-2"
           onClick={() => (window.location.href = "/dash/new")}
         >
-          + Add Monitor
+          <span class="mt-1">+ New Monitor</span>
         </Button>
         <div class="mt-auto">
           <AlertDialog>
-            <AlertDialogTrigger as={Button}>
-              <span class="mt-1 text-[18px]">Profile</span>
+            <AlertDialogTrigger as={Button} class="w-full">
+              <span class="mt-1 text-[18px]">Settings</span>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -371,8 +371,7 @@ export default function Dash() {
                   Edit Profile
                 </AlertDialogTitle>
               </AlertDialogHeader>
-              To change password enter your old password and new password.
-              Changing username does not require old password.
+
               <TextFieldRoot class="mb-4">
                 <TextFieldLabel>Username</TextFieldLabel>
                 <TextField
@@ -381,6 +380,7 @@ export default function Dash() {
                   value={username()}
                 />
               </TextFieldRoot>
+
               <TextFieldRoot class="mb-4">
                 <TextFieldLabel>New Password</TextFieldLabel>
                 <TextField
@@ -389,14 +389,18 @@ export default function Dash() {
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
               </TextFieldRoot>
-              <TextFieldRoot class="mb-4">
-                <TextFieldLabel>Old Password</TextFieldLabel>
-                <TextField
-                  class="w-full"
-                  type="password"
-                  onChange={(e) => setOldPassword(e.target.value)}
-                />
-              </TextFieldRoot>
+              
+              <Show when={newPassword()}>
+                <TextFieldRoot class="mb-4">
+                  <TextFieldLabel>Old Password</TextFieldLabel>
+                  <TextField
+                    class="w-full"
+                    type="password"
+                    onChange={(e) => setOldPassword(e.target.value)}
+                  />
+                </TextFieldRoot>
+              </Show>
+
               <AlertDialogFooter>
                 <AlertDialogAction>
                   <span class="text-[18px] mt-1">Cancel</span>

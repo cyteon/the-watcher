@@ -57,6 +57,7 @@ export default function Index() {
         property="twitter:description"
         content={data()?.description || "Powered by The Watcher"}
       />
+
       <main class="h-screen w-full flex flex-col items-center">
         <div class="mt-10 inline-block">
           <h1
@@ -75,7 +76,7 @@ export default function Index() {
           </Show>
         </div>
 
-        <div class="mt-10 w-[90%] md:w-1/2 ">
+        <div class="mt-10 w-full px-2 md:w-1/2 ">
           <Show when={data().monitors?.length == 0}>
             <p class="text-center">No monitors found</p>
           </Show>
