@@ -150,7 +150,7 @@ export default function Index() {
             <polygon points="352,128.4 319.7,96 160,256 160,256 160,256 319.7,416 352,383.6 224.7,256 " />
           </svg>
         </a>
-        
+
         <div class="w-full md:w-1/2">
           <div class="flex p-5 flex-col lg:flex-row border bg-background mt-10 rounded-md">
             <div class="my-auto">
@@ -158,7 +158,7 @@ export default function Index() {
                 <Show when={data()?.heartbeats[0]?.status == "up"}>
                   <span class="bg-green-400 mr-2 rounded-full h-5 w-5"></span>
                 </Show>
-                
+
                 <Show when={data()?.heartbeats[0]?.status == "paused"}>
                   <span class="bg-gray-400 mr-2 rounded-full h-5 w-5"></span>
                 </Show>

@@ -156,7 +156,9 @@ export default function New() {
           </CheckboxLabel>
         </Checkbox>
 
-        <Button onClick={() => addMonitor()} class="w-full text-lg">Create</Button>
+        <Button onClick={() => addMonitor()} class="w-full text-lg">
+          Create
+        </Button>
       </div>
     </main>
   );

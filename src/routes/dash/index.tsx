@@ -390,7 +390,7 @@ export default function Dash() {
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
               </TextFieldRoot>
-              
+
               <Show when={newPassword()}>
                 <TextFieldRoot class="mb-4">
                   <TextFieldLabel>Old Password</TextFieldLabel>
@@ -465,7 +465,7 @@ export default function Dash() {
 
             <h1 class="text-3xl">{currentMonitor()?.name}</h1>
           </div>
-          
+
           <Show
             when={
               currentMonitor()?.type != "MongoDB" &&
@@ -527,7 +527,10 @@ export default function Dash() {
                       {window.location.protocol +
                         "//" +
                         window.location.host}{" "}
-                      --interval={currentMonitor()?.interval != newInterval() ? newInterval() : currentMonitor()?.interval}
+                      --interval=
+                      {currentMonitor()?.interval != newInterval()
+                        ? newInterval()
+                        : currentMonitor()?.interval}
                     </code>
                   </Show>
                   <Show
@@ -578,7 +581,10 @@ export default function Dash() {
                     <AlertDialogAction class="text-lg">
                       Cancel
                     </AlertDialogAction>
-                    <AlertDialogAction onClick={() => editMonitor()} class="text-lg">
+                    <AlertDialogAction
+                      onClick={() => editMonitor()}
+                      class="text-lg"
+                    >
                       Save Changes
                     </AlertDialogAction>
                   </AlertDialogFooter>

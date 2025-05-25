@@ -117,7 +117,9 @@ export default function Index() {
                         >
                           <span class="bg-yellow-200 mr-2 rounded-full h-5 w-5"></span>
                         </Show>
-                        <h1 class="font-bold leading-none text-lg">{monitor.name}</h1>
+                        <h1 class="font-bold leading-none text-lg">
+                          {monitor.name}
+                        </h1>
                       </div>
                       <a href={"/monitor/" + monitor.id} class="text-sm">
                         More info

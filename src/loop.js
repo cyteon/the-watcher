@@ -94,7 +94,9 @@ export async function sendEmbed(monitor, status, ping = 0) {
         body: JSON.stringify(payload),
       });
     } catch (err) {
-      console.error(`Failed to send embed to webhook for ${monitor.name} | ${err}`);
+      console.error(
+        `Failed to send embed to webhook for ${monitor.name} | ${err}`,
+      );
     }
 
     console.log(`Sent embed to webhook for ${monitor.name}`);
