@@ -151,12 +151,12 @@ export default function New() {
 
         <Checkbox class="flex items-center my-4" onChange={(e) => setPublic(e)}>
           <CheckboxControl class="hover:cursor-pointer" />
-          <CheckboxLabel class="text-sm ml-1 mt-1 font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          <CheckboxLabel class="text-sm ml-1 mb-0.5 font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
             Make monitor public
           </CheckboxLabel>
         </Checkbox>
 
-        <Button onClick={() => addMonitor()} class="w-full">Create</Button>
+        <Button onClick={() => addMonitor()} class="w-full text-lg">Create</Button>
       </div>
     </main>
   );

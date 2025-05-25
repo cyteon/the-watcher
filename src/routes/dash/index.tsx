@@ -331,6 +331,7 @@ export default function Dash() {
             <div>
               <h2 class="text-xl font-bold">{monitor.name}</h2>
             </div>
+
             <div class="flex justify-end ml-10">
               {monitor.heartbeats
                 ?.slice(0, visibleHeartbeatsSmall())
@@ -358,12 +359,12 @@ export default function Dash() {
           class="w-full mt-2"
           onClick={() => (window.location.href = "/dash/new")}
         >
-          <span class="mt-1">+ New Monitor</span>
+          + New Monitor
         </Button>
         <div class="mt-auto">
           <AlertDialog>
             <AlertDialogTrigger as={Button} class="w-full">
-              <span class="mt-1 text-[18px]">Settings</span>
+              Settings
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -427,9 +428,9 @@ export default function Dash() {
             >
               <Badge
                 variant={"noHover"}
-                class="w-fit rounded-lg bg-green-400 my-auto mr-2 p-1"
+                class="w-fit rounded-lg bg-green-400 my-auto py-1 px-3 text-lg"
               >
-                <span class="mt-1 text-[1rem]">Online</span>
+                Online
               </Badge>
             </Show>
             <Show
@@ -440,15 +441,15 @@ export default function Dash() {
             >
               <Badge
                 variant={"noHover"}
-                class="w-fit rounded-lg bg-gray-400 my-auto mr-2 p-1"
+                class="w-fit rounded-lg bg-gray-400 my-auto py-1 px-3 text-lg"
               >
-                <span class="mt-1 text-[1rem]">Paused</span>
+                Paused
               </Badge>
             </Show>
             <Show when={currentMonitor()?.heartbeats[0]?.status == "degraded"}>
               <Badge
                 variant={"noHover"}
-                class="w-fit rounded-lg bg-yellow-200 my-auto mr-2 p-1"
+                class="w-fit rounded-lg bg-yellow-200 my-auto py-1 px-3"
               >
                 <span class="mt-1 text-[1rem] ">Degraded</span>
               </Badge>
@@ -456,7 +457,7 @@ export default function Dash() {
             <Show when={currentMonitor()?.heartbeats[0]?.status == "down"}>
               <Badge
                 variant={"noHover"}
-                class="w-fit rounded-lg bg-red-400 my-auto mr-2 p-1"
+                class="w-fit rounded-lg bg-red-400 my-auto py-1 px-3"
               >
                 <span class="mt-1 text-[1rem] ">Offline</span>
               </Badge>
@@ -464,13 +465,14 @@ export default function Dash() {
 
             <h1 class="text-3xl">{currentMonitor()?.name}</h1>
           </div>
+          
           <Show
             when={
               currentMonitor()?.type != "MongoDB" &&
               currentMonitor()?.type != "Push to URL"
             }
           >
-            <a href={currentMonitor()?.url} target="_blank">
+            <a href={currentMonitor()?.url} target="_blank" class="mt-2">
               {currentMonitor()?.url}
             </a>
           </Show>
@@ -479,6 +481,7 @@ export default function Dash() {
             <a
               href={`${window.location.protocol}//${window.location.host}/api/push/${currentMonitor()?.url}?status=up&ping=`}
               target="_blank"
+              class="mt-2"
             >
               {window.location.protocol}//{window.location.host}
               /api/push/{currentMonitor()?.url}?status=up&msg=OK&ping=
@@ -486,20 +489,19 @@ export default function Dash() {
           </Show>
 
           <Show when={currentMonitor()?.type == "MongoDB"}>
-            <a href={currentMonitor()?.url} target="_blank">
+            <a href={currentMonitor()?.url} target="_blank" class="mt-2">
               [redacted connection string]
             </a>
           </Show>
+
           <div class="my-3 flex">
-            <Button class="mr-1" onClick={() => togglePaused()}>
-              <span class="mt-1 text-lg">
-                {currentMonitor()?.paused ? "Unpause" : "Pause"}
-              </span>
+            <Button class="mr-1 text-lg" onClick={() => togglePaused()}>
+              {currentMonitor()?.paused ? "Unpause" : "Pause"}
             </Button>
             <div class="mr-1">
               <AlertDialog>
-                <AlertDialogTrigger as={Button}>
-                  <span class="mt-1 text-[18px]">Edit</span>
+                <AlertDialogTrigger as={Button} class="text-lg">
+                  Edit
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -567,17 +569,17 @@ export default function Dash() {
                     onChange={(e) => setNewPublic(e)}
                   >
                     <CheckboxControl class="hover:cursor-pointer" />
-                    <CheckboxLabel class="text-sm ml-1 mt-1 font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    <CheckboxLabel class="text-sm ml-1 mb-0.5 font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                       Public Monitor
                     </CheckboxLabel>
                   </Checkbox>
 
                   <AlertDialogFooter>
-                    <AlertDialogAction>
-                      <span class="text-[18px] mt-1">Cancel</span>
+                    <AlertDialogAction class="text-lg">
+                      Cancel
                     </AlertDialogAction>
-                    <AlertDialogAction onClick={() => editMonitor()}>
-                      <span class="text-[18px] mt-1">Save Changes</span>
+                    <AlertDialogAction onClick={() => editMonitor()} class="text-lg">
+                      Save Changes
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -586,9 +588,9 @@ export default function Dash() {
             <AlertDialog>
               <AlertDialogTrigger
                 as={Button}
-                class="bg-red-400 hover:bg-red-400"
+                class="bg-red-400 hover:bg-red-400 text-lg"
               >
-                <span class="mt-1 text-[18px]">Delete</span>
+                Delete
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>

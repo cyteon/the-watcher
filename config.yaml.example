@@ -1,7 +1,7 @@
 # All these support html
 title: "Cool monitors" # Will also be username in embed
 description: "is stuff down?"
-footer: 'Made with ❤️ by <a href="https://cyteon.tech">Cyteon</a>'
+footer: 'Made with ❤️ by <a href="https://cyteon.dev">Cyteon</a>'
 
 degradedMultipiler: 1.5 # If ping is more than avg ping * degradedMultipiler, it will be marked as degraded
 

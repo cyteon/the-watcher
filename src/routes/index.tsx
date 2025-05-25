@@ -84,13 +84,13 @@ export default function Index() {
             <div class="flex flex-col w-full h-full">
               <Badge variant="outline" class="ml-auto bg-background">
                 <span class="h-3 w-3 rounded-full bg-green-400 mr-1"></span>
-                <span class="mt-[3px]">Online</span>
+                <span>Online</span>
                 <span class="h-3 w-3 rounded-full bg-yellow-200 ml-2 mr-1"></span>{" "}
-                <span class="mt-[3px]">Degraded</span>
+                <span>Degraded</span>
                 <span class="h-3 w-3 rounded-full bg-red-400 ml-2 mr-1"></span>{" "}
-                <span class="mt-[3px]">Down</span>
+                <span>Down</span>
                 <span class="h-3 w-3 rounded-full bg-gray-400 ml-2 mr-1"></span>{" "}
-                <span class="mt-[3px]">Paused</span>
+                <span>Paused</span>
               </Badge>
               <div class="mt-2 border-[1px] border-border rounded-lg bg-background h-full">
                 {data().monitors?.map((monitor, index) => (
@@ -117,12 +117,13 @@ export default function Index() {
                         >
                           <span class="bg-yellow-200 mr-2 rounded-full h-5 w-5"></span>
                         </Show>
-                        <h1 class="font-bold text-lg mt-1">{monitor.name}</h1>
+                        <h1 class="font-bold leading-none text-lg">{monitor.name}</h1>
                       </div>
                       <a href={"/monitor/" + monitor.id} class="text-sm">
                         More info
                       </a>
                     </div>
+
                     <div class="ml-auto flex flex-col min-h-4">
                       <div class="self-end">
                         <Show when={monitor.avg_ping}>

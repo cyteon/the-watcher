@@ -40,7 +40,7 @@
 
 @layer base {
     * {
-        font-family: "Cal Sans";
+        letter-spacing: -0.05em;
         @apply border-border;
     }
     body {
