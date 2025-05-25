@@ -83,10 +83,10 @@ export default function New() {
   };
 
   return (
-    <main class="w-full h-screen flex">
-      <div class="bg-background w-full border-border border-[1px] p-3 m-3 rounded-lg">
+    <main class="w-full h-screen flex px-1">
+      <div class="m-auto bg-background w-full md:w-1/4 border-border border-[1px] p-3 m-3 rounded-lg">
         <h1 class="text-2xl font-bold">New Monitor</h1>
-        <TextFieldRoot class="w-full max-w-xs mt-2">
+        <TextFieldRoot class="w-full mt-2">
           <TextFieldLabel>Name</TextFieldLabel>
           <TextField
             type="name"
@@ -104,7 +104,7 @@ export default function New() {
             "Server-Side Agent",
             "Push to URL",
           ]}
-          class="w-full max-w-xs mt-2"
+          class="w-full mt-2"
           itemComponent={(props) => (
             <SelectItem item={props.item}>{props.item.rawValue}</SelectItem>
           )}
@@ -121,7 +121,7 @@ export default function New() {
         </Select>
 
         <Show when={type() != "Server-Side Agent" && type() != "Push to URL"}>
-          <TextFieldRoot class="w-full max-w-xs mt-2">
+          <TextFieldRoot class="w-full mt-2">
             <TextFieldLabel>{label()}</TextFieldLabel>
             <TextField
               type="url"
@@ -131,7 +131,7 @@ export default function New() {
           </TextFieldRoot>
         </Show>
 
-        <TextFieldRoot class="w-full max-w-xs mt-2">
+        <TextFieldRoot class="w-full mt-2">
           <TextFieldLabel>Monitor Interval (minutes)</TextFieldLabel>
           <TextField
             type="number"
@@ -140,7 +140,7 @@ export default function New() {
           />
         </TextFieldRoot>
 
-        <TextFieldRoot class="w-full max-w-xs mt-2">
+        <TextFieldRoot class="w-full mt-2">
           <TextFieldLabel>Notification Webhook</TextFieldLabel>
           <TextField
             type="url"
@@ -156,7 +156,7 @@ export default function New() {
           </CheckboxLabel>
         </Checkbox>
 
-        <Button onClick={() => addMonitor()}>Create</Button>
+        <Button onClick={() => addMonitor()} class="w-full">Create</Button>
       </div>
     </main>
   );
