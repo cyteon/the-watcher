@@ -31,8 +31,6 @@ export async function POST({ request, params }) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const slug = params.slug;
-
   const { username, newPassword, oldPassword } = await request.json();
 
   if (username) {
