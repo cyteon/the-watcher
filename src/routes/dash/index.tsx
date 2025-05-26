@@ -144,6 +144,11 @@ export default function Dash() {
       } else if (window.innerWidth >= 1200) {
         setVisibleHeartbeatsSmall(10);
         setVisibleHeartbeatsBig(50);
+      } else if (window.innerWidth <= 600) {
+        // here sidebar AND monitor view is full width
+        // and only 1 at time, so we can fit more
+        setVisibleHeartbeatsSmall(20);
+        setVisibleHeartbeatsBig(30);
       } else {
         setVisibleHeartbeatsSmall(5);
         setVisibleHeartbeatsBig(25);
@@ -427,7 +432,7 @@ export default function Dash() {
         </div>
       </div>
       <Show when={currentMonitor()}>
-        <div class="bg-background border-border w-full border-[1px] p-3 m-3 rounded-lg flex flex-col h-[calc(100vh-24px)]">
+        <div class="overflow-y-auto bg-background border-border w-full border-[1px] p-3 m-3 rounded-lg flex flex-col h-[calc(100vh-24px)]">
           <div class="flex-none">
             <div class="flex">
               <Show
@@ -629,14 +634,15 @@ export default function Dash() {
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogAction>
-                    <span class="text-[18px] mt-1">Cancel</span>
-                  </AlertDialogAction>
                   <AlertDialogAction
-                    class="bg-red-400"
+                    class="bg-red-400 text-lg"
                     onClick={() => deleteMonitor()}
                   >
-                    <span class="text-[18px] mt-1">Continue</span>
+                    Continue
+                  </AlertDialogAction>
+                  
+                  <AlertDialogAction class="text-lg mb-2 md:mb-0">
+                    Cancel
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -779,7 +785,8 @@ export default function Dash() {
                 <p>{currentMonitor()?.heartbeats[0]?.load_avg}%</p>
               </div>
             </div>
-            <div class="flex-1 overflow-y-auto mt-3 grid grid-cols-1 md:grid-cols-2 gap-4 ">
+            
+            <div class="flex-1 mt-3 grid grid-cols-1 md:grid-cols-2 gap-4 ">
               <div class="p-3 border rounded-md w-full mb-3">
                 <div class="flex flex-col h-64">
                   <h1 class="text-lg mb-2">RAM Usage</h1>
