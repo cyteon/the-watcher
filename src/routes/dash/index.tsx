@@ -61,7 +61,7 @@ export default function Dash() {
   const [newPassword, setNewPassword] = createSignal("");
   const [oldPassword, setOldPassword] = createSignal("");
 
-  const [innerWidth, setInnerWidth] = createSignal(0);
+  const [innerWidth, setInnerWidth] = createSignal(1000);
 
   createEffect(() => {
     if (currentMonitor()) {
@@ -642,7 +642,8 @@ export default function Dash() {
               </AlertDialogContent>
             </AlertDialog>
           </div>
-          <div class="p-3 border-border border-[1px] mt-2 rounded-md">
+
+          <div class="p-3 border-border border-[1px] mt-2 rounded-md flex flex-col w-full">
             <div class="self-end">
               <Show when={currentMonitor()?.avg_ping}>
                 <Badge class="self-end mr-2 w-fit rounded-xl">
@@ -658,8 +659,9 @@ export default function Dash() {
                   : "?"}
               </Badge>
             </div>
-            <div class="w-fit">
-              <div class="flex">
+
+            <div class="flex-col flex w-full">
+              <div class="flex ml-auto">
                 {currentMonitor()
                   ?.heartbeats?.slice(0, visibleHeartbeatsBig())
                   .toReversed()
@@ -676,19 +678,23 @@ export default function Dash() {
                       <Show when={ping.status == "up"}>
                         <div class="w-2 h-full mx-0.5 rounded-full bg-green-400"></div>
                       </Show>
+
                       <Show when={ping.status == "paused"}>
                         <div class="w-2 min-h-4 h-full mx-0.5 rounded-full bg-gray-400"></div>
                       </Show>
+
                       <Show when={ping.status == "degraded"}>
                         <div class="w-2 min-h-4 h-full mx-0.5 rounded-full bg-yellow-200"></div>
                       </Show>
+                      
                       <Show when={ping.status == "down"}>
                         <div class="w-2 min-h-4 h-full mx-0.5 rounded-full bg-red-400"></div>
                       </Show>
                     </div>
                   ))}
               </div>
-              <div class="flex mt-1">
+
+              <div class="flex mt-1 w-full">
                 <Show when={currentPing()}>
                   <Show
                     when={
@@ -699,6 +705,7 @@ export default function Dash() {
                   >
                     <p class="text-sm text-green-400">{`${currentPing()?.time} - Status: ${currentPing()?.code} - ${currentPing()?.ping}ms`}</p>
                   </Show>
+
                   <Show
                     when={
                       currentPing()?.status == "up" &&
@@ -708,9 +715,11 @@ export default function Dash() {
                   >
                     <p class="text-sm text-green-400">{`${currentPing()?.time}`}</p>
                   </Show>
+                  
                   <Show when={currentPing()?.status == "degraded"}>
                     <p class="text-sm text-yellow-200">{`${currentPing()?.time} - Status: ${currentPing()?.code} - ${currentPing()?.ping}ms`}</p>
                   </Show>
+
                   <Show when={currentPing()?.status == "down"}>
                     <p class="text-sm text-red-400">{`${currentPing()?.time} -
                         ${currentPing()?.code != 0 ? "Status: " + currentPing()?.code : "Down"}`}</p>
@@ -719,6 +728,7 @@ export default function Dash() {
                     <p class="text-sm text-gray-400">{`${currentPing()?.time} - Paused`}</p>
                   </Show>
                 </Show>
+
                 <p class="ml-auto text-sm">Now</p>
               </div>
             </div>
