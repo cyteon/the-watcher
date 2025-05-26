@@ -61,6 +61,8 @@ export default function Dash() {
   const [newPassword, setNewPassword] = createSignal("");
   const [oldPassword, setOldPassword] = createSignal("");
 
+  const [innerWidth, setInnerWidth] = createSignal(0);
+
   createEffect(() => {
     if (currentMonitor()) {
       setCurrentChartData(
@@ -146,6 +148,8 @@ export default function Dash() {
         setVisibleHeartbeatsSmall(5);
         setVisibleHeartbeatsBig(25);
       }
+
+      setInnerWidth(window.innerWidth);
     };
 
     window.addEventListener("resize", updateScreenSize);
@@ -320,7 +324,12 @@ export default function Dash() {
 
   return (
     <main class="w-full h-screen flex">
-      <div class="bg-background border-border border-[1px] p-3 m-3 rounded-lg flex flex-col">
+      <div class={`
+        bg-background border-border border-[1px] p-3 m-3 rounded-lg flex flex-col
+        ${innerWidth() <= 600 ? (
+          currentMonitor() ? "hidden" : "w-full"
+        ) : ""}
+      `}>
         {data().monitors?.map((monitor, index) => (
           <button
             onClick={() => {
@@ -420,50 +429,63 @@ export default function Dash() {
       <Show when={currentMonitor()}>
         <div class="bg-background border-border w-full border-[1px] p-3 m-3 rounded-lg flex flex-col h-[calc(100vh-24px)]">
           <div class="flex-none">
-            <Show
-              when={
-                currentMonitor()?.heartbeats[0]?.status == "up" &&
-                currentMonitor()?.paused == false
-              }
-            >
-              <Badge
-                variant={"noHover"}
-                class="w-fit rounded-lg bg-green-400 my-auto py-1 px-3 text-lg"
+            <div class="flex">
+              <Show
+                when={
+                  currentMonitor()?.heartbeats[0]?.status == "up" &&
+                  currentMonitor()?.paused == false
+                }
               >
-                Online
-              </Badge>
-            </Show>
-            <Show
-              when={
-                currentMonitor()?.heartbeats[0]?.status == "paused" ||
-                currentMonitor()?.paused == true
-              }
-            >
-              <Badge
-                variant={"noHover"}
-                class="w-fit rounded-lg bg-gray-400 my-auto py-1 px-3 text-lg"
+                <Badge
+                  variant={"noHover"}
+                  class="w-fit rounded-lg bg-green-400 my-auto py-1 px-3"
+                >
+                  Online
+                </Badge>
+              </Show>
+              <Show
+                when={
+                  currentMonitor()?.heartbeats[0]?.status == "paused" ||
+                  currentMonitor()?.paused == true
+                }
               >
-                Paused
-              </Badge>
-            </Show>
-            <Show when={currentMonitor()?.heartbeats[0]?.status == "degraded"}>
-              <Badge
-                variant={"noHover"}
-                class="w-fit rounded-lg bg-yellow-200 my-auto py-1 px-3"
-              >
-                <span class="mt-1 text-[1rem] ">Degraded</span>
-              </Badge>
-            </Show>
-            <Show when={currentMonitor()?.heartbeats[0]?.status == "down"}>
-              <Badge
-                variant={"noHover"}
-                class="w-fit rounded-lg bg-red-400 my-auto py-1 px-3"
-              >
-                <span class="mt-1 text-[1rem] ">Offline</span>
-              </Badge>
-            </Show>
+                <Badge
+                  variant={"noHover"}
+                  class="w-fit rounded-lg bg-gray-400 my-auto py-1 px-3"
+                >
+                  Paused
+                </Badge>
+              </Show>
+              <Show when={currentMonitor()?.heartbeats[0]?.status == "degraded"}>
+                <Badge
+                  variant={"noHover"}
+                  class="w-fit rounded-lg bg-yellow-200 my-auto py-1 px-3"
+                >
+                  Degraded
+                </Badge>
+              </Show>
+              <Show when={currentMonitor()?.heartbeats[0]?.status == "down"}>
+                <Badge
+                  variant={"noHover"}
+                  class="w-fit rounded-lg bg-red-400 my-auto py-1 px-3"
+                >
+                  Offline
+                </Badge>
+              </Show>
 
-            <h1 class="text-3xl">{currentMonitor()?.name}</h1>
+              <Show when={innerWidth() < 600}>
+                <button
+                  class="ml-auto text-muted-foreground hover:text-foreground mr-2"
+                  onClick={() => {
+                    setCurrentMonitor(null);
+                  }}
+                >
+                  Back
+                </button>
+              </Show>
+            </div>
+
+            <h1 class="text-3xl mt-2">{currentMonitor()?.name}</h1>
           </div>
 
           <Show
