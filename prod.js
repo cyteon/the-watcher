@@ -7,7 +7,7 @@ import start from "./src/loop.js";
 await start();
 
 prodProcess.on("close", (code) => {
-  console.log(`Dev process exited with code ${code}`);
+  console.log(`Prod process exited with code ${code}`);
 });
 
 prodProcess.on("error", (error) => {

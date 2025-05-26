@@ -1,7 +1,7 @@
 #!/bin/bash
 
 APP_NAME="the-watcher"
-DEFAULT_PORT=45503
+DEFAULT_PORT=34347
 PORT=${1:-$DEFAULT_PORT}
 
 echo "Starting $APP_NAME on port $PORT..."
