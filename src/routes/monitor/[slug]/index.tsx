@@ -151,7 +151,7 @@ export default function Index() {
           </svg>
         </a>
 
-        <div class="w-full md:w-1/2">
+        <div class="w-full md:min-w-1/2 md:w-fit">
           <div class="flex p-5 flex-col lg:flex-row border bg-background mt-10 rounded-md">
             <div class="my-auto">
               <div class="flex items-center">
@@ -174,6 +174,7 @@ export default function Index() {
                 <h1 class="font-bold text-lg">{data()?.name}</h1>
               </div>
             </div>
+
             <div class="ml-auto pl-5 flex flex-col min-h-4">
               <div class="self-end">
                 <Show when={data()?.avg_ping}>
@@ -187,7 +188,7 @@ export default function Index() {
                   </Badge>
                 </Show>
                 <Badge class="self-end w-fit rounded-xl">
-                  {data()?.uptime ? data()?.uptime?.toFixed(1) + "%" : "?"}
+                  {data()?.uptime ? data()?.uptime?.toFixed(1) + "%" : "? uptime"}
                 </Badge>
               </div>
               <div class="flex justify-end">
@@ -245,7 +246,7 @@ export default function Index() {
           </Show>
 
           <Show when={data()?.type == "Server-Side Agent"}>
-            <div class="flex mt-2 flex-wrap">
+            <div class="flex mt-2 flex-wrap justify-center">
               <div class="stat">
                 <p>Ram Usage</p>
                 <p>
@@ -255,6 +256,7 @@ export default function Index() {
                   GB
                 </p>
               </div>
+              
               <div class="stat">
                 <p>CPU Usage</p>
                 <p>

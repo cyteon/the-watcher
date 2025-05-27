@@ -133,15 +133,24 @@ export default function Index() {
                             Avg: {monitor.avg_ping?.toFixed(0)}ms
                           </Badge>
                         </Show>
-                        <Badge class="self-end mr-2 w-fit rounded-xl">
-                          {monitor.heartbeats[0]?.ping}ms
-                        </Badge>
+
+                        <Show when={monitor.uptime}>
+                          <Badge class="self-end w-fit rounded-xl mr-2">
+                            {monitor.uptime?.toFixed(1) + "%"}
+                          </Badge>
+                        </Show>
+
                         <Badge class="self-end w-fit rounded-xl">
-                          {monitor.uptime
-                            ? monitor.uptime?.toFixed(1) + "%"
-                            : "?"}
+                          {
+                            ((monitor.heartbeats[0]?.status == "up"
+                            || monitor.heartbeats[0]?.status == "degraded")
+                            && monitor.type != "Server-Side Agent")
+                            ? monitor.heartbeats[0]?.ping + "ms"
+                            : "N/A ping"
+                          }
                         </Badge>
                       </div>
+                      
                       <div class="flex justify-end">
                         {monitor.heartbeats
                           ?.slice(0, visibleHeartbeats())

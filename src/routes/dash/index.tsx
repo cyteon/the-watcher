@@ -656,14 +656,23 @@ export default function Dash() {
                   Avg: {currentMonitor()?.avg_ping?.toFixed(0)}ms
                 </Badge>
               </Show>
-              <Badge class="self-end mr-2 w-fit rounded-xl">
-                {currentMonitor()?.heartbeats[0]?.ping}ms
+
+             <Badge class="self-end w-fit rounded-xl mr-2">
+                {
+                  ((currentMonitor()?.heartbeats[0]?.status == "up"
+                  || currentMonitor()?.heartbeats[0]?.status == "degraded")
+                  && currentMonitor()?.type != "Server-Side Agent")
+                  ? currentMonitor()?.heartbeats[0]?.ping + "ms"
+                  : "N/A ping"
+                }
               </Badge>
+
               <Badge class="self-end w-fit rounded-xl">
                 {currentMonitor()?.uptime
                   ? currentMonitor()?.uptime?.toFixed(1) + "%"
-                  : "?"}
+                  : "? uptime"}
               </Badge>
+
             </div>
 
             <div class="flex-col flex w-full">
