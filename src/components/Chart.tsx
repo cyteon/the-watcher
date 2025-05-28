@@ -38,7 +38,7 @@ export default function Chart(props: {
       });
 
       const series = chart.addLineSeries({
-        lineType: LineType.Simple,
+        lineType: LineType.Curved,
         color: "#05df72",
       });
 
