@@ -223,7 +223,9 @@ export default function Index() {
               <div class="min-h-[25px]">
                 <Show when={infoLabel()}>
                   <Show when={infoLabel().status == "up"}>
-                    <p class="text-sm mt-1 text-green-400">{`${timeString(infoLabel().time)} - ${infoLabel().ping}ms`}</p>
+                    <p class="text-sm mt-1 text-green-400">{`${timeString(infoLabel().time)} ${
+                      infoLabel().ping ? "- " + infoLabel().ping + "ms" : ""
+                    }`}</p>
                   </Show>
                   <Show when={infoLabel().status == "degraded"}>
                     <p class="text-sm mt-1 text-yellow-200">{`${timeString(infoLabel().time)} - ${infoLabel().ping}ms`}</p>

@@ -189,7 +189,9 @@ export default function Index() {
                               infoLabels()[monitor.id.toString()].status == "up"
                             }
                           >
-                            <p class="text-sm mt-1 text-green-400">{`${timeString(infoLabels()[monitor.id.toString()].time)} - ${infoLabels()[monitor.id.toString()].ping}ms`}</p>
+                            <p class="text-sm mt-1 text-green-400">{`${timeString(infoLabels()[monitor.id.toString()].time)} ${
+                              infoLabels()[monitor.id.toString()].ping ? "- " + infoLabels()[monitor.id.toString()].ping + "ms" : ""
+                            }`}</p>
                           </Show>
                           <Show
                             when={
