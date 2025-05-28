@@ -1,6 +1,7 @@
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 
 export async function POST({ request }) {
   const { username, password } = await request.json();
