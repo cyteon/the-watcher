@@ -188,7 +188,9 @@ export default function Index() {
                   </Badge>
                 </Show>
                 <Badge class="self-end w-fit rounded-xl">
-                  {data()?.uptime ? data()?.uptime?.toFixed(1) + "%" : "? uptime"}
+                  {data()?.uptime
+                    ? data()?.uptime?.toFixed(1) + "%"
+                    : "? uptime"}
                 </Badge>
               </div>
               <div class="flex justify-end">
@@ -258,7 +260,7 @@ export default function Index() {
                   GB
                 </p>
               </div>
-              
+
               <div class="stat">
                 <p>CPU Usage</p>
                 <p>

@@ -141,16 +141,14 @@ export default function Index() {
                         </Show>
 
                         <Badge class="self-end w-fit rounded-xl">
-                          {
-                            ((monitor.heartbeats[0]?.status == "up"
-                            || monitor.heartbeats[0]?.status == "degraded")
-                            && monitor.type != "Server-Side Agent")
+                          {(monitor.heartbeats[0]?.status == "up" ||
+                            monitor.heartbeats[0]?.status == "degraded") &&
+                          monitor.type != "Server-Side Agent"
                             ? monitor.heartbeats[0]?.ping + "ms"
-                            : "N/A ping"
-                          }
+                            : "N/A ping"}
                         </Badge>
                       </div>
-                      
+
                       <div class="flex justify-end">
                         {monitor.heartbeats
                           ?.slice(0, visibleHeartbeats())
@@ -190,7 +188,11 @@ export default function Index() {
                             }
                           >
                             <p class="text-sm mt-1 text-green-400">{`${timeString(infoLabels()[monitor.id.toString()].time)} ${
-                              infoLabels()[monitor.id.toString()].ping ? "- " + infoLabels()[monitor.id.toString()].ping + "ms" : ""
+                              infoLabels()[monitor.id.toString()].ping
+                                ? "- " +
+                                  infoLabels()[monitor.id.toString()].ping +
+                                  "ms"
+                                : ""
                             }`}</p>
                           </Show>
                           <Show

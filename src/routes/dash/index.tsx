@@ -329,12 +329,12 @@ export default function Dash() {
 
   return (
     <main class="w-full h-screen flex">
-      <div class={`
+      <div
+        class={`
         bg-background border-border border-[1px] p-3 m-3 rounded-lg flex flex-col
-        ${innerWidth() <= 600 ? (
-          currentMonitor() ? "hidden" : "w-full"
-        ) : ""}
-      `}>
+        ${innerWidth() <= 600 ? (currentMonitor() ? "hidden" : "w-full") : ""}
+      `}
+      >
         {data().monitors?.map((monitor, index) => (
           <button
             onClick={() => {
@@ -461,7 +461,9 @@ export default function Dash() {
                   Paused
                 </Badge>
               </Show>
-              <Show when={currentMonitor()?.heartbeats[0]?.status == "degraded"}>
+              <Show
+                when={currentMonitor()?.heartbeats[0]?.status == "degraded"}
+              >
                 <Badge
                   variant={"noHover"}
                   class="w-fit rounded-lg bg-yellow-200 my-auto py-1 px-3"
@@ -640,7 +642,7 @@ export default function Dash() {
                   >
                     Continue
                   </AlertDialogAction>
-                  
+
                   <AlertDialogAction class="text-lg mb-2 md:mb-0">
                     Cancel
                   </AlertDialogAction>
@@ -657,14 +659,12 @@ export default function Dash() {
                 </Badge>
               </Show>
 
-             <Badge class="self-end w-fit rounded-xl mr-2">
-                {
-                  ((currentMonitor()?.heartbeats[0]?.status == "up"
-                  || currentMonitor()?.heartbeats[0]?.status == "degraded")
-                  && currentMonitor()?.type != "Server-Side Agent")
+              <Badge class="self-end w-fit rounded-xl mr-2">
+                {(currentMonitor()?.heartbeats[0]?.status == "up" ||
+                  currentMonitor()?.heartbeats[0]?.status == "degraded") &&
+                currentMonitor()?.type != "Server-Side Agent"
                   ? currentMonitor()?.heartbeats[0]?.ping + "ms"
-                  : "N/A ping"
-                }
+                  : "N/A ping"}
               </Badge>
 
               <Badge class="self-end w-fit rounded-xl">
@@ -672,7 +672,6 @@ export default function Dash() {
                   ? currentMonitor()?.uptime?.toFixed(1) + "%"
                   : "? uptime"}
               </Badge>
-
             </div>
 
             <div class="flex-col flex w-full">
@@ -701,7 +700,7 @@ export default function Dash() {
                       <Show when={ping.status == "degraded"}>
                         <div class="w-2 min-h-4 h-full mx-0.5 rounded-full bg-yellow-200"></div>
                       </Show>
-                      
+
                       <Show when={ping.status == "down"}>
                         <div class="w-2 min-h-4 h-full mx-0.5 rounded-full bg-red-400"></div>
                       </Show>
@@ -730,7 +729,7 @@ export default function Dash() {
                   >
                     <p class="text-sm text-green-400">{`${currentPing()?.time}`}</p>
                   </Show>
-                  
+
                   <Show when={currentPing()?.status == "degraded"}>
                     <p class="text-sm text-yellow-200">{`${currentPing()?.time} - Status: ${currentPing()?.code} - ${currentPing()?.ping}ms`}</p>
                   </Show>
@@ -794,7 +793,7 @@ export default function Dash() {
                 <p>{currentMonitor()?.heartbeats[0]?.load_avg}%</p>
               </div>
             </div>
-            
+
             <div class="flex-1 mt-3 grid grid-cols-1 md:grid-cols-2 gap-4 ">
               <div class="p-3 border rounded-md w-full mb-3">
                 <div class="flex flex-col h-64">
