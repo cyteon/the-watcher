@@ -37,26 +37,37 @@ export default function Chart(props: {
         },
       });
 
-      const series = chart.addAreaSeries({
-        lineType: LineType.Curved,
+      const series = chart.addLineSeries({
+        lineType: LineType.Simple,
+        color: "#05df72",
       });
 
       const sorted = props.data.sort((a, b) => {
         return a.time - b.time;
       });
 
+      sorted.forEach((item) => {
+        if (!item.value) {
+          item.color = "transparent";
+        }
+      });
+
       series.setData(sorted);
 
       if (props.data2) {
-        const series2 = chart.addAreaSeries({
+        const series2 = chart.addLineSeries({
           lineType: LineType.Curved,
-          lineColor: "#3b82f6",
-          topColor: "rgba(59, 130, 246, 0.4)",
-          bottomColor: "rgba(59, 130, 246, 0)",
+          color: "#3b82f6",
         });
 
         const sorted2 = props.data2.sort((a, b) => {
           return a.time - b.time;
+        });
+
+        sorted2.forEach((item) => {
+          if (!item.value) {
+            item.color = "transparent";
+          }
         });
 
         series2.setData(sorted2);
