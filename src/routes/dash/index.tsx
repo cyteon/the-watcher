@@ -140,7 +140,7 @@ export default function Dash() {
     const updateScreenSize = () => {
       if (window.innerWidth >= 1400) {
         setVisibleHeartbeatsSmall(15);
-        setVisibleHeartbeatsBig(100);
+        setVisibleHeartbeatsBig(90);
       } else if (window.innerWidth >= 1200) {
         setVisibleHeartbeatsSmall(10);
         setVisibleHeartbeatsBig(50);
