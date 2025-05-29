@@ -46,9 +46,13 @@ export default function Chart(props: {
         return a.time - b.time;
       });
 
-      sorted.forEach((item) => {
+      sorted.forEach((item, i) => {
         if (!item.value) {
           item.color = "transparent";
+
+          if (sorted[i - 1]) {
+            sorted[i - 1].color = "transparent";
+          }
         }
       });
 
