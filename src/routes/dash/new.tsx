@@ -35,7 +35,7 @@ export default function New() {
       return "URL";
     } else if (type() == "Ping" || type() == "TCP") {
       return "Host";
-    } else if (type() == "MongoDB") {
+    } else if (type() == "MongoDB" || type() == "PostgreSQL") {
       return "Connection String";
     } else {
       return "URL";
@@ -101,6 +101,7 @@ export default function New() {
             "Ping",
             "TCP",
             "MongoDB",
+            "PostgreSQL",
             "Server-Side Agent",
             "Push to URL",
           ]}

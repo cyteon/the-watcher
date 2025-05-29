@@ -6,7 +6,7 @@ export default async function sendPing(monitor, db, data) {
 
   ping.promise.probe(monitor.url).then(async (res) => {
     if (res.alive) {
-      console.log(`Successfully pinged ${monitor.url}`);
+      console.log(`Successfully pinged ${monitor.name}`);
       const ping = res.time;
 
       const avgPing = await db.get(
@@ -35,7 +35,7 @@ export default async function sendPing(monitor, db, data) {
 
       await sendEmbed(monitor, "up", ping);
     } else {
-      console.error(`Failed to ping ${monitor.url}`);
+      console.error(`Failed to ping ${monitor.name}`);
 
       await db.run("INSERT INTO Pings (id, code, status) VALUES (?, ?, ?)", [
         monitor.id,

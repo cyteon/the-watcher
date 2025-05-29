@@ -8,7 +8,7 @@ export default async function pingTCP(monitor, db, data) {
   socket.setTimeout(5000);
 
   socket.on("connect", async () => {
-    console.log(`Successfully pinged ${monitor.url}`);
+    console.log(`Successfully pinged monitor ${monitor.name}`);
     const ping = Date.now() - start;
 
     const avgPing = await db.get(

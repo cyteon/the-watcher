@@ -14,7 +14,7 @@ export default async function pingHttp(monitor, db, data) {
   await fetch(monitor.url)
     .then(async (res) => {
       if (okStatues.includes(res.status)) {
-        console.log(`Successfully pinged ${monitor.url}`);
+        console.log(`Successfully pinged ${monitor.name}`);
         const ping = Date.now() - start;
 
         const avgPing = await db.get(
@@ -43,7 +43,7 @@ export default async function pingHttp(monitor, db, data) {
 
         await sendEmbed(monitor, "up", ping);
       } else {
-        console.error(`Failed to ping ${monitor.url}`);
+        console.error(`Failed to ping ${monitor.name}`);
 
         await db.run("INSERT INTO Pings (id, code, status) VALUES (?, ?, ?)", [
           monitor.id,
@@ -55,7 +55,7 @@ export default async function pingHttp(monitor, db, data) {
       }
     })
     .catch(async (err) => {
-      console.error(`Failed to ping ${monitor.url}: ${err}`);
+      console.error(`Failed to ping ${monitor.name}: ${err}`);
 
       await db.run("INSERT INTO Pings (id, code, status) VALUES (?, ?, ?)", [
         monitor.id,

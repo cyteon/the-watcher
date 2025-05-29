@@ -1,15 +1,16 @@
-import { MongoClient } from "mongodb";
+import { Client } from "pg";
 import sendEmbed from "../sendEmbed.js";
 
-export default async function pingMongoDB(monitor, db, data) {
-  const client = new MongoClient(monitor.url);
+export default async function pingPostgreSQL(monitor, db, data) {
+  const client = new Client({
+    connectionString: monitor.url,
+  });
 
   const start = Date.now();
 
   try {
     await client.connect();
-
-    await client.db().command({ ping: 1 });
+    await client.query("SELECT 1");
 
     const ping = Date.now() - start;
 
@@ -49,5 +50,7 @@ export default async function pingMongoDB(monitor, db, data) {
     ]);
 
     await sendEmbed(monitor, "down");
+  } finally {
+    await client.end();
   }
 }

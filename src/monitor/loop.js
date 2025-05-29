@@ -9,6 +9,7 @@ import pingTCP from "./types/pingTCP.js";
 import pingMongoDB from "./types/mongoDB.js";
 import checkServerSideAgent from "./types/serverSideAgent.js";
 import checkPushToUrl from "./types/checkPushToUrl.js";
+import pingPostgreSQL from "./types/postgresql.js";
 
 var db;
 var data;
@@ -80,6 +81,8 @@ export default async function start() {
           checkServerSideAgent(monitor, db);
         } else if (monitor.type == "Push to URL") {
           checkPushToUrl(monitor, db);
+        } else if (monitor.type == "PostgreSQL") {
+          pingPostgreSQL(monitor, db, data);
         } else {
           console.error(`Unknown monitor type: ${monitor.type}`);
         }

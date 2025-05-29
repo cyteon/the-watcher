@@ -498,7 +498,8 @@ export default function Dash() {
           <Show
             when={
               currentMonitor()?.type != "MongoDB" &&
-              currentMonitor()?.type != "Push to URL"
+              currentMonitor()?.type != "Push to URL" &&
+              currentMonitor()?.type != "PostgreSQL" 
             }
           >
             <a href={currentMonitor()?.url} target="_blank" class="mt-2">
@@ -517,7 +518,7 @@ export default function Dash() {
             </a>
           </Show>
 
-          <Show when={currentMonitor()?.type == "MongoDB"}>
+          <Show when={currentMonitor()?.type == "MongoDB" || currentMonitor()?.type == "PostgreSQL"}>
             <a href={currentMonitor()?.url} target="_blank" class="mt-2">
               [redacted connection string]
             </a>
@@ -570,7 +571,11 @@ export default function Dash() {
                     }
                   >
                     <TextFieldRoot class="mb-4">
-                      <TextFieldLabel>Monitor URL</TextFieldLabel>
+                      <TextFieldLabel>
+                        {(currentMonitor()?.type == "MongoDB" || currentMonitor()?.type == "PostgreSQL") ? 
+                          `Connection String (${currentMonitor()?.type})`
+                          : "Monitor URL"}
+                      </TextFieldLabel>
                       <TextField
                         class="w-full"
                         value={currentMonitor()?.url}
