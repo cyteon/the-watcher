@@ -2,7 +2,7 @@ import { spawn } from "child_process";
 
 const devProcess = spawn("npm", ["run", "dev"], { stdio: "inherit" });
 
-import start from "./src/loop.js";
+import start from "./src/monitor/loop.js";
 await start();
 
 devProcess.on("close", (code) => {

@@ -1,6 +1,6 @@
 import { open } from "sqlite";
 import sqlite3 from "sqlite3";
-import { sendEmbed } from "~/loop";
+import sendEmbed from "~/monitor/sendEmbed.js";
 
 export async function GET({ params }) {
   const slug = params.slug;

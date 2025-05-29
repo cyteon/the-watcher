@@ -1,0 +1,49 @@
+import ping from "ping";
+import sendEmbed from "../sendEmbed.js";
+
+export default async function sendPing(monitor, db, data) {
+  const start = Date.now();
+
+  ping.promise.probe(monitor.url).then(async (res) => {
+    if (res.alive) {
+      console.log(`Successfully pinged ${monitor.url}`);
+      const ping = res.time;
+
+      const avgPing = await db.get(
+        "SELECT AVG(ping) as avg FROM Pings WHERE id = ? AND (status = 'up' OR status = 'degraded')",
+        [monitor.id],
+      );
+
+      if (avgPing.avg != null) {
+        if (ping > avgPing.avg * data.degradedMultipiler) {
+          await db.run(
+            "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
+            [monitor.id, 0, "degraded", ping],
+          );
+        } else {
+          await db.run(
+            "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
+            [monitor.id, 0, "up", ping],
+          );
+        }
+      } else {
+        await db.run(
+          "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
+          [monitor.id, 0, "up", ping],
+        );
+      }
+
+      await sendEmbed(monitor, "up", ping);
+    } else {
+      console.error(`Failed to ping ${monitor.url}`);
+
+      await db.run("INSERT INTO Pings (id, code, status) VALUES (?, ?, ?)", [
+        monitor.id,
+        0,
+        "down",
+      ]);
+
+      await sendEmbed(monitor, "down");
+    }
+  });
+}

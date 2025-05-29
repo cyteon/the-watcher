@@ -3,7 +3,7 @@ import { spawn, spawnSync } from "child_process";
 spawnSync("npm", ["run", "build"], { stdio: "inherit" });
 const prodProcess = spawn("npm", ["run", "start"], { stdio: "inherit" });
 
-import start from "./src/loop.js";
+import start from "./src/monitor/loop.js";
 await start();
 
 prodProcess.on("close", (code) => {

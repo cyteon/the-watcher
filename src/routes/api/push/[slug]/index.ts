@@ -1,5 +1,6 @@
 import { open } from "sqlite";
 import sqlite3 from "sqlite3";
+import sendEmbed from "~/monitor/sendEmbed";
 
 export async function GET({ params, request }) {
   const { slug } = params;
@@ -18,12 +19,21 @@ export async function GET({ params, request }) {
     return new Response("Not found", { status: 404 });
   }
 
-  if (searchParams.get("status") == "up") {
-    await db.run(
-      "INSERT INTO Pings (id, status, ping, code) VALUES (?, ?, ?, ?)",
-      [monitor.id, "up", searchParams.get("ping") || 0, 1],
-    );
+  const status = searchParams.get("status");
+
+  if (
+    !status ||
+    (status !== "up" && status !== "down" && status !== "degraded")
+  ) {
+    return new Response("Invalid status", { status: 400 });
   }
+
+  await db.run(
+    "INSERT INTO Pings (id, status, ping, code) VALUES (?, ?, ?, ?)",
+    [monitor.id, status, searchParams.get("ping") || 0, 1],
+  );
+
+  sendEmbed(monitor, status, 0);
 
   return new Response("OK");
 }

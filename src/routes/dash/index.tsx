@@ -559,7 +559,8 @@ export default function Dash() {
                       --interval=
                       {currentMonitor()?.interval != newInterval()
                         ? newInterval()
-                        : currentMonitor()?.interval}
+                        : currentMonitor()?.interval}{" "}
+                      && rm agent_installer.sh
                     </code>
                   </Show>
                   <Show
