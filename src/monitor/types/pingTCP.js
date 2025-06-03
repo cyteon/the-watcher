@@ -8,7 +8,7 @@ export default async function pingTCP(monitor, db, data) {
   socket.setTimeout(5000);
 
   socket.on("connect", async () => {
-    console.log(`Successfully pinged monitor ${monitor.name}`);
+    console.log(`Successfully pinged ${monitor.name}`);
     const ping = Date.now() - start;
 
     const avgPing = await db.get(
@@ -41,7 +41,7 @@ export default async function pingTCP(monitor, db, data) {
   });
 
   socket.on("timeout", async () => {
-    console.error(`Failed to ping ${monitor.url} (tcp timeout)`);
+    console.error(`Failed to ping ${monitor.name} (tcp timeout)`);
 
     await db.run("INSERT INTO Pings (id, code, status) VALUES (?, ?, ?)", [
       monitor.id,
@@ -55,7 +55,7 @@ export default async function pingTCP(monitor, db, data) {
   });
 
   socket.on("error", async (err) => {
-    console.error(`Failed to ping ${monitor.url} (tcp error)`);
+    console.error(`Failed to ping ${monitor.name} (tcp error)`);
 
     await db.run("INSERT INTO Pings (id, code, status) VALUES (?, ?, ?)", [
       monitor.id,
@@ -74,7 +74,7 @@ export default async function pingTCP(monitor, db, data) {
   try {
     socket.connect(port, url);
   } catch (err) {
-    console.error(`Failed to ping ${monitor.url} (tcp connect error): ${err}`);
+    console.error(`Failed to ping ${monitor.name} (tcp connect error): ${err}`);
 
     await db.run("INSERT INTO Pings (id, code, status) VALUES (?, ?, ?)", [
       monitor.id,

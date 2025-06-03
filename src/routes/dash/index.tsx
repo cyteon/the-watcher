@@ -63,6 +63,20 @@ export default function Dash() {
 
   const [innerWidth, setInnerWidth] = createSignal(1000);
 
+  const label = () => {
+    if (currentMonitor()?.type == "HTTP(s)") {
+      return "URL";
+    } else if (currentMonitor()?.type  == "Ping" || currentMonitor()?.type  == "TCP" || currentMonitor()?.type  == "UDP") {
+      return "Host";
+    } else if (currentMonitor()?.type  == "MongoDB") {
+      return "Connection String (MongoDB)";
+    } else if (currentMonitor()?.type  == "PostgreSQL") {
+      return "Connection String (PostgreSQL)";
+    } else {
+      return "URL";
+    }
+  };
+
   createEffect(() => {
     if (currentMonitor()) {
       setCurrentChartData(
@@ -572,9 +586,7 @@ export default function Dash() {
                   >
                     <TextFieldRoot class="mb-4">
                       <TextFieldLabel>
-                        {(currentMonitor()?.type == "MongoDB" || currentMonitor()?.type == "PostgreSQL") ? 
-                          `Connection String (${currentMonitor()?.type})`
-                          : "Monitor URL"}
+                        {label()}
                       </TextFieldLabel>
                       <TextField
                         class="w-full"

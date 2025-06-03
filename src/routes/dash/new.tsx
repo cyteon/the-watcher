@@ -33,7 +33,7 @@ export default function New() {
   const label = () => {
     if (type() == "HTTP(s)") {
       return "URL";
-    } else if (type() == "Ping" || type() == "TCP") {
+    } else if (type() == "Ping" || type() == "TCP" || type() == "UDP") {
       return "Host";
     } else if (type() == "MongoDB" || type() == "PostgreSQL") {
       return "Connection String";
@@ -100,6 +100,7 @@ export default function New() {
             "HTTP(s)",
             "Ping",
             "TCP",
+            "UDP",
             "MongoDB",
             "PostgreSQL",
             "Server-Side Agent",
