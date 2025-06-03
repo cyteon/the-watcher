@@ -66,7 +66,7 @@ export default function Dash() {
   const label = () => {
     if (currentMonitor()?.type == "HTTP(s)") {
       return "URL";
-    } else if (currentMonitor()?.type  == "Ping" || currentMonitor()?.type  == "TCP" || currentMonitor()?.type  == "UDP") {
+    } else if (currentMonitor()?.type  == "Ping" || currentMonitor()?.type  == "TCP") {
       return "Host";
     } else if (currentMonitor()?.type  == "MongoDB") {
       return "Connection String (MongoDB)";
