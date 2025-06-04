@@ -6,7 +6,7 @@ import { open } from "sqlite";
 var db;
 var data;
 
-export default async function sendEmbed(monitor, status, ping = 0) {
+export default async function log(monitor, status, ping = 0, message = "") {
   if (!db) {
     db = await open({
       filename: "database.db",
@@ -40,6 +40,15 @@ export default async function sendEmbed(monitor, status, ping = 0) {
     return;
   }
 
+  await db.run(
+    "INSERT INTO Logs (id, status, message) VALUES (?, ?, ?)",
+    [monitor.id, status, message || `Status changed to ${status}`],
+  );
+
+  await sendEmbed(monitor, status, ping);
+}
+
+async function sendEmbed(monitor, status, ping = 0) {
   var payload = {
     username: data.title,
   };

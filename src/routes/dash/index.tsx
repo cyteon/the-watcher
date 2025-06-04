@@ -693,7 +693,7 @@ export default function Dash() {
             </div>
 
             <div class="flex-col flex w-full">
-              <div class="flex ml-auto">
+              <div class="flex ml-auto overflow-x-auto">
                 {currentMonitor()
                   ?.heartbeats?.slice(0, visibleHeartbeatsBig())
                   .toReversed()
@@ -735,7 +735,10 @@ export default function Dash() {
                       currentMonitor()?.type != "Push to URL"
                     }
                   >
-                    <p class="text-sm text-green-400">{`${currentPing()?.time} - Status: ${currentPing()?.code} - ${currentPing()?.ping}ms`}</p>
+                    <p class="text-sm text-green-400">{`${
+                    new Date(
+                      new Date(currentPing()?.time).getTime() - new Date(currentPing()?.time).getTimezoneOffset() * 60000,
+                    ).toLocaleString()} ${currentPing()?.code ? "- Status: " + currentPing()?.code : ""} - ${currentPing()?.ping}ms`}</p>
                   </Show>
 
                   <Show
@@ -768,6 +771,39 @@ export default function Dash() {
           <Show when={currentMonitor()?.type != "Server-Side Agent"}>
             <div class="mt-3 p-3 border rounded-md w-full h-64">
               <Chart data={currentChartData()} suffix="ms" id="pingChart" />
+            </div>
+
+            <div class="mt-3 p-3 border rounded-md w-full">
+              <h1 class="text-lg mb-2">History</h1>
+              {currentMonitor()?.logs.map((log) => (
+                <div class="flex items-center mb-2 w-full">
+                  <Badge
+                    variant={"noHover"}
+                    class={`
+                      w-16 rounded-lg py-1 px-3 mr-2 justify-center
+                      ${log.status == "up"
+                        ? "bg-green-400"
+                        : log.status == "paused"
+                        ? "bg-gray-400"
+                        : log.status == "degraded"
+                        ? "bg-yellow-200"
+                        : log.status == "down"
+                        ? "bg-red-400"
+                        : "bg-gray-500"}
+                    `}
+                  >
+                    {log.status}
+                  </Badge>
+
+                  <span class="text-sm">{log.message}</span>
+
+                  <span class="text-sm text-muted-foreground ml-auto">
+                    {new Date(
+                      new Date(log.time).getTime() - new Date(log.time).getTimezoneOffset() * 60000,
+                    ).toLocaleString()}
+                  </span>
+                </div>
+              ))}
             </div>
           </Show>
 

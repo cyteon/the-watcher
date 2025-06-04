@@ -1,4 +1,4 @@
-import sendEmbed from "../sendEmbed.js";
+import log from "../log.js";
 
 export default async function checkPushToUrl(monitor, db) {
   const last_ping = await db.get(
@@ -13,7 +13,7 @@ export default async function checkPushToUrl(monitor, db) {
       "down",
     ]);
 
-    await sendEmbed(monitor, "down");
+    await log(monitor, "down");
     return;
   }
 
@@ -36,6 +36,6 @@ export default async function checkPushToUrl(monitor, db) {
       `Monitor with push url, ${monitor.name} (${monitor.id}) is not responding`,
     );
 
-    await sendEmbed(monitor, "down");
+    await log(monitor, "down");
   }
 }

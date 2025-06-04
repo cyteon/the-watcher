@@ -1,5 +1,5 @@
 import net from "net";
-import sendEmbed from "../sendEmbed.js";
+import log from "../log.js";
 
 export default async function pingTCP(monitor, db, data) {
   const socket = new net.Socket();
@@ -35,7 +35,7 @@ export default async function pingTCP(monitor, db, data) {
       );
     }
 
-    await sendEmbed(monitor, "up", ping);
+    await log(monitor, "up", ping);
 
     socket.destroy();
   });
@@ -49,7 +49,7 @@ export default async function pingTCP(monitor, db, data) {
       "down",
     ]);
 
-    await sendEmbed(monitor, "down");
+    await log(monitor, "down");
 
     socket.destroy();
   });
@@ -63,7 +63,7 @@ export default async function pingTCP(monitor, db, data) {
       "down",
     ]);
 
-    await sendEmbed(monitor, "down");
+    await log(monitor, "down");
 
     socket.destroy();
   });
@@ -82,6 +82,6 @@ export default async function pingTCP(monitor, db, data) {
       "down",
     ]);
 
-    await sendEmbed(monitor, "down");
+    await log(monitor, "down");
   }
 }

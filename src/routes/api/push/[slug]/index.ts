@@ -1,6 +1,6 @@
 import { open } from "sqlite";
 import sqlite3 from "sqlite3";
-import sendEmbed from "~/monitor/sendEmbed";
+import log from "~/monitor/log";
 
 export async function GET({ params, request }) {
   const { slug } = params;
@@ -33,7 +33,7 @@ export async function GET({ params, request }) {
     [monitor.id, status, searchParams.get("ping") || 0, 1],
   );
 
-  sendEmbed(monitor, status, 0);
+  log(monitor, status, 0);
 
   return new Response("OK");
 }

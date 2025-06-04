@@ -1,4 +1,4 @@
-import sendEmbed from "../sendEmbed.js";
+import log from "../log.js";
 
 export default async function pingHttp(monitor, db, data) {
   const start = Date.now();
@@ -41,7 +41,7 @@ export default async function pingHttp(monitor, db, data) {
           );
         }
 
-        await sendEmbed(monitor, "up", ping);
+        await log(monitor, "up", ping, `Online with status code ${res.status} | ping: ${ping}ms`);
       } else {
         console.error(`Failed to ping ${monitor.name}`);
 
@@ -51,7 +51,7 @@ export default async function pingHttp(monitor, db, data) {
           "down",
         ]);
 
-        await sendEmbed(monitor, "down");
+        await log(monitor, "down", 0, `Unexpected status code: ${res.status}`);
       }
     })
     .catch(async (err) => {
@@ -63,6 +63,6 @@ export default async function pingHttp(monitor, db, data) {
         "down",
       ]);
 
-      await sendEmbed(monitor, "down");
+      await log(monitor, "down", 0, err.message || "Unknown error");
     });
 }

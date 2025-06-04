@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb";
-import sendEmbed from "../sendEmbed.js";
+import log from "../log.js";
 
 export default async function pingMongoDB(monitor, db, data) {
   const client = new MongoClient(monitor.url);
@@ -37,7 +37,7 @@ export default async function pingMongoDB(monitor, db, data) {
       );
     }
 
-    await sendEmbed(monitor, "up", ping);
+    await log(monitor, "up", ping);
     console.log(`Successfully pinged ${monitor.name}`);
   } catch (err) {
     console.error(`Failed to ping ${monitor.name}: ${err}`);
@@ -48,6 +48,6 @@ export default async function pingMongoDB(monitor, db, data) {
       "down",
     ]);
 
-    await sendEmbed(monitor, "down");
+    await log(monitor, "down", 0, err.message || "Unknown error");
   }
 }

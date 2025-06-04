@@ -1,5 +1,5 @@
 import ping from "ping";
-import sendEmbed from "../sendEmbed.js";
+import log from "../log.js";
 
 export default async function sendPing(monitor, db, data) {
   const start = Date.now();
@@ -33,7 +33,7 @@ export default async function sendPing(monitor, db, data) {
         );
       }
 
-      await sendEmbed(monitor, "up", ping);
+      await log(monitor, "up", ping);
     } else {
       console.error(`Failed to ping ${monitor.name}`);
 
@@ -43,7 +43,7 @@ export default async function sendPing(monitor, db, data) {
         "down",
       ]);
 
-      await sendEmbed(monitor, "down");
+      await log(monitor, "down");
     }
   });
 }

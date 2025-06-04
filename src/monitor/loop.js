@@ -65,27 +65,36 @@ export default async function start() {
       if (getCooldown(monitor.id) <= 0) {
         coolDowns[monitor.id - 1] = monitor.interval;
 
-        if (monitor.type == "HTTP(s)") {
-          pingHttp(monitor, db, data);
-          console.log(`Pinging ${monitor.url}`);
-        } else if (monitor.type == "Ping") {
-          sendPing(monitor, db, data);
-          console.log(`Pinging ${monitor.url}`);
-        } else if (monitor.type == "TCP") {
-          pingTCP(monitor, db, data);
-          console.log(`Pinging ${monitor.url}`);
-        } else if (monitor.type == "MongoDB") {
-          pingMongoDB(monitor, db, data);
-          console.log(`Pinging ${monitor.url}`);
-        } else if (monitor.type == "Server-Side Agent") {
-          checkServerSideAgent(monitor, db);
-        } else if (monitor.type == "Push to URL") {
-          checkPushToUrl(monitor, db);
-        } else if (monitor.type == "PostgreSQL") {
-          pingPostgreSQL(monitor, db, data);
-          console.log(`Pinging ${monitor.url}`);
-        } else {
-          console.error(`Unknown monitor type: ${monitor.type}`);
+        try {
+          if (monitor.type == "HTTP(s)") {
+            pingHttp(monitor, db, data);
+            console.log(`Pinging ${monitor.url}`);
+          } else if (monitor.type == "Ping") {
+            sendPing(monitor, db, data);
+            console.log(`Pinging ${monitor.url}`);
+          } else if (monitor.type == "TCP") {
+            pingTCP(monitor, db, data);
+            console.log(`Pinging ${monitor.url}`);
+          } else if (monitor.type == "MongoDB") {
+            pingMongoDB(monitor, db, data);
+            console.log(`Pinging ${monitor.url}`);
+          } else if (monitor.type == "Server-Side Agent") {
+            checkServerSideAgent(monitor, db);
+          } else if (monitor.type == "Push to URL") {
+            checkPushToUrl(monitor, db);
+          } else if (monitor.type == "PostgreSQL") {
+            pingPostgreSQL(monitor, db, data);
+            console.log(`Pinging ${monitor.url}`);
+          } else {
+            console.error(`Unknown monitor type: ${monitor.type}`);
+          }
+        } catch (error) {
+          console.error(`Error pinging ${monitor.name}:`, error);
+          
+          await db.run(
+            "INSERT INTO Pings (id, code, status, ping) VALUES (?, ?, ?, ?)",
+            [monitor.id, -1, "error", 0],
+          );
         }
       }
     }

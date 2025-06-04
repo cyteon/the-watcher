@@ -1,5 +1,5 @@
 import { Client } from "pg";
-import sendEmbed from "../sendEmbed.js";
+import log from "../log.js";
 
 export default async function pingPostgreSQL(monitor, db, data) {
   const client = new Client({
@@ -38,7 +38,7 @@ export default async function pingPostgreSQL(monitor, db, data) {
       );
     }
 
-    await sendEmbed(monitor, "up", ping);
+    await log(monitor, "up", ping);
     console.log(`Successfully pinged ${monitor.name}`);
   } catch (err) {
     console.error(`Failed to ping ${monitor.name}: ${err}`);
@@ -49,7 +49,7 @@ export default async function pingPostgreSQL(monitor, db, data) {
       "down",
     ]);
 
-    await sendEmbed(monitor, "down");
+    await log(monitor, "down", 0, err.message || "Unknown error");
   } finally {
     await client.end();
   }

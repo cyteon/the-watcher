@@ -58,6 +58,11 @@ export async function GET({ request }) {
       monitors[i].id,
     ]);
 
+    const logs = await db.all(
+      "SELECT * FROM Logs WHERE id = ? ORDER BY time DESC",
+      monitors[i].id,
+    );
+
     const percentage = (uptime.up / uptime.total) * 100;
 
     monitors_data.push({
@@ -65,7 +70,8 @@ export async function GET({ request }) {
       avg_ping: avgPing.avg,
       uptime: percentage,
       heartbeats: pings,
-      agent: agent,
+      agent,
+      logs,
     });
   }
 
