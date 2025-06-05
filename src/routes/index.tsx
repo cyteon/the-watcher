@@ -59,7 +59,7 @@ export default function Index() {
       />
 
       <main class="h-screen w-full flex flex-col items-center">
-        <div class="mt-10 inline-block">
+        <div class="mt-4 inline-block">
           <h1
             class="text-7xl font-bold gradient text-center"
             innerHTML={data().title}

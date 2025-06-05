@@ -431,14 +431,14 @@ export default function Dash() {
               </Show>
 
               <AlertDialogFooter>
-                <AlertDialogAction>
-                  <span class="text-[18px] mt-1">Cancel</span>
+                <AlertDialogAction class="text-lg">
+                  Cancel
                 </AlertDialogAction>
-                <AlertDialogAction onClick={() => logOut()}>
-                  <span class="text-[18px] mt-1">Log Out</span>
+                <AlertDialogAction onClick={() => logOut()} class="mb-2 md:mb-0 text-lg">
+                  Log Out
                 </AlertDialogAction>
-                <AlertDialogAction onClick={() => editUser()}>
-                  <span class="text-[18px] mt-1">Save</span>
+                <AlertDialogAction onClick={() => editUser()} class="mb-2 md:mb-0 text-lg">
+                  Save
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -516,7 +516,7 @@ export default function Dash() {
               currentMonitor()?.type != "PostgreSQL" 
             }
           >
-            <a href={currentMonitor()?.url} target="_blank" class="mt-2">
+            <a href={currentMonitor()?.url} target="_blank">
               {currentMonitor()?.url}
             </a>
           </Show>
@@ -525,7 +525,6 @@ export default function Dash() {
             <a
               href={`${window.location.protocol}//${window.location.host}/api/push/${currentMonitor()?.url}?status=up&ping=`}
               target="_blank"
-              class="mt-2"
             >
               {window.location.protocol}//{window.location.host}
               /api/push/{currentMonitor()?.url}?status=up&msg=OK&ping=
@@ -533,7 +532,7 @@ export default function Dash() {
           </Show>
 
           <Show when={currentMonitor()?.type == "MongoDB" || currentMonitor()?.type == "PostgreSQL"}>
-            <a href={currentMonitor()?.url} target="_blank" class="mt-2">
+            <a href={currentMonitor()?.url} target="_blank">
               [redacted connection string]
             </a>
           </Show>
@@ -630,7 +629,7 @@ export default function Dash() {
                     </AlertDialogAction>
                     <AlertDialogAction
                       onClick={() => editMonitor()}
-                      class="text-lg"
+                      class="text-lg mb-2 md:mb-0"
                     >
                       Save Changes
                     </AlertDialogAction>

@@ -151,7 +151,7 @@ export default function Index() {
           </svg>
         </a>
 
-        <div class="w-full md:min-w-1/2 md:w-fit">
+        <div class="w-full md:w-fit" style="min-width: 50%;">
           <div class="flex p-5 flex-col lg:flex-row border bg-background mt-10 rounded-md">
             <div class="my-auto">
               <div class="flex items-center">
