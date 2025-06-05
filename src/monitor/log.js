@@ -40,9 +40,13 @@ export default async function log(monitor, status, ping = 0, message = "") {
     return;
   }
 
+  let genericMessage = status === "up" || status === "degraded"
+    ? `Service is responding`
+    : `Service is not responding`;
+
   await db.run(
     "INSERT INTO Logs (id, status, message) VALUES (?, ?, ?)",
-    [monitor.id, status, message || `Status changed to ${status}`],
+    [monitor.id, status, message || genericMessage],
   );
 
   await sendEmbed(monitor, status, ping);

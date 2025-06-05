@@ -37,7 +37,8 @@ export default async function pingMongoDB(monitor, db, data) {
       );
     }
 
-    await log(monitor, "up", ping);
+    await log(monitor, "up", ping, `Database is responding | ping: ${ping}ms`);
+    await client.close();
     console.log(`Successfully pinged ${monitor.name}`);
   } catch (err) {
     console.error(`Failed to ping ${monitor.name}: ${err}`);

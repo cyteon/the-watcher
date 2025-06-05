@@ -55,7 +55,7 @@ export default async function pingTCP(monitor, db, data) {
   });
 
   socket.on("error", async (err) => {
-    console.error(`Failed to ping ${monitor.name} (tcp error)`);
+    console.error(`Failed to ping ${monitor.name} (tcp error): ${err}`);
 
     await db.run("INSERT INTO Pings (id, code, status) VALUES (?, ?, ?)", [
       monitor.id,
@@ -63,7 +63,7 @@ export default async function pingTCP(monitor, db, data) {
       "down",
     ]);
 
-    await log(monitor, "down");
+    await log(monitor, "down", 0, `TCP error: ${err.message}`);
 
     socket.destroy();
   });
@@ -82,6 +82,6 @@ export default async function pingTCP(monitor, db, data) {
       "down",
     ]);
 
-    await log(monitor, "down");
+    await log(monitor, "down", 0, `TCP connect error: ${err.message}`);
   }
 }

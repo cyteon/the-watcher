@@ -2,8 +2,6 @@ import ping from "ping";
 import log from "../log.js";
 
 export default async function sendPing(monitor, db, data) {
-  const start = Date.now();
-
   ping.promise.probe(monitor.url).then(async (res) => {
     if (res.alive) {
       console.log(`Successfully pinged ${monitor.name}`);
@@ -43,7 +41,7 @@ export default async function sendPing(monitor, db, data) {
         "down",
       ]);
 
-      await log(monitor, "down");
+      await log(monitor, "down", 0, "Ping failed: Host is unreachable");
     }
   });
 }
