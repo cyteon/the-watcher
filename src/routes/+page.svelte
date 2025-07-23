@@ -1,2 +1,3 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<div class="w-full flex flex-col">
+    <a href="/dashboard" class="ml-auto mr-4 mt-2 underline text-sm text-neutral-300">go to dashboard →</a>
+</div>
