@@ -9,6 +9,8 @@
     let error: string | null = "";
 
     async function login() {
+        error = null;
+
         if (!username || !password) {
             error = "Please fill in all fields :p";
             return;
@@ -34,7 +36,7 @@
             state.user = {
                 username: data.username,
             };
-            
+
             setCookie("token", data.token);
             goto("/dashboard");
         } catch (err) {
@@ -44,7 +46,7 @@
     }
 
     onMount(async () => {
-        // check if a user exists, if not, create one
+        // check if a user exists, if not, redirect to create
         const exists = await fetch("/api/auth/exists", {
             method: "GET",
             headers: {

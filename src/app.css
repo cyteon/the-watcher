@@ -3,3 +3,11 @@
 input {
     @apply bg-neutral-800 text-neutral-300 border border-neutral-700 rounded-md p-2 w-full mt-1;
 }
+
+input:focus {
+   outline: none;
+}
+
+button {
+    cursor: pointer;
+}

@@ -1,0 +1,1 @@
+ALTER TABLE "heartbeats" RENAME COLUMN "error_message" TO "message";

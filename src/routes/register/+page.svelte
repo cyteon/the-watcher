@@ -11,6 +11,8 @@
     let error: string | null = "";
 
     async function register() {
+        error = null;
+
         if (!username || !password || !confirmPassword) {
             error = "Please fill in all fields :p";
             return;
