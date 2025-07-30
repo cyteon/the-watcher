@@ -89,7 +89,7 @@
         {/if}
 
         <button
-            class="mt-4 border border-neutral-700 text-neutral-300 rounded-md p-2 hover:bg-neutral-800 transition-colors duration-300"
+            class="mt-4 border border-neutral-700 text-neutral-300 rounded-md p-2 hover:bg-neutral-800"
             on:click={login}
         >
             Login
