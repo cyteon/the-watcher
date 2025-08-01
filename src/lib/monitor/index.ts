@@ -3,7 +3,7 @@ import { monitors } from "$lib/db/schema";
 import checkWebMonitor from "./types/web";
 
 let timers: Record<number, number> = {};
-let monitorList = [];
+export let monitorList: any[] = [];
 
 function shouldCheckMonitor(id: number): boolean  {
     if (timers[id] === undefined) {

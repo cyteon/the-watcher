@@ -1,6 +1,7 @@
 <script lang="ts">
     import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
+    import Chart from "$lib/components/Chart.svelte";
     import state from "$lib/state.svelte";
     import { onMount } from "svelte";
     import { getCookie } from "typescript-cookie";
@@ -58,7 +59,12 @@
                         class="flex w-full p-4 border border-neutral-700 rounded-md mt-2 hover:bg-neutral-800 cursor-pointer" 
                         on:click={() => { selectedMonitor = monitor; view = "dashboard"; hideList = isPhone; }}
                     >
-                        <span class="my-auto mr-2 bg-green-400 px-2 text-sm rounded-md text-black my-auto">123%</span>
+                        <span class={`
+                            my-auto mr-2 px-2 text-sm rounded-md text-black my-auto
+                            ${monitor.heartbeats[monitor.heartbeats.length - 1]?.status === "up" ? "bg-green-400" : "bg-red-400"}
+                        `}>
+                            {(monitor.heartbeats.filter(h => h.status === "up").length / monitor.heartbeats.length * 100 || 0).toFixed(2)}%
+                        </span>
                         <h1 class="text-xl font-semibold text-neutral-300">{monitor.name}</h1>
                         <div class="ml-auto my-auto space-x-1 flex">
                             {#each monitor.heartbeats.slice(-10) as heartbeat}
@@ -78,7 +84,7 @@
             <div class="w-full border border-neutral-800 rounded-md p-4 flex">
                 <p>
                     online monitors: <span class="text-green-400 font-bold">
-                        {monitors.filter(m => m.heartbeats[m.heartbeats.length - 1].status === "up").length}
+                        {monitors.filter(m => m.heartbeats[m.heartbeats.length - 1]?.status === "up").length}
                     </span>
                 </p>
 
@@ -86,7 +92,7 @@
 
                 <p>
                     offline monitors: <span class="text-red-400 font-bold">
-                        {monitors.filter(m => m.heartbeats[m.heartbeats.length - 1].status === "down").length}
+                        {monitors.filter(m => m.heartbeats[m.heartbeats.length - 1]?.status === "down").length}
                     </span>
                 </p>
 
@@ -97,7 +103,50 @@
                 </p>
             </div>
         {:else if view === "dashboard" && selectedMonitor}
-            <div class="w-full h-full border border-neutral-800 rounded-md p-4 flex flex-col">monitor page</div>
+            <div class="w-full h-full border border-neutral-800 rounded-md p-4 flex flex-col">
+                <h1 class="text-2xl font-bold text-neutral-300">{selectedMonitor.name}</h1>
+                <a href={selectedMonitor.url} class="text-sm text-blue-300 underline mb-4" target="_blank">
+                    {selectedMonitor.url}
+                </a>
+
+                <div class="p-2 flex-col border border-neutral-700 rounded-md">
+                    <div class="flex">
+                        <div class="flex gap-1">
+                            {#each Array(
+                                isPhone ? 12 : 50
+                            ).fill(0).map((_, i) => i).reverse() as index}
+                                {#if index < selectedMonitor.heartbeats.length}
+                                    {#if selectedMonitor.heartbeats[selectedMonitor.heartbeats.length - 1 - index]?.status === "up"}
+                                        <div class="h-8 w-3 rounded-md bg-green-400"></div>
+                                    {:else if selectedMonitor.heartbeats[selectedMonitor.heartbeats.length - 1 - index]?.status === "down"}
+                                        <span class="h-8 w-3 rounded-md bg-red-400"></span>
+                                    {/if}
+                                {:else}
+                                    <div class="h-8 w-3 rounded-md bg-neutral-700"></div>
+                                {/if}
+                            {/each}
+                        </div>
+                        <span class={`
+                            mx-auto h-min py-1 px-4 my-auto rounded-md text-black
+                            ${selectedMonitor.heartbeats[selectedMonitor.heartbeats.length - 1]?.status === "up" ? "bg-green-400" : "bg-red-400"}
+                        `}>
+                            {selectedMonitor.heartbeats[selectedMonitor.heartbeats.length - 1]?.status === "up" ? "Online" : "Down"}
+                        </span>
+                    </div>
+                    <p class="text-neutral-400 text-sm mt-2">Checked every {selectedMonitor.heartbeat_interval} seconds</p>
+                </div>
+
+                <div 
+                    class="p-2 flex-col border border-neutral-700 rounded-md mt-4 h-96 w-full"
+                >
+                    <Chart data={
+                        selectedMonitor.heartbeats.map(h => ({
+                            time: new Date(h.timestamp).getTime(),
+                            value: h.response_time,
+                        }))
+                    } />
+                </div>
+            </div>
         {:else if view === "statusPages"}
             <div class="w-full h-full border border-neutral-800 rounded-md p-4 flex flex-col">status pages</div>
         {/if}

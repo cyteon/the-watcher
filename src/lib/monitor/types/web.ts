@@ -16,7 +16,7 @@ export default async function checkWebMonitor(monitor) {
                 monitor_id: monitor.id,
                 timestamp: Math.floor(Date.now() / 1000),
                 status: "down",
-                response_time: Date.now() - startTime,
+                response_time: 0,
             });
             
             return;
@@ -42,7 +42,7 @@ export default async function checkWebMonitor(monitor) {
             monitor_id: monitor.id,
             timestamp: Math.floor(Date.now() / 1000),
             status: "down",
-            response_time: Date.now() - startTime,
+            response_time: 0,
         });
     }
 }

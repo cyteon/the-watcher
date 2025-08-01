@@ -1,6 +1,7 @@
 import { verifyRequest } from "$lib/api.server";
 import db from "$lib/db/index.js";
 import { heartbeats, monitors } from "$lib/db/schema.js";
+import { monitorList } from "$lib/monitor";
 
 export async function PUT({ request }) {
     const user = await verifyRequest(request);
@@ -21,11 +22,19 @@ export async function PUT({ request }) {
     }
 
     try {
-        await db.insert(monitors).values({
+        let result = await db.insert(monitors).values({
             name,
             url,
             heartbeat_interval,
             retries: retries || 0
+        });
+
+        monitorList.push({
+            id: result[0].id,
+            name,
+            url,
+            heartbeat_interval,
+            retries: retries || 0,
         });
 
         return new Response("Monitor created successfully", { status: 201 });

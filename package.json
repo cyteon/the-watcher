@@ -27,6 +27,7 @@
 		"bcrypt": "^6.0.0",
 		"crypto": "^1.0.1",
 		"drizzle-orm": "^0.44.3",
+		"lightweight-charts": "^5.0.8",
 		"pg": "^8.16.3",
 		"typescript-cookie": "^1.0.6"
 	}
