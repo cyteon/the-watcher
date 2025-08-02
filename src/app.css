@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 input {
-    @apply bg-neutral-800 text-neutral-300 border border-neutral-700 rounded-md p-2 w-full mt-1;
+    @apply bg-neutral-800 text-neutral-300 border rounded-md p-2 w-full mt-1;
 }
 
 input:focus {
@@ -14,4 +14,5 @@ button {
 
 * {
     transition: all 0.2s ease-in-out;
+    @apply border-neutral-700;
 }

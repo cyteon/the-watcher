@@ -1,6 +1,6 @@
 import { verifyRequest } from "$lib/api.server";
 import db from "$lib/db/index.js";
-import { heartbeats, monitors } from "$lib/db/schema.js";
+import { heartbeats, monitors, statusUpdates } from "$lib/db/schema.js";
 import { monitorList } from "$lib/monitor";
 
 export async function PUT({ request }) {
@@ -54,12 +54,16 @@ export async function GET({ request }) {
     try {
         let monitorList = await db.select().from(monitors);
         let heartbeatsData = await db.select().from(heartbeats);
+        let statusUpdatesData = await db.select().from(statusUpdates);
 
         monitorList = monitorList.map(monitor => {
             const monitorHeartbeats = heartbeatsData.filter(hb => hb.monitor_id === monitor.id);
+            const monitorStatusUpdates = statusUpdatesData.filter(su => su.monitor_id === monitor.id);
+
             return {
                 ...monitor,
-                heartbeats: monitorHeartbeats
+                heartbeats: monitorHeartbeats,
+                statusUpdates: monitorStatusUpdates,
             };
         });
 

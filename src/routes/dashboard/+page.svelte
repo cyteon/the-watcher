@@ -31,6 +31,10 @@
         monitors = await res.json();
         isPhone = window.innerWidth < 768;
     });
+
+    async function deleteMonitor(monitorId: string) {}
+    async function pauseUnpauseMonitor(monitorId: string, paused: boolean) {}
+        
 </script>
 
 <div class="flex w-full h-screen flex-col p-2">
@@ -105,9 +109,41 @@
         {:else if view === "dashboard" && selectedMonitor}
             <div class="w-full h-full border border-neutral-800 rounded-md p-4 flex flex-col">
                 <h1 class="text-2xl font-bold text-neutral-300">{selectedMonitor.name}</h1>
-                <a href={selectedMonitor.url} class="text-sm text-blue-300 underline mb-4" target="_blank">
+                <a href={selectedMonitor.url} class="text-sm text-blue-300 underline mb-2 w-fit" target="_blank">
                     {selectedMonitor.url}
                 </a>
+
+                <div class="flex mb-2 space-x-2">
+                    {#if selectedMonitor.paused}
+                        <button 
+                            class="text-white px-4 py-2 rounded-md border hover:bg-neutral-800"
+                            on:click={() => pauseUnpauseMonitor(selectedMonitor.id, false)}
+                        >
+                            Unpause Monitor
+                        </button>
+                    {:else}
+                        <button 
+                            class="text-white px-4 py-2 rounded-md border hover:bg-neutral-800"
+                            on:click={() => pauseUnpauseMonitor(selectedMonitor.id, true)}
+                        >
+                            Pause Monitor
+                        </button>
+                    {/if}
+
+                    <a 
+                        class="text-neutral-300 px-4 py-2 rounded-md border hover:bg-neutral-800"
+                        href={`/dashboard/monitors/${selectedMonitor.id}/edit`}
+                    >
+                        Edit Monitor
+                    </a>
+
+                    <button 
+                        class="text-red-400 px-4 py-2 rounded-md border hover:bg-neutral-800"
+                        on:click={() => deleteMonitor(selectedMonitor.id)}
+                    >
+                        Delete Monitor
+                    </button>
+                </div>
 
                 <div class="p-2 flex-col border border-neutral-700 rounded-md">
                     <div class="flex">
@@ -127,7 +163,7 @@
                             {/each}
                         </div>
                         <span class={`
-                            mx-auto h-min py-1 px-4 my-auto rounded-md text-black
+                            ml-auto h-min py-1 px-4 my-auto rounded-md text-black
                             ${selectedMonitor.heartbeats[selectedMonitor.heartbeats.length - 1]?.status === "up" ? "bg-green-400" : "bg-red-400"}
                         `}>
                             {selectedMonitor.heartbeats[selectedMonitor.heartbeats.length - 1]?.status === "up" ? "Online" : "Down"}

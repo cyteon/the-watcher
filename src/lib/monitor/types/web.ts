@@ -34,10 +34,16 @@ export default async function checkWebMonitor(monitor) {
             status: "up",
             response_time: ms,
         });
-    } catch (error) {
+    } catch (error: unknown) {
         console.error(`Monitor ${monitor.name} (${monitor.id}) failed with error:`, error);
 
-        await saveStatusUpdate(monitor.id, "down", error.message);
+        let cause = "";
+
+        if (error?.cause?.code) {
+            cause = ` [${error?.cause.code}]`;
+        }
+
+        await saveStatusUpdate(monitor.id, "down", `${error?.name}: ${error?.message}${cause}`);
         await db.insert(heartbeats).values({
             monitor_id: monitor.id,
             timestamp: Math.floor(Date.now() / 1000),
