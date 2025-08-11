@@ -14,13 +14,13 @@ export async function POST({ request }) {
         const user = await db.select().from(users).where(eq(users.username, username));
 
         if (user.length === 0) {
-            return new Response("User not found :(", { status: 404 });
+            return Response.json({ error: "User not found :(" }, { status: 404 });
         }
 
         const match = await bcrypt.compare(password, user[0].password);
 
         if (!match) {
-            return new Response("Incorrect password >:(", { status: 401 });
+            return Response.json({ error: "Incorrect password >:(" }, { status: 401 });
         }
 
         const bytes = new Uint8Array(48);
@@ -35,6 +35,6 @@ export async function POST({ request }) {
         return Response.json({ token, username }, { status: 200 });
     } catch (error) {
         console.error("Error getting user:", error);
-        return new Response("Failed to get user :(", { status: 500 });
+        return Response.json({ error: "Internal Server Error :c" }, { status: 500 });
     }
 }
