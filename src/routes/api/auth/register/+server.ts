@@ -7,11 +7,11 @@ export async function PUT({ request }) {
     const { username, password, confirmPassword } = await request.json();
 
     if (!username || !password || !confirmPassword) {
-        return new Response("Please fill in all fields :p", { status: 400 });
+        return Response.json({ error: "Please fill in all fields :p" }, { status: 400 })
     }
 
     if (password !== confirmPassword) {
-        return new Response("Passwords do not match :p", { status: 400 });
+        return Response.json({ error: "Passwords do not match :p" }, { status: 400 });
     }
 
     const userCount = await db.select({
@@ -19,7 +19,7 @@ export async function PUT({ request }) {
     }).from(users);
 
     if (userCount[0].count > 0) {
-        return new Response("Nuh uh dont even try >:(", { status: 403 });
+        return Response.json({ error: "Nuh uh dont even try >:("}, { status: 403 });
     }
 
     try {
@@ -40,6 +40,6 @@ export async function PUT({ request }) {
         return Response.json({ token, username }, { status: 201 });
     } catch (error) {
         console.error("Error registering user:", error);
-        return new Response("Failed to register user :(", { status: 500 });
+        return Response.json({ error: "Failed to register user :(" }, { status: 500 });
     }
 }

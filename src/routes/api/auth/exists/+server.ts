@@ -11,5 +11,5 @@ export async function GET() {
         return new Response(undefined, { status: 204 });
     }
 
-    return Response.json({}, { status: 200 });
+    return new Response(undefined, { status: 200 });
 }

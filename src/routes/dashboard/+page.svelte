@@ -34,7 +34,6 @@
 
     async function deleteMonitor(monitorId: string) {}
     async function pauseUnpauseMonitor(monitorId: string, paused: boolean) {}
-        
 </script>
 
 <div class="flex w-full h-screen flex-col p-2">
@@ -50,9 +49,9 @@
         >status pages</button>
     </div>
 
-    <div class="flex w-full h-full gap-4 p-4">
+    <div class="flex w-full flex-1 min-h-0 gap-4 p-4 overflow-hidden">
         {#if !hideList}
-            <div class="w-full md:w-1/3 h-full border border-neutral-800 rounded-md p-4 flex flex-col">
+            <div class="w-full md:w-1/3 border border-neutral-800 rounded-md p-4 flex flex-col overflow-y-auto min-h-0">
                 <div class="flex">
                     <h1 class="text-2xl font-bold text-neutral-300">Monitors</h1>
                     <a href="/dashboard/monitors/new" class="ml-auto underline text-sm text-neutral-300 my-auto">new monitor →</a>
@@ -107,7 +106,7 @@
                 </p>
             </div>
         {:else if view === "dashboard" && selectedMonitor}
-            <div class="w-full h-full border border-neutral-800 rounded-md p-4 flex flex-col">
+            <div class="w-full flex-1 min-h-0 border border-neutral-800 rounded-md p-4 flex flex-col overflow-y-auto">
                 <h1 class="text-2xl font-bold text-neutral-300">{selectedMonitor.name}</h1>
                 <a href={selectedMonitor.url} class="text-sm text-blue-300 underline mb-2 w-fit" target="_blank">
                     {selectedMonitor.url}
@@ -182,9 +181,38 @@
                         }))
                     } />
                 </div>
+
+                <div class="mt-4 p-2 flex-col border border-neutral-700 rounded-md">
+                    <h2 class="text-lg font-semibold text-neutral-300">History</h2>
+                    <table class="w-full mt-2">
+                        <thead>
+                            <tr>
+                                <th class="text-left text-neutral-400">Status</th>
+                                <th class="text-left text-neutral-400">Time</th>
+                                <th class="text-left text-neutral-400">Message</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {#each selectedMonitor.statusUpdates as update}
+                                <tr>
+                                    <td class="py-2">
+                                        <span class={`px-2 py-1 rounded-md ${update.status === "up" ? "bg-green-400" : "bg-red-400"} text-black`}>
+                                            {update.status}
+                                        </span>
+                                    </td>
+                                    <td class="py-2 text-neutral-300">
+                                        {new Date(update.timestamp * 1000).toDateString()} {new Date(update.timestamp * 1000).toLocaleTimeString()}
+                                    </td>
+                                    <td class="py-2 text-neutral-300">{update.message}</td>
+                                </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         {:else if view === "statusPages"}
-            <div class="w-full h-full border border-neutral-800 rounded-md p-4 flex flex-col">status pages</div>
+            <div class="w-full h-full border border-neutral-800 rounded-md p-4 flex flex-col overflow-y-auto min-h-0">status pages</div>
         {/if}
     </div>
 </div>
