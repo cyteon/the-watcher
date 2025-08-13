@@ -172,7 +172,7 @@
                 </div>
 
                 <div 
-                    class="p-2 flex-col border border-neutral-700 rounded-md mt-4 h-96 w-full"
+                    class="p-2 flex-col border border-neutral-700 rounded-md mt-4 h-72 w-full"
                 >
                     <Chart data={
                         selectedMonitor.heartbeats.map(h => ({
@@ -212,7 +212,10 @@
                 </div>
             </div>
         {:else if view === "statusPages"}
-            <div class="w-full h-full border border-neutral-800 rounded-md p-4 flex flex-col overflow-y-auto min-h-0">status pages</div>
+            <div class="w-full h-full border border-neutral-800 rounded-md p-4 flex flex-col overflow-y-auto min-h-0">
+                <h1 class="text-2xl font-bold text-neutral-300">Status Pages</h1>
+                
+            </div>
         {/if}
     </div>
 </div>

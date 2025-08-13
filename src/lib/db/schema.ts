@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { integer, pgTable, serial, text } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -34,4 +35,12 @@ export const statusUpdates = pgTable("status_updates", {
     timestamp: integer("timestamp").notNull(),
     status: text("status").notNull(),
     message: text("message").notNull(),
+});
+
+export const statusPages = pgTable("status_pages", {
+    id: serial("id").primaryKey(),
+    name: text("name").notNull(),
+    description: text("description"),
+    slug: text("slug").notNull().unique(),
+    monitors: text("monitors").array().default(sql`'{}'::text[]`),
 });
