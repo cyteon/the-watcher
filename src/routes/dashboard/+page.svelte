@@ -45,7 +45,7 @@
         <p class="mx-2 text-neutral-500">\</p>
         <button
             class={`${view === "statusPages" ? "underline" : ""} text-neutral-300`}
-            on:click={() => { view = "statusPages"; hideList = true; selectedMonitor = null; }}
+            on:click={() => { view = "statusPages"; hideList = isPhone; selectedMonitor = null; }}
         >status pages</button>
     </div>
 
@@ -106,7 +106,7 @@
                 </p>
             </div>
         {:else if view === "dashboard" && selectedMonitor}
-            <div class="w-full flex-1 min-h-0 border border-neutral-800 rounded-md p-4 flex flex-col overflow-y-auto">
+            <div class="w-full border border-neutral-800 rounded-md p-4 flex flex-col overflow-y-auto">
                 <h1 class="text-2xl font-bold text-neutral-300">{selectedMonitor.name}</h1>
                 <a href={selectedMonitor.url} class="text-sm text-blue-300 underline mb-2 w-fit" target="_blank">
                     {selectedMonitor.url}
