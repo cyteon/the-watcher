@@ -3,23 +3,21 @@
     import { getCookie } from "typescript-cookie";
 
     let name: string = "";
-    let url: string = "https://";
-
-    let heartbeat_interval: number = 60;
-    let retries: number = 0;
+    let slug: string = "";
+    let description: string = "";
 
     let error: string | null = null;
 
-    async function createMonitor() {
+    async function createPage() {
         error = null; 
 
-        if (!name || !url) {
+        if (!name || !slug) {
             error = "Please fill in all fields :p";
             return;
         }
 
         try {
-            const res = await fetch("/api/monitors", {
+            const res = await fetch("/api/status_pages", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -27,9 +25,8 @@
                 },
                 body: JSON.stringify({
                     name,
-                    url,
-                    heartbeat_interval,
-                    retries,
+                    slug,
+                    description,
                 }),
             });
 
@@ -39,9 +36,9 @@
                 return;
             }
 
-            goto("/dashboard");
+            goto(`/status/${slug}`);
         } catch (err) {
-            console.error("Error creating monitor:", err);
+            console.error("Error creating status page:", err);
             error = "An unexpected error occurred :(";
         }
     }
@@ -49,27 +46,27 @@
 
 <div class="flex w-full h-screen flex-col p-2">
     <div class="flex flex-col p-4 border border-neutral-800 rounded-md m-auto w-full md:w-1/3">
-        <h1 class="text-2xl font-bold text-neutral-300">Add new monitor</h1>
+        <h1 class="text-2xl font-bold text-neutral-300">New status page</h1>
 
-        <label class="mt-4 text-neutral-300" for="name">Monitor Name</label>
+        <label class="mt-4 text-neutral-300" for="name">Page Name</label>
         <input id="name" type="text" bind:value={name} />
 
-        <label class="mt-2 text-neutral-300" for="url">URL</label>
-        <input id="url" type="text" bind:value={url} />
+        <label class="mt-2 text-neutral-300" for="url">URL Slug</label>
+        <div class="flex border rounded-md">
+            <div class="whitespace-pre bg-neutral-800 px-2 items-center flex text-lg text-neutral-300">
+                <p>/status/</p>
+            </div>
+            <input class="bg-neutral-900! border-0! placeholder-neutral-400" id="url" type="text" placeholder="enter slug..." bind:value={slug} />
+        </div>
 
         <label class="mt-2 text-neutral-300" for="interval">
-            Heartbeat Interval (check every {heartbeat_interval} seconds)
+            Description (optional)
         </label>
-        <input
+        <textarea
             id="interval"
-            type="number"
-            bind:value={heartbeat_interval}
-            min="1"
-            max="3600"
-        />
-
-        <label class="mt-2 text-neutral-300" for="type">Retries</label>
-        <input id="retries" type="number" bind:value={retries} min="1" max="10" />
+            bind:value={description}
+            class="h-24"
+        ></textarea>
 
         {#if error}
             <p class="text-red-400 mt-4">{error}</p>
@@ -77,9 +74,9 @@
 
         <button
             class="mt-4 border text-neutral-300 rounded-md p-2 hover:bg-neutral-800 transition-colors duration-300"
-            on:click={createMonitor}
+            on:click={createPage}
         >
-            Create Monitor
+            Create Page
         </button>
     </div>
 </div>

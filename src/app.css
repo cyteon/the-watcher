@@ -1,10 +1,10 @@
 @import 'tailwindcss';
 
-input {
+input, textarea {
     @apply bg-neutral-800 text-neutral-300 border rounded-md p-2 w-full mt-1;
 }
 
-input:focus {
+input:focus, textarea:focus {
    outline: none;
 }
 

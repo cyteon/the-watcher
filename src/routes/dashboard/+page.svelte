@@ -59,7 +59,7 @@
 
                 {#each monitors as monitor}
                     <button 
-                        class="flex w-full p-4 border border-neutral-700 rounded-md mt-2 hover:bg-neutral-800 cursor-pointer" 
+                        class="flex w-full p-4 border rounded-md mt-2 hover:bg-neutral-800 cursor-pointer" 
                         on:click={() => { selectedMonitor = monitor; view = "dashboard"; hideList = isPhone; }}
                     >
                         <span class={`
@@ -108,11 +108,11 @@
         {:else if view === "dashboard" && selectedMonitor}
             <div class="w-full border border-neutral-800 rounded-md p-4 flex flex-col overflow-y-auto">
                 <h1 class="text-2xl font-bold text-neutral-300">{selectedMonitor.name}</h1>
-                <a href={selectedMonitor.url} class="text-sm text-blue-300 underline mb-2 w-fit" target="_blank">
+                <a href={selectedMonitor.url} class="text-blue-300 underline mb-2 w-fit" target="_blank">
                     {selectedMonitor.url}
                 </a>
 
-                <div class="flex mb-2 space-x-2">
+                <div class="flex mb-4 space-x-2">
                     {#if selectedMonitor.paused}
                         <button 
                             class="text-white px-4 py-2 rounded-md border hover:bg-neutral-800"
@@ -144,7 +144,7 @@
                     </button>
                 </div>
 
-                <div class="p-2 flex-col border border-neutral-700 rounded-md">
+                <div class="p-2 flex-col border rounded-md">
                     <div class="flex">
                         <div class="flex gap-1">
                             {#each Array(
@@ -172,7 +172,7 @@
                 </div>
 
                 <div 
-                    class="p-2 flex-col border border-neutral-700 rounded-md mt-4 h-72 w-full"
+                    class="p-2 flex-col border rounded-md mt-4 h-72 w-full"
                 >
                     <Chart data={
                         selectedMonitor.heartbeats.map(h => ({
@@ -182,7 +182,7 @@
                     } />
                 </div>
 
-                <div class="mt-4 p-2 flex-col border border-neutral-700 rounded-md">
+                <div class="mt-4 p-2 flex-col border rounded-md">
                     <h2 class="text-lg font-semibold text-neutral-300">History</h2>
                     <table class="w-full mt-2">
                         <thead>
@@ -213,8 +213,11 @@
             </div>
         {:else if view === "statusPages"}
             <div class="w-full h-full border border-neutral-800 rounded-md p-4 flex flex-col overflow-y-auto min-h-0">
-                <h1 class="text-2xl font-bold text-neutral-300">Status Pages</h1>
-                
+                <div class="flex">
+                    <h1 class="text-2xl font-bold text-neutral-300">Status Pages</h1>
+
+                    <a href="/dashboard/status_pages/new" class="ml-auto underline text-sm text-neutral-300 my-auto">new status page →</a>
+                </div>
             </div>
         {/if}
     </div>
