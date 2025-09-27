@@ -42,13 +42,13 @@
                             </p>
 
                             <p class="text-neutral-300 ml-2 border px-2 rounded-md w-1/2">avg. ping: 
-                                <span class="text-neutral-300">{page.avg_ping}ms</span>
+                                <span class="text-neutral-300">{page.avg_ping ? page.avg_ping.toString() + "ms" : "N/A"}</span>
                             </p>
                         </div>
 
                         <div class="flex w-full">
                             <p class="text-neutral-300 xl:ml-2 border px-2 rounded-md w-1/2">avg. uptime: 
-                                <span class="text-neutral-300">{page.avg_uptime}%</span>
+                                <span class="text-neutral-300">{page.avg_uptime ? page.avg_uptime.toFixed(2) + "%" : "N/A"}</span>
                             </p>
 
                             {#if page.status === "up"}

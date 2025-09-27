@@ -50,8 +50,6 @@ export async function GET() {
             if (pageMonitors.length === 0) {
                 return {
                     ...page,
-                    avg_uptime: "??",
-                    avg_ping: "??",
                     monitor_count: 0,
                     monitors_up: 0,
                     status: "unknown"
@@ -75,7 +73,7 @@ export async function GET() {
             });
 
             let avgUptime = (totalOnline / heartbeatCount) * 100;
-            let avgPing = upMonitors > 0 ? (totalPing / upMonitors).toFixed(2) : "N/A";
+            let avgPing = upMonitors > 0 ? (totalPing / upMonitors).toFixed(2) : null;
 
             let status;
 

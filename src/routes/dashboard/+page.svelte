@@ -182,7 +182,7 @@
                     } />
                 </div>
 
-                <div class="mt-4 p-2 flex-col border rounded-md">
+                <div class="mt-4 p-2 flex-col border rounded-md overflow-y-auto flex-1">
                     <h2 class="text-lg font-semibold text-neutral-300">History</h2>
                     <table class="w-full mt-2">
                         <thead>
