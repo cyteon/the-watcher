@@ -17,17 +17,19 @@
 </script>
 
 <div class="w-full h-screen flex flex-col">
-    <a href="/dashboard" class="absolute right-2 mr-4 mt-2 underline text-sm text-neutral-300">go to dashboard →</a>
+    <a href="/dashboard" class="absolute right-4 top-2 text-sm text-neutral-300 hover:underline">go to dashboard →</a>
 
-    <div class="m-auto w-full md:w-1/2 flex">
+    <div class="m-auto w-full md:w-1/2 flex flex-col">
         {#if statusPages.length > 0}
+            <h1 class="text-3xl font-bold text-neutral-300 w-full text-center mb-2">Status Pages</h1>
+        
             {#each statusPages as page}
                 <div class="flex flex-col flex-1 p-2 border rounded-md m-2">
                     <div class="flex">
                         <h2 class="text-lg font-semibold text-neutral-300">{page.name}</h2>
                         
                         <a href={`/status/${page.slug}`} class="ml-auto my-auto text-sm text-neutral-300 hover:underline">
-                            open page →
+                            open →
                         </a>
                     </div>
 
@@ -60,7 +62,7 @@
                                     degraded :/
                                 </p>
                             {:else}
-                                <p class="text-neutral-400 ml-2 border px-2 rounded-md w-1/2">unknown status</p>
+                                <p class="text-neutral-400 ml-2 border px-2 rounded-md w-1/2">status unknown</p>
                             {/if}
                         </div>
                     </div>
