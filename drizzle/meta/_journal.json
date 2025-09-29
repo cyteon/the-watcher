@@ -50,6 +50,13 @@
       "when": 1753704638348,
       "tag": "0006_abandoned_spirit",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1759173804527,
+      "tag": "0007_loud_mandrill",
+      "breakpoints": true
     }
   ]
 }
