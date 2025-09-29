@@ -19,7 +19,7 @@
         }
 
         try {
-            const res = await fetch("/api/monitors", {
+            const res = await fetch("/api/admin/monitors", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
