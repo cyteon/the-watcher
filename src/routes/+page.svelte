@@ -24,7 +24,7 @@
             <h1 class="text-3xl font-bold text-neutral-300 w-full text-center mb-2">Status Pages</h1>
         
             {#each statusPages as page}
-                <div class="flex flex-col flex-1 p-2 border rounded-md m-2">
+                <div class="flex flex-col flex-1 p-2 border rounded-md my-2">
                     <div class="flex">
                         <h2 class="text-lg font-semibold text-neutral-300">{page.name}</h2>
                         
@@ -44,13 +44,13 @@
                             </p>
 
                             <p class="text-neutral-300 ml-2 border px-2 rounded-md w-1/2">avg. ping: 
-                                <span class="text-neutral-300">{page.avg_ping ? page.avg_ping.toString() + "ms" : "N/A"}</span>
+                                <span class="text-neutral-300">{page.avg_ping ? page.avg_ping + "ms" : "N/A"}</span>
                             </p>
                         </div>
 
                         <div class="flex w-full">
                             <p class="text-neutral-300 xl:ml-2 border px-2 rounded-md w-1/2">avg. uptime: 
-                                <span class="text-neutral-300">{page.avg_uptime ? page.avg_uptime.toFixed(2) + "%" : "N/A"}</span>
+                                <span class="text-neutral-300">{page.avg_uptime ? page.avg_uptime + "%" : "N/A"}</span>
                             </p>
 
                             {#if page.status === "up"}
@@ -58,7 +58,7 @@
                             {:else if page.status === "down"}
                                 <p class="text-red-400 ml-2 border px-2 rounded-md w-1/2">offline :c</p>
                             {:else if page.status === "degraded"}
-                                <p class="text-yellow-400 ml-2 border px-2 rounded-md w-1/2">
+                                <p class="text-yellow-200 ml-2 border px-2 rounded-md w-1/2">
                                     degraded :/
                                 </p>
                             {:else}

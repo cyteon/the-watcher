@@ -1,10 +1,30 @@
 import { verifyRequest } from "$lib/api.server";
 import db from "$lib/db";
-import { heartbeats, monitors, statusPages } from "$lib/db/schema";
+import { heartbeats, monitors, statusPages, statusPageMonitors } from "$lib/db/schema";
 import { eq, desc, inArray } from "drizzle-orm";
 
 export async function GET() {
     let pages = await db.select().from(statusPages);
+
+    const statusPageMonitorRelations = await db
+        .select({
+            status_page_id: statusPageMonitors.status_page_id,
+            monitor_id: statusPageMonitors.monitor_id,
+        })
+        .from(statusPageMonitors);
+
+    const monitorIds = [...new Set(statusPageMonitorRelations.map(rel => rel.monitor_id))];
+
+    if (monitorIds.length === 0) {
+        return Response.json(
+            pages.map(page => ({
+                ...page,
+                monitor_count: 0,
+                monitors_up: 0,
+                status: "unknown"
+            }))
+        );
+    }
 
     let data = await db
         .select({
@@ -18,7 +38,7 @@ export async function GET() {
         })
         .from(monitors)
         .leftJoin(heartbeats, eq(monitors.id, heartbeats.monitor_id))
-        .where(inArray(monitors.id, pages.flatMap(page => page.monitors || [])))
+        .where(inArray(monitors.id, monitorIds))
         .orderBy(desc(heartbeats.timestamp));
 
     let monitorsMap = new Map();
@@ -43,9 +63,13 @@ export async function GET() {
 
     return Response.json(
         pages.map(page => {
-            const pageMonitors = page.monitors?.map(monitorId => 
-                monitorsMap.get(parseInt(monitorId))
-            ).filter(Boolean) || [];
+            const pageMonitorIds = statusPageMonitorRelations
+                .filter(rel => rel.status_page_id === page.id)
+                .map(rel => rel.monitor_id);
+            
+            const pageMonitors = pageMonitorIds
+                .map(monitorId => monitorsMap.get(monitorId))
+                .filter(Boolean);
 
             if (pageMonitors.length === 0) {
                 return {
@@ -59,7 +83,7 @@ export async function GET() {
             let heartbeatCount = 0;
             let totalOnline = 0;
             let totalPing = 0;
-            let upMonitors = 0;
+            let upMonitors = pageMonitors.filter(m => m.heartbeats[m.heartbeats.length - 1]?.status === "up").length;
 
             pageMonitors.forEach(monitor => {
                 heartbeatCount += monitor.heartbeats.length;
@@ -67,13 +91,12 @@ export async function GET() {
                     if (hb.status === "up") {
                         totalOnline++;
                         totalPing += hb.response_time;
-                        upMonitors++;
                     }
                 });
             });
 
             let avgUptime = (totalOnline / heartbeatCount) * 100;
-            let avgPing = upMonitors > 0 ? (totalPing / upMonitors).toFixed(2) : null;
+            let avgPing = upMonitors > 0 ? (totalPing / totalOnline).toFixed(2) : null;
 
             let status;
 
@@ -104,18 +127,27 @@ export async function PUT({ request }) {
         return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, slug, description } = await request.json();
+    const { name, slug, description, monitors: monitorIds } = await request.json();
 
     if (!name || !slug) {
         return Response.json({ error: "Name and slug are required" }, { status: 400 });
     }
 
     try {
-        await db.insert(statusPages).values({
+        const [statusPage] = await db.insert(statusPages).values({
             name,
             slug,
             description: description || "No description",
-        });
+        }).returning();
+
+        if (monitorIds && monitorIds.length > 0) {
+            await db.insert(statusPageMonitors).values(
+                monitorIds.map(monitorId => ({
+                    status_page_id: statusPage.id,
+                    monitor_id: parseInt(monitorId)
+                }))
+            );
+        }
 
         return new Response(undefined, { status: 201 });
     } catch (error) {

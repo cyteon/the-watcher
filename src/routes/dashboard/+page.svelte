@@ -7,6 +7,8 @@
     import { getCookie } from "typescript-cookie";
 
     let monitors: any[] = [];
+    let statusPages: any[] = [];
+
     let selectedMonitor: any = null;
     let hideList: boolean = false;
     let isPhone: boolean = false;
@@ -17,7 +19,7 @@
             goto("/login");
         }
 
-        const res = await fetch("/api/monitors", {
+        const res = await fetch("/api/admin/monitors", {
             headers: {
                 "Authorization": `Bearer ${getCookie("token")}`,
             },
@@ -30,6 +32,15 @@
 
         monitors = await res.json();
         isPhone = window.innerWidth < 768;
+
+        const res2 = await fetch("/api/status_pages");
+
+        if (!res2.ok) {
+            console.error("Failed to fetch status pages:", res2.statusText);
+            return;
+        }
+
+        statusPages = await res2.json();
     });
 
     async function deleteMonitor(monitorId: string) {}
@@ -218,6 +229,52 @@
 
                     <a href="/dashboard/status_pages/new" class="ml-auto underline text-sm text-neutral-300 my-auto">new status page →</a>
                 </div>
+
+                {#each statusPages as page}
+                    <div class="flex flex-col h-fit p-2 border rounded-md my-2">
+                        <div class="flex">
+                            <h2 class="text-lg font-semibold text-neutral-300">{page.name}</h2>
+                            
+                            <a href={`/dashboard/status_pages/edit/${page.slug}`} class="ml-auto my-auto text-sm text-neutral-300 hover:underline">
+                                edit →
+                            </a>
+                        </div>
+
+                        <p class="text-sm text-neutral-400">{page.description}</p>
+
+                        <div class="xl:flex text-sm w-full mt-2">
+                            <div class="flex mb-1 xl:mb-0 w-full">
+                                <p class="text-neutral-300 border px-2 rounded-md w-1/2">up/down: 
+                                    <span class="text-green-400">{page.monitors_up}</span>
+                                    /
+                                    <span class="text-red-400">{page.monitor_count - page.monitors_up}</span>
+                                </p>
+
+                                <p class="text-neutral-300 ml-2 border px-2 rounded-md w-1/2">avg. ping: 
+                                    <span class="text-neutral-300">{page.avg_ping ? page.avg_ping + "ms" : "N/A"}</span>
+                                </p>
+                            </div>
+
+                            <div class="flex w-full">
+                                <p class="text-neutral-300 xl:ml-2 border px-2 rounded-md w-1/2">avg. uptime: 
+                                    <span class="text-neutral-300">{page.avg_uptime ? page.avg_uptime + "%" : "N/A"}</span>
+                                </p>
+
+                                {#if page.status === "up"}
+                                    <p class="text-green-400 ml-2 border px-2 rounded-md w-1/2">online :D</p>
+                                {:else if page.status === "down"}
+                                    <p class="text-red-400 ml-2 border px-2 rounded-md w-1/2">offline :c</p>
+                                {:else if page.status === "degraded"}
+                                    <p class="text-yellow-200 ml-2 border px-2 rounded-md w-1/2">
+                                        degraded :/
+                                    </p>
+                                {:else}
+                                    <p class="text-neutral-400 ml-2 border px-2 rounded-md w-1/2">status unknown</p>
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+                {/each}
             </div>
         {/if}
     </div>

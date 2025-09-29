@@ -42,5 +42,10 @@ export const statusPages = pgTable("status_pages", {
     name: text("name").notNull(),
     description: text("description"),
     slug: text("slug").notNull().unique(),
-    monitors: text("monitors").array().default(sql`'{}'::text[]`),
+});
+
+export const statusPageMonitors = pgTable("status_page_monitors", {
+    id: serial("id").primaryKey(),
+    status_page_id: integer("status_page_id").notNull().references(() => statusPages.id, { onDelete: "cascade" }),
+    monitor_id: integer("monitor_id").notNull().references(() => monitors.id, { onDelete: "cascade" }),
 });
