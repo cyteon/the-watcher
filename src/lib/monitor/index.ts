@@ -26,7 +26,6 @@ export default async function startMonitor() {
         monitorList = await db.select().from(monitors);
     } catch (error) {
         console.error("Error fetching monitors:", error);
-        return;
     }
 
     setInterval(() => {
