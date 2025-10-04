@@ -1,5 +1,5 @@
 # The Watcher (V2)
-The Watcher is an uptime monitor, now fully rewritten from scratch in svelte, along with using postgresql instead of sqlite!
+The Watcher is an uptime monitor, now fully rewritten from scratch in svelte, along with using postgresql instead of sqlite! It currently only supports web monitors but will support more soon.
 
 ## Running locally
 1. Clone the repository with `git clone https://github.com/cyteon/the-watcher`
