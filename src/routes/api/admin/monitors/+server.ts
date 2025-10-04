@@ -2,6 +2,7 @@ import { verifyRequest } from "$lib/api.server";
 import db from "$lib/db/index.js";
 import { heartbeats, monitors, statusUpdates } from "$lib/db/schema.js";
 import { monitorList } from "$lib/monitor";
+import { eq } from "drizzle-orm";
 
 export async function PUT({ request }) {
     const user = await verifyRequest(request);

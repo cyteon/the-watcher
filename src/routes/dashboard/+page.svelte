@@ -43,7 +43,32 @@
         statusPages = await res2.json();
     });
 
-    async function deleteMonitor(monitorId: string) {}
+    async function deleteMonitor(monitorId: string) {
+        if (!browser) return;
+
+        if (!confirm("Are you sure you want to delete this monitor? This action cannot be undone.")) {
+            return;
+        }
+
+        const res = await fetch(`/api/admin/monitors/${monitorId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${getCookie("token")}`,
+            },
+        });
+
+        if (!res.ok) {
+            alert("Failed to delete monitor: " + res.statusText);
+            return;
+        }
+
+        monitors = monitors.filter(m => m.id !== monitorId);
+        selectedMonitor = null;
+        if (isPhone) {
+            hideList = false;
+        }
+    }
+    
     async function pauseUnpauseMonitor(monitorId: string, paused: boolean) {}
 </script>
 
