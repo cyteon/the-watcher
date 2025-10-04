@@ -27,7 +27,7 @@ export async function PUT({ request }) {
             url,
             heartbeat_interval,
             retries: retries || 0
-        });
+        }).returning();
 
         monitorList.push({
             id: result[0].id,
