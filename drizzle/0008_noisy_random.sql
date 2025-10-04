@@ -1,0 +1,1 @@
+ALTER TABLE "monitors" ADD COLUMN "paused" boolean DEFAULT false NOT NULL;

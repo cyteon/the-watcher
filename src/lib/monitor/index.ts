@@ -36,6 +36,8 @@ export default async function startMonitor() {
                 if (shouldCheckMonitor(monitor.id)) {
                     console.log(`Checking monitor: ${monitor.name} (${monitor.id})`);
 
+                    if (monitor.paused) return;
+
                     // rn only web, will add more
                     await checkWebMonitor(monitor);
                 }
@@ -44,4 +46,12 @@ export default async function startMonitor() {
             console.error("Error processing monitors:", error);
         }
     }, 1000); // every second
+
+    setInterval(async () => {
+        try {
+            monitorList = await db.select().from(monitors);
+        } catch (error) {
+            console.error("Error refreshing monitors:", error);
+        }
+    }, 60000); // every minute
 }

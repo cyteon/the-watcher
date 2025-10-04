@@ -69,7 +69,27 @@
         }
     }
     
-    async function pauseUnpauseMonitor(monitorId: string, paused: boolean) {}
+    async function pauseUnpauseMonitor(monitorId: string, paused: boolean) {
+        if (!browser) return;
+
+        const res = await fetch(`/api/admin/monitors/${monitorId}`, {
+            method: "PATCH",
+            headers: {
+                "Authorization": `Bearer ${getCookie("token")}`,
+            },
+            body: JSON.stringify({ paused }),
+        });
+
+        if (!res.ok) {
+            alert("Failed to update monitor: " + res.statusText);
+            return;
+        }
+
+        monitors = monitors.map(m => m.id === monitorId ? { ...m, paused } : m);
+        if (selectedMonitor && selectedMonitor.id === monitorId) {
+            selectedMonitor.paused = paused;
+        }
+    }
 </script>
 
 <div class="flex w-full h-screen flex-col p-2">
