@@ -185,13 +185,6 @@
                         </button>
                     {/if}
 
-                    <a 
-                        class="text-neutral-300 px-4 py-2 rounded-md border hover:bg-neutral-800"
-                        href={`/dashboard/monitors/${selectedMonitor.id}/edit`}
-                    >
-                        Edit Monitor
-                    </a>
-
                     <button 
                         class="text-red-400 px-4 py-2 rounded-md border hover:bg-neutral-800"
                         on:click={() => deleteMonitor(selectedMonitor.id)}
