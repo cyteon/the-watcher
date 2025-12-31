@@ -6,13 +6,30 @@
     let url: string = "";
 
     let type: string = "http(s)";
+
     let url_label: string = "URL";
     $: switch (type) {
         case "http(s)":
             url_label = "URL";
             break;
+        
         case "ping":
+        case "tcp":
             url_label = "Host";
+            break;
+    }
+
+    let url_placeholder: string = "https://";
+    $: switch (type) {
+        case "http(s)":
+            url_placeholder = "https://";
+            break;
+        
+        case "ping":
+            url_placeholder = "1.1.1.1";
+            break;
+        case "tcp":
+            url_placeholder = "1.1.1.1:80";
             break;
     }
 
@@ -70,14 +87,11 @@
         <select id="type" bind:value={type} class="bg-neutral-900 border border-neutral-800 rounded-md p-2">
             <option value="http(s)">HTTP(S)</option>
             <option value="ping">Ping</option>
+            <option value="tcp">TCP</option>
         </select>
 
         <label class="mt-2 text-neutral-300" for="url">{url_label}</label>
-        <input id="url" type="text" bind:value={url} placeholder={
-            type === "http(s)" ? "https://" : (
-                type === "ping" ? "1.1.1.1" : ""
-            )
-        } />
+        <input id="url" type="text" bind:value={url} placeholder={url_placeholder} />
 
         <label class="mt-2 text-neutral-300" for="interval">
             Heartbeat Interval (check every {heartbeat_interval} seconds)

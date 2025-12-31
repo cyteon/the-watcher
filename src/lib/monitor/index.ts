@@ -1,8 +1,9 @@
 import db from "$lib/db";
 import { monitors } from "$lib/db/schema";
 
-import checkHTTPMonitor from "./types/http";
+import checkHttpMonitor from "./types/http";
 import checkPingMonitor from "./types/ping";
+import checkTcpMonitor from "./types/tcp";
 
 let timers: Record<number, number> = {};
 export let monitorList: any[] = [];
@@ -40,9 +41,11 @@ export default async function startMonitor() {
                     if (monitor.paused) return;
 
                     if (monitor.type === "http(s)") {
-                        await checkHTTPMonitor(monitor);
+                        await checkHttpMonitor(monitor);
                     } else if (monitor.type === "ping") {
                         await checkPingMonitor(monitor);
+                    } else if (monitor.type === "tcp") {
+                        await checkTcpMonitor(monitor);
                     }
                 }
             })).catch(console.error);

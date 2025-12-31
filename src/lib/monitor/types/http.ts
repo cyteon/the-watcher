@@ -2,7 +2,7 @@ import db from "$lib/db";
 import { heartbeats } from "$lib/db/schema";
 import { saveStatusUpdate } from "../util";
 
-export default async function checkHTTPMonitor(monitor) {
+export default async function checkHttpMonitor(monitor) {
     let startTime = Date.now();
 
     try {
