@@ -1,6 +1,6 @@
 import db from "$lib/db";
 import { monitors } from "$lib/db/schema";
-import checkWebMonitor from "./types/web";
+import checkHTTPMonitor from "./types/http";
 
 let timers: Record<number, number> = {};
 export let monitorList: any[] = [];
@@ -37,8 +37,9 @@ export default async function startMonitor() {
 
                     if (monitor.paused) return;
 
-                    // rn only web, will add more
-                    await checkWebMonitor(monitor);
+                    if (monitor.type === "http(s)") {
+                        await checkHTTPMonitor(monitor);
+                    }
                 }
             })).catch(console.error);
         } catch (error) {

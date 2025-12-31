@@ -5,6 +5,14 @@
     let name: string = "";
     let url: string = "https://";
 
+    let type: string = "http(s)";
+    let url_label: string = "URL";
+    $: switch (type) {
+        case "http(s)":
+            url_label = "URL";
+            break;
+    }
+
     let heartbeat_interval: number = 60;
     let retries: number = 0;
 
@@ -27,6 +35,7 @@
                 },
                 body: JSON.stringify({
                     name,
+                    type,
                     url,
                     heartbeat_interval,
                     retries,
@@ -54,7 +63,12 @@
         <label class="mt-4 text-neutral-300" for="name">Monitor Name</label>
         <input id="name" type="text" bind:value={name} />
 
-        <label class="mt-2 text-neutral-300" for="url">URL</label>
+        <label class="mt-2 text-neutral-300" for="type">Monitor Type</label>
+        <select id="type" bind:value={type} class="bg-neutral-900 border border-neutral-800 rounded-md p-2">
+            <option value="http(s)">HTTP(S)</option>
+        </select>
+
+        <label class="mt-2 text-neutral-300" for="url">{url_label}</label>
         <input id="url" type="text" bind:value={url} />
 
         <label class="mt-2 text-neutral-300" for="interval">

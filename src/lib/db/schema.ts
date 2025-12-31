@@ -16,6 +16,7 @@ export const monitors = pgTable("monitors", {
 
     name: text("name").notNull(),
     url: text("url"),
+    type: text("type").notNull().default("http(s)"),
 
     heartbeat_interval: integer("interval").notNull(),
     retries: integer("retries").notNull(),

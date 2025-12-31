@@ -13,6 +13,7 @@ export async function PUT({ request }) {
 
     const {
         name,
+        type,
         url,
         heartbeat_interval,
         retries
@@ -25,6 +26,7 @@ export async function PUT({ request }) {
     try {
         let result = await db.insert(monitors).values({
             name,
+            type,
             url,
             heartbeat_interval,
             retries: retries || 0
@@ -33,6 +35,7 @@ export async function PUT({ request }) {
         monitorList.push({
             id: result[0].id,
             name,
+            type,
             url,
             heartbeat_interval,
             retries: retries || 0,

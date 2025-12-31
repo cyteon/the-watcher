@@ -64,6 +64,13 @@
       "when": 1759592541206,
       "tag": "0008_noisy_random",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1767185916540,
+      "tag": "0009_good_ego",
+      "breakpoints": true
     }
   ]
 }
