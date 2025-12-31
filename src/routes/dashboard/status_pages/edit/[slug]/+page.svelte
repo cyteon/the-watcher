@@ -26,6 +26,7 @@
             }
 
             statusPage = await res.json();
+            statusPage.monitors = statusPage.monitors.map((m: any) => m.id);
 
             const res2 = await fetch(`/api/admin/monitors`, {
                 headers: {
@@ -119,7 +120,7 @@
                     <input
                         type="checkbox"
                         class="w-fit! mr-2"
-                        checked={statusPage.monitors.find(data => data.id === monitor.id) !== undefined}
+                        checked={statusPage.monitors.find(id => id === monitor.id) !== undefined}
                         on:change={() => toggleMonitor(monitor.id)}
                     />
 
