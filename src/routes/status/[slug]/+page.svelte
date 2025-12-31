@@ -11,7 +11,8 @@
         monitors: [],
     };
 
-    let isPhone = false;
+    let containerWidth = 0;
+    $: heartbeatCount = containerWidth ? Math.floor((containerWidth - 50) / 16) : 30;
 
     onMount(async () => {
         try {
@@ -26,15 +27,13 @@
         } catch (error) {
             console.error("Error fetching status page:", error);
         }
-
-        isPhone = window.innerWidth < 768;
     });
 </script>
 
 <div class="w-full h-screen flex flex-col px-2">
     <a href="/" class="absolute right-4 top-2 text-sm text-neutral-300 hover:underline">back home →</a>
 
-    <div class="m-auto w-full md:w-1/2 flex flex-col">
+    <div class="m-auto w-full md:w-1/2 flex flex-col" bind:clientWidth={containerWidth}>
         <h1 class="text-3xl font-bold text-neutral-300 w-full text-center mb-2">{statusPage.name}</h1>
 
         <p class="text-sm text-neutral-400 text-center mb-4">{statusPage.description}</p>
@@ -60,24 +59,25 @@
                     </div>
 
                     <div class="p-2 flex-col border rounded-md">
-                        <div class="flex">
+                        <div class="flex flex-col">
                             <div class="flex gap-1">
-                                {#each Array(
-                                    isPhone ? 20 : 40
-                                ).fill(0).map((_, i) => i).reverse() as index}
+                                {#each Array(heartbeatCount).fill(0).map((_, i) => i).reverse() as index}
                                     {#if index < monitor.heartbeats.length}
                                         {#if monitor.heartbeats[monitor.heartbeats.length - 1 - index]?.status === "up"}
-                                            <div class="h-8 w-3 rounded-md bg-green-400"></div>
+                                            <div class="h-8 flex-1 rounded-md bg-green-400"></div>
                                         {:else if monitor.heartbeats[monitor.heartbeats.length - 1 - index]?.status === "down"}
-                                            <span class="h-8 w-3 rounded-md bg-red-400"></span>
+                                            <span class="h-8 flex-1 rounded-md bg-red-400"></span>
                                         {/if}
                                     {:else}
-                                        <div class="h-8 w-3 rounded-md bg-neutral-700"></div>
+                                        <div class="h-8 flex-1 rounded-md bg-neutral-700"></div>
                                     {/if}
                                 {/each}
                             </div>
+                            <div class="flex">
+                                <p class="text-neutral-400 text-sm mt-2">Checked every {monitor.heartbeat_interval} seconds</p>
+                                <p class="text-neutral-400 text-sm mt-2 ml-auto">Now</p>
+                            </div>
                         </div>
-                        <p class="text-neutral-400 text-sm mt-2">Checked every {monitor.heartbeat_interval} seconds</p>
                     </div>
                 </div>
             {/each}
