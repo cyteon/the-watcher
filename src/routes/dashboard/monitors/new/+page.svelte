@@ -3,13 +3,16 @@
     import { getCookie } from "typescript-cookie";
 
     let name: string = "";
-    let url: string = "https://";
+    let url: string = "";
 
     let type: string = "http(s)";
     let url_label: string = "URL";
     $: switch (type) {
         case "http(s)":
             url_label = "URL";
+            break;
+        case "ping":
+            url_label = "Host";
             break;
     }
 
@@ -66,10 +69,15 @@
         <label class="mt-2 text-neutral-300" for="type">Monitor Type</label>
         <select id="type" bind:value={type} class="bg-neutral-900 border border-neutral-800 rounded-md p-2">
             <option value="http(s)">HTTP(S)</option>
+            <option value="ping">Ping</option>
         </select>
 
         <label class="mt-2 text-neutral-300" for="url">{url_label}</label>
-        <input id="url" type="text" bind:value={url} />
+        <input id="url" type="text" bind:value={url} placeholder={
+            type === "http(s)" ? "https://" : (
+                type === "ping" ? "1.1.1.1" : ""
+            )
+        } />
 
         <label class="mt-2 text-neutral-300" for="interval">
             Heartbeat Interval (check every {heartbeat_interval} seconds)

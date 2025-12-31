@@ -30,6 +30,7 @@
 		"drizzle-orm": "^0.44.3",
 		"lightweight-charts": "^5.0.8",
 		"pg": "^8.16.3",
+		"ping": "^1.0.0",
 		"typescript-cookie": "^1.0.6"
 	}
 }
