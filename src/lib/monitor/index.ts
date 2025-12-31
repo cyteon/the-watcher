@@ -4,6 +4,7 @@ import { monitors } from "$lib/db/schema";
 import checkHttpMonitor from "./types/http";
 import checkPingMonitor from "./types/ping";
 import checkTcpMonitor from "./types/tcp";
+import checkUdpMonitor from "./types/udp";
 
 let timers: Record<number, number> = {};
 export let monitorList: any[] = [];
@@ -46,6 +47,8 @@ export default async function startMonitor() {
                         await checkPingMonitor(monitor);
                     } else if (monitor.type === "tcp") {
                         await checkTcpMonitor(monitor);
+                    } else if (monitor.type === "udp") {
+                        await checkUdpMonitor(monitor);
                     }
                 }
             })).catch(console.error);

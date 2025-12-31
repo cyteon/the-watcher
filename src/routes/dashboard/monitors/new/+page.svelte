@@ -15,6 +15,7 @@
         
         case "ping":
         case "tcp":
+        case "udp":
             url_label = "Host";
             break;
     }
@@ -29,6 +30,7 @@
             url_placeholder = "1.1.1.1";
             break;
         case "tcp":
+        case "udp":
             url_placeholder = "1.1.1.1:80";
             break;
     }
@@ -88,6 +90,7 @@
             <option value="http(s)">HTTP(S)</option>
             <option value="ping">Ping</option>
             <option value="tcp">TCP</option>
+            <option value="udp">UDP - [Server has to send response]</option>
         </select>
 
         <label class="mt-2 text-neutral-300" for="url">{url_label}</label>
