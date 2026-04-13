@@ -28,4 +28,4 @@ gitignore
 Thumbs.db
 
 # actual stuff
-data.db
+data.db*

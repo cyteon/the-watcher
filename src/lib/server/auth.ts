@@ -1,7 +1,7 @@
-import { getCookie, setCookie, deleteCookie } from "vinxi/http";
+import { getCookie } from "@solidjs/start/http";
 
 export async function getUser() {
-  const token = await getCookie("token");
+  const token = getCookie("token");
 
   if (!token) {
     return null;
