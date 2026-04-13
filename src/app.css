@@ -6,7 +6,14 @@ body {
 
 input,
 textarea {
-    @apply bg-neutral-800 text-neutral-300 border rounded-md p-2 w-full mt-1;
+    @apply text-neutral-300 border rounded-md p-2 w-full;
+}
+
+input:focus,
+input:hover,
+textarea:focus,
+textare:hover {
+    @apply border-neutral-700;
 }
 
 input:focus,
@@ -16,9 +23,10 @@ textarea:focus {
 
 button {
     cursor: pointer;
+    @apply border text-neutral-300 rounded-md p-2 hover:bg-neutral-800;
 }
 
 * {
     transition: all 0.2s ease-in-out;
-    @apply border-neutral-700;
+    @apply border-neutral-800;
 }
