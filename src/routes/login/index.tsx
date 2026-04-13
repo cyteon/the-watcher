@@ -1,6 +1,6 @@
 import { useNavigate } from "@solidjs/router";
 import { createSignal, Show } from "solid-js";
-import { createUser } from "~/lib/server/auth";
+import { loginUser } from "~/lib/server/auth";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -8,22 +8,16 @@ export default function Home() {
   const [error, setError] = createSignal("");
   const [username, setUsername] = createSignal("");
   const [password, setPassword] = createSignal("");
-  const [confirmPassword, setConfirmPassword] = createSignal("");
 
-  async function createAccount() {
-    if (password() !== confirmPassword()) {
-      setError("Passwords do not match");
-      return;
-    }
-
+  async function login() {
     if (password().length < 8) {
-      setError("Password must be at least 8 characters");
+      setError("Wrong password or username");
       return;
     }
 
     try {
-      await createUser(username(), password());
-      navigate("/login");
+      await loginUser(username(), password());
+      navigate("/dashboard");
     } catch (e) {
       setError(e.message);
     }
@@ -32,7 +26,7 @@ export default function Home() {
   return (
     <main class="min-h-screen flex items-center justify-center">
       <div class="m-auto w-full md:w-1/2 lg:w-1/4 p-4 border rounded-md flex flex-col">
-        <h2 class="text-lg font-bold mb-4">Create Admin Account</h2>
+        <h2 class="text-lg font-bold mb-4">Log In</h2>
 
         <input
           type="text"
@@ -50,15 +44,7 @@ export default function Home() {
           onInput={(e) => setPassword(e.currentTarget.value)}
         />
 
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          class="mb-4"
-          value={confirmPassword()}
-          onInput={(e) => setConfirmPassword(e.currentTarget.value)}
-        />
-
-        <button onClick={createAccount}>Create Account</button>
+        <button onClick={login}>Log In</button>
 
         <Show when={error()}>
           <p class="text-red-400 mt-4">{error()}</p>
