@@ -6,9 +6,13 @@ import { initChecker } from "./src/lib/server/checker";
 
 export default defineConfig({
   plugins: [
-    solidStart(),
+    solidStart({
+      middleware: "./src/middleware.ts",
+    }),
+
     nitro(),
     tailwindcss(),
+
     (() => {
       initChecker();
 
@@ -17,4 +21,7 @@ export default defineConfig({
       };
     })(),
   ],
+  ssr: {
+    external: ["bun:sqlite"],
+  },
 });
