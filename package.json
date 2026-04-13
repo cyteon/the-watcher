@@ -12,9 +12,11 @@
     "@solidjs/router": "^0.15.0",
     "@solidjs/start": "2.0.0-alpha.2",
     "@solidjs/vite-plugin-nitro-2": "^0.1.0",
+    "@tailwindcss/vite": "^4.2.2",
     "better-sqlite3": "^12.9.0",
     "drizzle-orm": "^0.45.2",
     "solid-js": "^1.9.5",
+    "tailwindcss": "^4.2.2",
     "vite": "^7.0.0"
   },
   "engines": {
