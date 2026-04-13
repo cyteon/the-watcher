@@ -3,7 +3,37 @@
     import { getCookie } from "typescript-cookie";
 
     let name: string = "";
-    let url: string = "https://";
+    let url: string = "";
+
+    let type: string = "http(s)";
+
+    let url_label: string = "URL";
+    $: switch (type) {
+        case "http(s)":
+            url_label = "URL";
+            break;
+        
+        case "ping":
+        case "tcp":
+        case "udp":
+            url_label = "Host";
+            break;
+    }
+
+    let url_placeholder: string = "https://";
+    $: switch (type) {
+        case "http(s)":
+            url_placeholder = "https://";
+            break;
+        
+        case "ping":
+            url_placeholder = "1.1.1.1";
+            break;
+        case "tcp":
+        case "udp":
+            url_placeholder = "1.1.1.1:80";
+            break;
+    }
 
     let heartbeat_interval: number = 60;
     let retries: number = 0;
@@ -19,7 +49,7 @@
         }
 
         try {
-            const res = await fetch("/api/monitors", {
+            const res = await fetch("/api/admin/monitors", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -27,6 +57,7 @@
                 },
                 body: JSON.stringify({
                     name,
+                    type,
                     url,
                     heartbeat_interval,
                     retries,
@@ -54,8 +85,16 @@
         <label class="mt-4 text-neutral-300" for="name">Monitor Name</label>
         <input id="name" type="text" bind:value={name} />
 
-        <label class="mt-2 text-neutral-300" for="url">URL</label>
-        <input id="url" type="text" bind:value={url} />
+        <label class="mt-2 text-neutral-300" for="type">Monitor Type</label>
+        <select id="type" bind:value={type} class="bg-neutral-900 border border-neutral-800 rounded-md p-2">
+            <option value="http(s)">HTTP(S)</option>
+            <option value="ping">Ping</option>
+            <option value="tcp">TCP</option>
+            <option value="udp">UDP - [Server has to send response]</option>
+        </select>
+
+        <label class="mt-2 text-neutral-300" for="url">{url_label}</label>
+        <input id="url" type="text" bind:value={url} placeholder={url_placeholder} />
 
         <label class="mt-2 text-neutral-300" for="interval">
             Heartbeat Interval (check every {heartbeat_interval} seconds)

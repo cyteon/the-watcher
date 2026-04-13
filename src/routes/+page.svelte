@@ -38,27 +38,27 @@
                     <div class="xl:flex text-sm w-full mt-2">
                         <div class="flex mb-1 xl:mb-0 w-full">
                             <p class="text-neutral-300 border px-2 rounded-md w-1/2">up/down: 
-                                <span class="text-green-400">{page.monitors_up}</span>
+                                <span class="text-green-400 font-bold">{page.monitors_up}</span>
                                 /
-                                <span class="text-red-400">{page.monitor_count - page.monitors_up}</span>
+                                <span class="text-red-400 font-bold">{page.monitor_count - page.monitors_up}</span>
                             </p>
 
                             <p class="text-neutral-300 ml-2 border px-2 rounded-md w-1/2">avg. ping: 
-                                <span class="text-neutral-300">{page.avg_ping ? page.avg_ping + "ms" : "N/A"}</span>
+                                <span class="text-neutral-300 font-bold">{page.avg_ping ? page.avg_ping + "ms" : "N/A"}</span>
                             </p>
                         </div>
 
                         <div class="flex w-full">
                             <p class="text-neutral-300 xl:ml-2 border px-2 rounded-md w-1/2">avg. uptime: 
-                                <span class="text-neutral-300">{page.avg_uptime ? page.avg_uptime + "%" : "N/A"}</span>
+                                <span class="text-neutral-300 font-bold">{page.avg_uptime ? page.avg_uptime + "%" : "N/A"}</span>
                             </p>
 
                             {#if page.status === "up"}
-                                <p class="text-green-400 ml-2 border px-2 rounded-md w-1/2">online :D</p>
+                                <p class="text-green-400 ml-2 border px-2 rounded-md w-1/2 font-bold">online :D</p>
                             {:else if page.status === "down"}
-                                <p class="text-red-400 ml-2 border px-2 rounded-md w-1/2">offline :c</p>
+                                <p class="text-red-400 ml-2 border px-2 rounded-md w-1/2 font-bold">offline :c</p>
                             {:else if page.status === "degraded"}
-                                <p class="text-yellow-200 ml-2 border px-2 rounded-md w-1/2">
+                                <p class="text-yellow-200 ml-2 border px-2 rounded-md w-1/2 font-bold">
                                     degraded :/
                                 </p>
                             {:else}

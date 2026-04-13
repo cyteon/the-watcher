@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, pgTable, serial, text } from "drizzle-orm/pg-core";
+import { boolean, integer, pgTable, serial, text } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
     username: text("username").notNull().primaryKey(),
@@ -16,9 +16,11 @@ export const monitors = pgTable("monitors", {
 
     name: text("name").notNull(),
     url: text("url"),
+    type: text("type").notNull().default("http(s)"),
 
     heartbeat_interval: integer("interval").notNull(),
-    retries : integer("retries").notNull(),
+    retries: integer("retries").notNull(),
+    paused: boolean("paused").notNull().default(false),
 });
 
 export const heartbeats = pgTable("heartbeats", {

@@ -1,6 +1,10 @@
 import db from "$lib/db";
 import { monitors } from "$lib/db/schema";
-import checkWebMonitor from "./types/web";
+
+import checkHttpMonitor from "./types/http";
+import checkPingMonitor from "./types/ping";
+import checkTcpMonitor from "./types/tcp";
+import checkUdpMonitor from "./types/udp";
 
 let timers: Record<number, number> = {};
 export let monitorList: any[] = [];
@@ -26,7 +30,6 @@ export default async function startMonitor() {
         monitorList = await db.select().from(monitors);
     } catch (error) {
         console.error("Error fetching monitors:", error);
-        return;
     }
 
     setInterval(() => {
@@ -36,12 +39,29 @@ export default async function startMonitor() {
                 if (shouldCheckMonitor(monitor.id)) {
                     console.log(`Checking monitor: ${monitor.name} (${monitor.id})`);
 
-                    // rn only web, will add more
-                    await checkWebMonitor(monitor);
+                    if (monitor.paused) return;
+
+                    if (monitor.type === "http(s)") {
+                        await checkHttpMonitor(monitor);
+                    } else if (monitor.type === "ping") {
+                        await checkPingMonitor(monitor);
+                    } else if (monitor.type === "tcp") {
+                        await checkTcpMonitor(monitor);
+                    } else if (monitor.type === "udp") {
+                        await checkUdpMonitor(monitor);
+                    }
                 }
             })).catch(console.error);
         } catch (error) {
             console.error("Error processing monitors:", error);
         }
     }, 1000); // every second
+
+    setInterval(async () => {
+        try {
+            monitorList = await db.select().from(monitors);
+        } catch (error) {
+            console.error("Error refreshing monitors:", error);
+        }
+    }, 60000); // every minute
 }

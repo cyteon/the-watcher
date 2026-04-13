@@ -1,0 +1,1 @@
+ALTER TABLE "monitors" ADD COLUMN "type" text DEFAULT 'http(s)' NOT NULL;

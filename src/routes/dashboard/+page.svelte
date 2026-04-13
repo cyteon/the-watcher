@@ -14,6 +14,9 @@
     let isPhone: boolean = false;
     let view: string = "dashboard";
     
+    let containerWidth = 0;
+    $: heartbeatCount = containerWidth ? Math.floor((containerWidth - 150) / 16) : 30;
+
     onMount(async () => {
         if (!state.user && !state.loading) {
             goto("/login");
@@ -43,8 +46,53 @@
         statusPages = await res2.json();
     });
 
-    async function deleteMonitor(monitorId: string) {}
-    async function pauseUnpauseMonitor(monitorId: string, paused: boolean) {}
+    async function deleteMonitor(monitorId: string) {
+        if (!browser) return;
+
+        if (!confirm("Are you sure you want to delete this monitor? This action cannot be undone.")) {
+            return;
+        }
+
+        const res = await fetch(`/api/admin/monitors/${monitorId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${getCookie("token")}`,
+            },
+        });
+
+        if (!res.ok) {
+            alert("Failed to delete monitor: " + res.statusText);
+            return;
+        }
+
+        monitors = monitors.filter(m => m.id !== monitorId);
+        selectedMonitor = null;
+        if (isPhone) {
+            hideList = false;
+        }
+    }
+    
+    async function pauseUnpauseMonitor(monitorId: string, paused: boolean) {
+        if (!browser) return;
+
+        const res = await fetch(`/api/admin/monitors/${monitorId}`, {
+            method: "PATCH",
+            headers: {
+                "Authorization": `Bearer ${getCookie("token")}`,
+            },
+            body: JSON.stringify({ paused }),
+        });
+
+        if (!res.ok) {
+            alert("Failed to update monitor: " + res.statusText);
+            return;
+        }
+
+        monitors = monitors.map(m => m.id === monitorId ? { ...m, paused } : m);
+        if (selectedMonitor && selectedMonitor.id === monitorId) {
+            selectedMonitor.paused = paused;
+        }
+    }
 </script>
 
 <div class="flex w-full h-screen flex-col p-2">
@@ -140,13 +188,6 @@
                         </button>
                     {/if}
 
-                    <a 
-                        class="text-neutral-300 px-4 py-2 rounded-md border hover:bg-neutral-800"
-                        href={`/dashboard/monitors/${selectedMonitor.id}/edit`}
-                    >
-                        Edit Monitor
-                    </a>
-
                     <button 
                         class="text-red-400 px-4 py-2 rounded-md border hover:bg-neutral-800"
                         on:click={() => deleteMonitor(selectedMonitor.id)}
@@ -155,23 +196,22 @@
                     </button>
                 </div>
 
-                <div class="p-2 flex-col border rounded-md">
+                <div class="p-2 flex-col border rounded-md" bind:clientWidth={containerWidth}>
                     <div class="flex">
-                        <div class="flex gap-1">
-                            {#each Array(
-                                isPhone ? 12 : 50
-                            ).fill(0).map((_, i) => i).reverse() as index}
+                        <div class="flex gap-1 w-full mr-1">
+                            {#each Array(heartbeatCount).fill(0).map((_, i) => i).reverse() as index}
                                 {#if index < selectedMonitor.heartbeats.length}
                                     {#if selectedMonitor.heartbeats[selectedMonitor.heartbeats.length - 1 - index]?.status === "up"}
-                                        <div class="h-8 w-3 rounded-md bg-green-400"></div>
+                                        <div class="h-8 flex-1 rounded-md bg-green-400"></div>
                                     {:else if selectedMonitor.heartbeats[selectedMonitor.heartbeats.length - 1 - index]?.status === "down"}
-                                        <span class="h-8 w-3 rounded-md bg-red-400"></span>
+                                        <span class="h-8 flex-1 rounded-md bg-red-400"></span>
                                     {/if}
                                 {:else}
-                                    <div class="h-8 w-3 rounded-md bg-neutral-700"></div>
+                                    <div class="h-8 flex-1 rounded-md bg-neutral-700"></div>
                                 {/if}
                             {/each}
                         </div>
+
                         <span class={`
                             ml-auto h-min py-1 px-4 my-auto rounded-md text-black
                             ${selectedMonitor.heartbeats[selectedMonitor.heartbeats.length - 1]?.status === "up" ? "bg-green-400" : "bg-red-400"}
@@ -179,7 +219,11 @@
                             {selectedMonitor.heartbeats[selectedMonitor.heartbeats.length - 1]?.status === "up" ? "Online" : "Down"}
                         </span>
                     </div>
-                    <p class="text-neutral-400 text-sm mt-2">Checked every {selectedMonitor.heartbeat_interval} seconds</p>
+
+                    <div class="flex">
+                        <p class="text-neutral-400 text-sm mt-2">Checked every {selectedMonitor.heartbeat_interval} seconds</p>
+                        <p class="text-neutral-400 text-sm mt-2 ml-auto">Now</p>
+                    </div>
                 </div>
 
                 <div 

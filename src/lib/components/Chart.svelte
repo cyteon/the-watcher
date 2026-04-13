@@ -9,6 +9,7 @@
     $effect(() => {
         let fixedData = data.reduce((acc, current) => {
             const x = acc.find(item => item.time === current.time);
+            
             if (!x) {
                 return acc.concat([current]);
             } else {
