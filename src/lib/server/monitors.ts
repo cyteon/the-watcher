@@ -6,6 +6,12 @@ import { addMonitor } from "./checker";
 import { db } from "./db";
 import { heartbeats, monitors } from "./db/schema";
 
+export type MonitorData = {
+  monitor: typeof monitors.$inferSelect;
+  uptimePercentage: number;
+  heartbeats: (typeof heartbeats.$inferSelect)[];
+};
+
 export async function createMonitor(data: {
   name: string;
   type: "http" | "ping";
@@ -19,7 +25,7 @@ export async function createMonitor(data: {
   addMonitor(monitor);
 }
 
-export async function getMonitors() {
+export async function getMonitors(): Promise<MonitorData[]> {
   const user = await getUser();
   if (!user) throw new Error("Unauthorized");
 
@@ -33,16 +39,25 @@ export async function getMonitors() {
       })
       .from(heartbeats)
       .where(eq(heartbeats.monitorId, monitor.id))
-      .get();
+      .get() as { total: number; up: number };
+
+    const latestHeartbeats = db
+      .select()
+      .from(heartbeats)
+      .where(eq(heartbeats.monitorId, monitor.id))
+      .orderBy(sql`${heartbeats.timestamp} desc`)
+      .limit(20)
+      .all();
 
     return {
       monitor,
       uptimePercentage: (stats.up / stats.total) * 100 || 0,
+      heartbeats: latestHeartbeats,
     };
   });
 }
 
-export async function getMonitor(id: number) {
+export async function getMonitor(id: number): Promise<MonitorData> {
   const user = await getUser();
   if (!user) throw new Error("Unauthorized");
 
@@ -56,10 +71,19 @@ export async function getMonitor(id: number) {
     })
     .from(heartbeats)
     .where(eq(heartbeats.monitorId, monitor.id))
-    .get();
+    .get() as { total: number; up: number };
+
+  const latestHeartbeats = db
+    .select()
+    .from(heartbeats)
+    .where(eq(heartbeats.monitorId, monitor.id))
+    .orderBy(sql`${heartbeats.timestamp} desc`)
+    .limit(100)
+    .all();
 
   return {
     monitor,
     uptimePercentage: (stats.up / stats.total) * 100 || 0,
+    heartbeats: latestHeartbeats,
   };
 }

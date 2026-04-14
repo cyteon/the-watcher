@@ -1,17 +1,13 @@
-import { For, onMount, createSignal, createEffect } from "solid-js";
-import { monitors } from "~/lib/server/db/schema";
-import { getMonitors } from "~/lib/server/monitors";
-
-type Monitors = {
-  monitor: typeof monitors.$inferSelect;
-  uptimePercentage: number;
-}[];
+import { For, onMount, createSignal, createEffect, onCleanup } from "solid-js";
+import { monitors, heartbeats } from "~/lib/server/db/schema";
+import { getMonitors, MonitorData } from "~/lib/server/monitors";
 
 // for reloading
 export const [key, setKey] = createSignal(0);
 
 export default function Sidebar() {
-  const [monitors, setMonitors] = createSignal<Monitors>([]);
+  const [monitors, setMonitors] = createSignal<MonitorData[]>([]);
+  const [maxBars, setMaxBars] = createSignal(20);
 
   onMount(async () => {
     setMonitors(await getMonitors());
@@ -35,10 +31,32 @@ export default function Sidebar() {
               href={`/dashboard/monitor/${d.monitor.id}`}
               class="flex p-2 border rounded-md hover:border-neutral-700! hover:cursor-pointer"
             >
-              <p class="text-sm border rounded-md my-auto mr-2 w-16 text-center">
+              <p class="text-sm border rounded-md my-auto mr-2 w-16 text-center shrink-0">
                 {d.uptimePercentage.toFixed(2)}%
               </p>
-              <h2>{d.monitor.name}</h2>
+
+              <h2 class="shrink-0">{d.monitor.name}</h2>
+
+              <div
+                class="flex-1 min-w-0 ml-2"
+                ref={(el) => {
+                  const observer = new ResizeObserver(([entry]) => {
+                    setMaxBars(Math.floor((entry.contentRect.width + 4) / 12));
+                  });
+                  observer.observe(el);
+                  onCleanup(() => observer.disconnect());
+                }}
+              >
+                <div class="flex gap-1 h-full justify-end">
+                  <For each={d.heartbeats.slice(-maxBars())}>
+                    {(heartbeat, _) => (
+                      <div
+                        class={`w-2 h-full rounded-full my-auto ${heartbeat.status === "up" ? "bg-green-400" : "bg-red-400"}`}
+                      ></div>
+                    )}
+                  </For>
+                </div>
+              </div>
             </a>
           )}
         </For>
