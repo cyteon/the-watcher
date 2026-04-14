@@ -20,3 +20,18 @@ export const monitors = sqliteTable("monitors", {
   target: text("target").notNull(),
   interval: integer("interval").notNull(),
 });
+
+export const heartbeats = sqliteTable("heartbeats", {
+  id: integer("id").primaryKey(),
+  monitorId: integer("monitor_id").notNull(),
+  timestamp: integer("timestamp").notNull(),
+  status: text("status", { enum: ["up", "down"] }).notNull(),
+});
+
+export const messages = sqliteTable("messages", {
+  id: integer("id").primaryKey(),
+  monitorId: integer("monitor_id").notNull(),
+  timestamp: integer("timestamp").notNull(),
+  message: text("message").notNull(),
+  status: text("status", { enum: ["up", "down"] }).notNull(),
+});
