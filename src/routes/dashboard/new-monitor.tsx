@@ -1,5 +1,6 @@
 import { useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
+import { setKey } from "~/components/Sidebar";
 import { createMonitor } from "~/lib/server/monitors";
 
 export default function NewMonitor() {
@@ -36,6 +37,7 @@ export default function NewMonitor() {
         interval: interval(),
       });
 
+      setKey((k) => k + 1);
       navigate("/dashboard");
     } catch (e) {
       setError("Failed to create monitor");

@@ -41,3 +41,25 @@ export async function getMonitors() {
     };
   });
 }
+
+export async function getMonitor(id: number) {
+  const user = await getUser();
+  if (!user) throw new Error("Unauthorized");
+
+  const monitor = db.select().from(monitors).where(eq(monitors.id, id)).get();
+  if (!monitor) throw new Error("Monitor not found");
+
+  const stats = db
+    .select({
+      total: sql<number>`count(*)`,
+      up: sql<number>`sum(case when ${heartbeats.status} = 'up' then 1 else 0 end)`,
+    })
+    .from(heartbeats)
+    .where(eq(heartbeats.monitorId, monitor.id))
+    .get();
+
+  return {
+    monitor,
+    uptimePercentage: (stats.up / stats.total) * 100 || 0,
+  };
+}

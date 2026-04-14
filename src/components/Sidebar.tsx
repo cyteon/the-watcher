@@ -1,4 +1,4 @@
-import { For, onMount, createSignal } from "solid-js";
+import { For, onMount, createSignal, createEffect } from "solid-js";
 import { monitors } from "~/lib/server/db/schema";
 import { getMonitors } from "~/lib/server/monitors";
 
@@ -7,6 +7,9 @@ type Monitors = {
   uptimePercentage: number;
 }[];
 
+// for reloading
+export const [key, setKey] = createSignal(0);
+
 export default function Sidebar() {
   const [monitors, setMonitors] = createSignal<Monitors>([]);
 
@@ -14,8 +17,14 @@ export default function Sidebar() {
     setMonitors(await getMonitors());
   });
 
+  createEffect(async () => {
+    if (key()) {
+      setMonitors(await getMonitors());
+    }
+  });
+
   return (
-    <div class="flex flex-col lg:w-1/3">
+    <div class="flex flex-col lg:w-1/3" key={key()}>
       <a href="/dashboard/new-monitor" class="button px-4! w-fit">
         + Create New Monitor
       </a>
