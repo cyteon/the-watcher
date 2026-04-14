@@ -4,6 +4,7 @@ import { getMonitors } from "~/lib/server/monitors";
 
 type Monitors = {
   monitor: typeof monitors.$inferSelect;
+  uptimePercentage: number;
 }[];
 
 export default function Sidebar() {
@@ -25,6 +26,9 @@ export default function Sidebar() {
               href={`/dashboard/monitor/${d.monitor.id}`}
               class="flex p-2 border rounded-md hover:border-neutral-700! hover:cursor-pointer"
             >
+              <p class="text-sm border rounded-md my-auto mr-2 w-16 text-center">
+                {d.uptimePercentage.toFixed(2)}%
+              </p>
               <h2>{d.monitor.name}</h2>
             </a>
           )}

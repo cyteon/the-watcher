@@ -1,9 +1,10 @@
 "use server";
 
+import { eq, sql } from "drizzle-orm";
 import { getUser } from "./auth";
 import { addMonitor } from "./checker";
 import { db } from "./db";
-import { monitors } from "./db/schema";
+import { heartbeats, monitors } from "./db/schema";
 
 export async function createMonitor(data: {
   name: string;
@@ -24,7 +25,19 @@ export async function getMonitors() {
 
   const allMonitors = db.select().from(monitors).all();
 
-  return allMonitors.map((monitor) => ({
-    monitor: monitor,
-  }));
+  return allMonitors.map((monitor) => {
+    const stats = db
+      .select({
+        total: sql<number>`count(*)`,
+        up: sql<number>`sum(case when ${heartbeats.status} = 'up' then 1 else 0 end)`,
+      })
+      .from(heartbeats)
+      .where(eq(heartbeats.monitorId, monitor.id))
+      .get();
+
+    return {
+      monitor,
+      uptimePercentage: (stats.up / stats.total) * 100 || 0,
+    };
+  });
 }
