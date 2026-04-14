@@ -1,5 +1,5 @@
 import { useNavigate } from "@solidjs/router";
-import { createSignal, Show } from "solid-js";
+import { createSignal } from "solid-js";
 import { createUser } from "~/lib/server/auth";
 
 export default function Home() {
@@ -24,7 +24,7 @@ export default function Home() {
     try {
       await createUser(username(), password());
       navigate("/login");
-    } catch (e) {
+    } catch (e: any) {
       setError(e.message);
     }
   }
@@ -59,10 +59,7 @@ export default function Home() {
         />
 
         <button onClick={createAccount}>Create Account</button>
-
-        <Show when={error()}>
-          <p class="text-red-400 mt-4">{error()}</p>
-        </Show>
+        {error() && <p class="mt-2 text-red-400">{error()}</p>}
       </div>
     </main>
   );

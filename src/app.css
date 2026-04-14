@@ -5,7 +5,8 @@ body {
 }
 
 input,
-textarea {
+textarea,
+select {
     @apply text-neutral-300 border rounded-md p-2 w-full;
 }
 

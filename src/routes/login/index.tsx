@@ -1,5 +1,5 @@
 import { useNavigate } from "@solidjs/router";
-import { createSignal, Show } from "solid-js";
+import { createSignal } from "solid-js";
 import { loginUser } from "~/lib/server/auth";
 
 export default function Home() {
@@ -45,10 +45,7 @@ export default function Home() {
         />
 
         <button onClick={login}>Log In</button>
-
-        <Show when={error()}>
-          <p class="text-red-400 mt-4">{error()}</p>
-        </Show>
+        {error() && <p class="mt-2 text-red-400">{error()}</p>}
       </div>
     </main>
   );
