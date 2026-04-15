@@ -25,7 +25,9 @@ export const heartbeats = sqliteTable("heartbeats", {
   id: integer("id").primaryKey(),
   monitorId: integer("monitor_id").notNull(),
   timestamp: integer("timestamp").notNull(),
-  status: text("status", { enum: ["up", "down"] }).notNull(),
+  status: text("status", {
+    enum: ["up", "down", "pending", "paused"],
+  }).notNull(),
 });
 
 export const messages = sqliteTable("messages", {

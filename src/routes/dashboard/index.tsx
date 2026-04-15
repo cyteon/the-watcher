@@ -1,6 +1,6 @@
 import { useNavigate } from "@solidjs/router";
 
-export default async function Home() {
+export default function Dashboard() {
   const navigate = useNavigate();
 
   return (

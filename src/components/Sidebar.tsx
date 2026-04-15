@@ -1,6 +1,7 @@
 import { For, onMount, createSignal, createEffect, onCleanup } from "solid-js";
 import { monitors, heartbeats } from "~/lib/server/db/schema";
 import { getMonitors, MonitorData } from "~/lib/server/monitors";
+import { getStatusColor } from "~/lib/util";
 
 // for reloading
 export const [key, setKey] = createSignal(0);
@@ -51,7 +52,7 @@ export default function Sidebar() {
                   <For each={d.heartbeats.slice(-maxBars())}>
                     {(heartbeat, _) => (
                       <div
-                        class={`w-2 h-full rounded-full my-auto ${heartbeat.status === "up" ? "bg-green-400" : "bg-red-400"}`}
+                        class={`w-2 h-full rounded-full my-auto bg-${getStatusColor(heartbeat.status)}`}
                       ></div>
                     )}
                   </For>

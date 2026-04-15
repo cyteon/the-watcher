@@ -23,26 +23,53 @@ export function initChecker() {
 }
 
 export function addMonitor(monitor: typeof monitors.$inferSelect) {
-  if (timers.has(monitor.id!)) return;
+  if (timers.has(monitor.id)) return;
   checkMonitor(monitor);
 
   const timer = setInterval(() => {
     checkMonitor(monitor);
   }, monitor.interval * 1000);
 
-  timers.set(monitor.id!, timer);
+  timers.set(monitor.id, timer);
 }
 
 export function removeMonitor(monitor: typeof monitors.$inferSelect) {
-  if (!timers.has(monitor.id!)) return;
+  if (!timers.has(monitor.id)) return;
 
-  const timer = timers.get(monitor.id!);
-  if (timer) clearInterval(timer);
+  const timer = timers.get(monitor.id);
+  clearInterval(timer);
 
-  timers.delete(monitor.id!);
+  timers.delete(monitor.id);
+}
+
+export function updateMonitor(monitor: typeof monitors.$inferSelect) {
+  if (timers.has(monitor.id)) {
+    const timer = timers.get(monitor.id);
+    clearInterval(timer);
+  }
+
+  checkMonitor(monitor);
+
+  const timer = setInterval(() => {
+    checkMonitor(monitor);
+  }, monitor.interval * 1000);
+
+  timers.set(monitor.id, timer);
 }
 
 async function checkMonitor(monitor: typeof monitors.$inferSelect) {
+  if (monitor.paused) {
+    db.insert(heartbeats)
+      .values({
+        monitorId: monitor.id,
+        timestamp: Date.now(),
+        status: "paused",
+      })
+      .run();
+
+    return;
+  }
+
   console.log(`Checking monitor ${monitor.name} (${monitor.type})`);
 
   var check = await getChecker(monitor.type);
