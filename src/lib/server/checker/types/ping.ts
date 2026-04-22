@@ -5,11 +5,7 @@ export async function checkPing(monitor: typeof monitors.$inferSelect) {
   const start = Date.now();
 
   try {
-    console.log(monitor);
-
     const response = await ping.promise.probe(monitor.target);
-
-    console.log(response);
 
     if (response.alive) {
       return {

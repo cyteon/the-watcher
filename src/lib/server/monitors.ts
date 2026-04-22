@@ -4,7 +4,7 @@ import { eq, sql } from "drizzle-orm";
 import { getUser } from "./auth";
 import { addMonitor, updateMonitor as updateMonitorChecker } from "./checker";
 import { db } from "./db";
-import { heartbeats, messages, monitors } from "./db/schema";
+import { heartbeats, messages, monitors, statusPages } from "./db/schema";
 
 export type MonitorData = {
   monitor: typeof monitors.$inferSelect;
@@ -116,4 +116,11 @@ export async function updateMonitor(
 
   let updatedMonitor = { ...monitor, ...data };
   updateMonitorChecker(updatedMonitor);
+}
+
+export async function createStatusPage(data: { name: string; slug: string }) {
+  const user = await getUser();
+  if (!user) throw new Error("Unauthorized");
+
+  await db.insert(statusPages).values(data).execute();
 }
