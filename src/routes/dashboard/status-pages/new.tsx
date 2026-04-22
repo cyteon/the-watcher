@@ -1,7 +1,7 @@
 import { useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
 import { setKey } from "~/components/Sidebar";
-import { createStatusPage } from "~/lib/server/monitors";
+import { createStatusPage } from "~/lib/server/statusPages";
 
 export default function NewStatusPage() {
   const navigate = useNavigate();
