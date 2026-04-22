@@ -16,6 +16,7 @@
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.9.0",
     "drizzle-orm": "^0.45.2",
+    "ping": "^1.0.0",
     "solid-js": "^1.9.5",
     "tailwindcss": "^4.2.2",
     "vite": "^7.0.0"

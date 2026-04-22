@@ -1,7 +1,9 @@
 import { desc, eq } from "drizzle-orm";
 import { db } from "../db";
 import { heartbeats, messages, monitors } from "../db/schema";
+
 import { checkHttp } from "./types/http";
+import { checkPing } from "./types/ping";
 
 const timers: Map<number, Timer> = new Map();
 
@@ -9,6 +11,8 @@ async function getChecker(type: string) {
   switch (type) {
     case "http":
       return checkHttp;
+    case "ping":
+      return checkPing;
     default:
       return undefined;
   }
