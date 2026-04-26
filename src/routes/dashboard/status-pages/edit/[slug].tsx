@@ -16,6 +16,12 @@ export default function StatusPages() {
 
   onMount(async () => {
     try {
+      setMonitors(await getMonitors());
+    } catch (e) {
+      console.error(e);
+    }
+
+    try {
       const statusPage = await getStatusPage(params.slug!);
 
       setPage({
@@ -26,12 +32,6 @@ export default function StatusPages() {
     } catch (e) {
       console.error(e);
       navigate("/dashboard/status-pages");
-    }
-
-    try {
-      setMonitors(await getMonitors());
-    } catch (e) {
-      console.error(e);
     }
   });
 
