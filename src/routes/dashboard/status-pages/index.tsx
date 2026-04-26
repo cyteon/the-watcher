@@ -5,7 +5,7 @@ import { getStatusPages } from "~/lib/server/statusPages";
 export default function StatusPages() {
   const navigate = useNavigate();
 
-  const [pages, setPages] = createSignal<{ name: string }[]>([]);
+  const [pages, setPages] = createSignal<{ name: string; slug: string }[]>([]);
 
   onMount(async () => {
     setPages(await getStatusPages());
@@ -26,14 +26,23 @@ export default function StatusPages() {
       <div class="border rounded-md p-2 flex-1 flex flex-col mt-4">
         <For each={pages()}>
           {(page) => (
-            <a
-              href={`/status/${page.slug}`}
-              class="p-2 rounded-md border hover:border-neutral-700!"
+            <div
+              onClick={() => navigate(`/status/${page.slug}`)}
+              class="p-2 px-4 rounded-md border hover:border-neutral-700! hover:cursor-pointer flex"
             >
-              <h3 class="font-bold text-lg">{page.name}</h3>
+              <div>
+                <h3 class="font-bold text-lg">{page.name}</h3>
 
-              <p class="text-sm text-neutral-500">/status/{page.slug}</p>
-            </a>
+                <p class="text-sm text-neutral-500">/status/{page.slug}</p>
+              </div>
+
+              <a
+                class="button ml-auto my-auto py-1! px-4!"
+                href={`/dashboard/status-pages/edit/${page.slug}`}
+              >
+                Edit
+              </a>
+            </div>
           )}
         </For>
       </div>
