@@ -30,3 +30,25 @@ export async function getStatusPage(slug: string) {
 
   return page;
 }
+
+export async function updateStatusPage(
+  slug: string,
+  data: Partial<typeof statusPages.$inferInsert>,
+) {
+  const user = await getUser();
+  if (!user) throw new Error("Unauthorized");
+
+  const page = db
+    .select()
+    .from(statusPages)
+    .where(eq(statusPages.slug, slug))
+    .get();
+
+  if (!page) throw new Error("Status page not found");
+
+  await db
+    .update(statusPages)
+    .set(data)
+    .where(eq(statusPages.slug, slug))
+    .execute();
+}
