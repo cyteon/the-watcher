@@ -42,10 +42,5 @@ export const statusPages = sqliteTable("status_pages", {
   id: integer("id").primaryKey(),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
-});
-
-export const statusPageEntries = sqliteTable("status_page_entries", {
-  id: integer("id").primaryKey(),
-  statusPageId: integer("status_page_id").notNull(),
-  monitorId: integer("monitor_id").notNull(),
+  monitors: text("monitors").notNull().default(""),
 });
