@@ -21,7 +21,8 @@ export default defineConfig({
       };
     })(),
   ],
+
   server: {
-    allowedHosts: true,
+    allowedHosts: [".hackclub.app"],
   },
 });
