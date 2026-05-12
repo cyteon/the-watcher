@@ -157,7 +157,7 @@ export default function StatusPages() {
 
                     return (
                       <div
-                        class="p-2 hover:bg-neutral-800 cursor-pointer flex items-center gap-2"
+                        class="p-2 cursor-pointer flex items-center gap-2"
                         classList={{ "bg-neutral-800": selected() }}
                         onClick={() => toggleMonitor(monitor.monitor.id)}
                       >

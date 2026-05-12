@@ -28,12 +28,12 @@ export default function Monitor() {
 
       <For each={page()?.monitorsData}>
         {(monitor) => (
-          <div class="w-full max-w-2xl mx-auto mt-6 p-2 rounded-md border flex items-center gap-4">
-            <p class="border rounded-md px-2 py-1 text-sm">
+          <div class="w-full max-w-2xl mx-auto mt-4 p-2 rounded-md border flex items-center gap-4">
+            <p class="border rounded-md px-2 py-1 text-sm w-16 text-center  ">
               {monitor.uptimePercentage.toFixed(2)}%
             </p>
 
-            <h2 class="text-xl">{monitor.name}</h2>
+            <h2 class="text-lg">{monitor.name}</h2>
 
             <div
               class="flex-1 min-w-0 ml-2 h-6 "
