@@ -1,4 +1,7 @@
 import { useLocation } from "@solidjs/router";
+import { Show } from "solid-js";
+import Navbar from "~/components/Navbar";
+import SettingsNavbar from "~/components/SettingsNavbar";
 import Sidebar from "~/components/Sidebar";
 
 export default function DashboardLayout(props: { children: Node }) {
@@ -6,27 +9,17 @@ export default function DashboardLayout(props: { children: Node }) {
 
   return (
     <div class="h-screen flex flex-col">
-      <nav class="border-b p-2 px-4 flex">
-        <h1 class="font-bold text-lg">The Watcher</h1>
+      <Navbar />
 
-        <div class="ml-auto my-auto flex text-neutral-300">
-          <a
-            href="/dashboard"
-            class={`hover:underline ${location.pathname === "/dashboard" ? "underline" : ""}`}
-          >
-            dashboard
-          </a>
-          <p class="mx-2 text-neutral-500">\</p>
-          <a
-            href="/dashboard/status-pages"
-            class={`hover:underline ${location.pathname === "/dashboard/status-pages" ? "underline" : ""}`}
-          >
-            status pages
-          </a>
-        </div>
-      </nav>
+      <Show when={location.pathname.startsWith("/dashboard/settings")}>
+        <SettingsNavbar />
+      </Show>
+
       <div class="flex flex-col lg:flex-row p-4 flex-1 space-y-2 lg:space-y-0 lg:space-x-4">
-        <Sidebar />
+        <Show when={!location.pathname.startsWith("/dashboard/settings")}>
+          <Sidebar />
+        </Show>
+
         {props.children}
       </div>
     </div>

@@ -51,7 +51,11 @@ export async function createUser(username: string, password: string) {
 }
 
 export async function loginUser(username: string, password: string) {
-  const user = db.select().from(users).get();
+  const user = db
+    .select()
+    .from(users)
+    .where(eq(users.username, username))
+    .get();
 
   if (!user) {
     throw new Error("Wrong password or username");
@@ -70,4 +74,27 @@ export async function loginUser(username: string, password: string) {
   setCookie("token", token);
 
   db.insert(sessions).values({ id: token, userId: user.id }).run();
+}
+
+export async function updateUser(
+  password: string,
+  data: Partial<typeof users.$inferInsert>,
+) {
+  const user = await getUser();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  const valid = await bcrypt.compare(password, user.password);
+
+  if (!valid) {
+    throw new Error("Wrong password");
+  }
+
+  if (data.password) {
+    data.password = await bcrypt.hash(data.password, 12);
+  }
+
+  db.update(users).set(data).where(eq(users.id, user.id)).run();
 }
