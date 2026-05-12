@@ -1,10 +1,14 @@
-import { useNavigate } from "@solidjs/router";
-import { createSignal } from "solid-js";
+import { useNavigate, useParams } from "@solidjs/router";
+import { createSignal, onMount, createEffect, onCleanup, For } from "solid-js";
 import { setKey } from "~/components/Sidebar";
-import { createMonitor } from "~/lib/server/monitors";
+import { getMonitor, MonitorData, updateMonitor } from "~/lib/server/monitors";
+import { getStatusColor } from "~/lib/util";
 
-export default function NewMonitor() {
+export default function EditMonitor() {
+  const params = useParams();
   const navigate = useNavigate();
+
+  const [monitor, setMonitor] = createSignal<MonitorData | undefined>();
 
   const [name, setName] = createSignal("");
   const [type, setType] = createSignal<"http" | "ping">("http");
@@ -12,6 +16,24 @@ export default function NewMonitor() {
   const [interval, setInterval] = createSignal(60);
 
   const [error, setError] = createSignal("");
+
+  onMount(async () => {
+    setMonitor(await getMonitor(Number(params.id)));
+
+    setName(monitor()?.monitor.name || "");
+    setType((monitor()?.monitor.type as "http" | "ping") || "http");
+    setTarget(monitor()?.monitor.target || "");
+    setInterval(monitor()?.monitor.interval || 60);
+  });
+
+  createEffect(async () => {
+    setMonitor(await getMonitor(Number(params.id)));
+
+    setName(monitor()?.monitor.name || "");
+    setType((monitor()?.monitor.type as "http" | "ping") || "http");
+    setTarget(monitor()?.monitor.target || "");
+    setInterval(monitor()?.monitor.interval || 60);
+  });
 
   const targetLabel = () => {
     if (type() === "http") return "URL";
@@ -23,14 +45,23 @@ export default function NewMonitor() {
     if (type() === "ping") return "1.1.1.1";
   };
 
-  async function create() {
-    if (!name() || !type() || !target()) {
-      setError("All fields are required");
+  async function saveMonitor() {
+    if (!monitor()) return;
+
+    setError("");
+
+    if (!name() || !target()) {
+      setError("Name and target are required.");
+      return;
+    }
+
+    if (interval() <= 0) {
+      setError("Interval must be greater than 0 seconds.");
       return;
     }
 
     try {
-      await createMonitor({
+      await updateMonitor(Number(params.id), {
         name: name(),
         type: type(),
         target: target(),
@@ -38,17 +69,19 @@ export default function NewMonitor() {
       });
 
       setKey((k) => k + 1);
-      navigate("/dashboard");
+
+      navigate(`/dashboard/monitors/${params.id}`);
     } catch (e) {
-      setError("Failed to create monitor");
-      return;
+      console.error(e);
+      setError("An error occurred while saving the monitor.");
     }
   }
 
   return (
     <main class="flex-1 flex flex-col w-full">
-      <h1 class="text-2xl mt-1.75">Create New Monitor</h1>
-      <div class="border rounded-md p-2 flex-1 flex flex-col mt-5">
+      <h1 class="text-2xl mt-1.75">Editing: {monitor()?.monitor.name}</h1>
+
+      <div class="flex flex-col p-2 border rounded-md mt-5 h-full">
         <label class="mb-2">Name</label>
         <input
           type="text"
@@ -88,10 +121,11 @@ export default function NewMonitor() {
           onInput={(e) => setInterval(e.currentTarget.value)}
         />
 
-        <button class="mt-2" onClick={create}>
-          Create
+        {error() && <p class="text-red-400 mt-2">{error()}</p>}
+
+        <button class="mt-2" onClick={saveMonitor}>
+          Save Changes
         </button>
-        {error() && <p class="mt-2 text-red-400">{error()}</p>}
       </div>
     </main>
   );

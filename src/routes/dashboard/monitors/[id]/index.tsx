@@ -57,6 +57,7 @@ export default function Monitor() {
     <main class="flex-1 flex flex-col w-full">
       <div class="flex flex-col md:flex-row mt-1.75">
         <h1 class="text-2xl">{monitor()?.monitor.name}</h1>
+
         <a
           class="md:ml-auto mt-2 md:my-auto text-sm text-blue-300 hover:underline"
           href={monitor()?.monitor.target}
@@ -65,10 +66,19 @@ export default function Monitor() {
           {monitor()?.monitor.target}
         </a>
       </div>
+
       <div class="flex mt-4">
+        <a
+          class="button mr-2 px-4!"
+          href={`/dashboard/monitors/${params.id}/edit`}
+        >
+          Edit Monitor
+        </a>
+
         <button class="mr-2 px-4!" onClick={pauseUnpaseMonitor}>
           {monitor()?.monitor.paused ? "Resume" : "Pause"} Monitor
         </button>
+
         <button
           class="px-4! hover:bg-red-400! hover:text-neutral-900!"
           onClick={deleteMonitor}
@@ -76,6 +86,7 @@ export default function Monitor() {
           Delete Monitor
         </button>
       </div>
+
       <div class="border rounded-md p-2 flex mt-4">
         <div
           class="flex-1 min-w-0 ml-2 h-full"
