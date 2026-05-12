@@ -4,7 +4,7 @@ import { eq, sql } from "drizzle-orm";
 import { getUser } from "./auth";
 import { addMonitor, updateMonitor as updateMonitorChecker } from "./checker";
 import { db } from "./db";
-import { heartbeats, messages, monitors } from "./db/schema";
+import { heartbeats, messages, monitors, statusPages } from "./db/schema";
 
 export type MonitorData = {
   monitor: typeof monitors.$inferSelect;
@@ -100,6 +100,22 @@ export async function deleteMonitor(id: number) {
   await db.delete(monitors).where(eq(monitors.id, id)).execute();
   await db.delete(heartbeats).where(eq(heartbeats.monitorId, id)).execute();
   await db.delete(messages).where(eq(messages.monitorId, id)).execute();
+
+  await db
+    .update(statusPages)
+    .set({
+      monitors: sql`(
+        SELECT COALESCE(json_group_array(value), '[]')
+        FROM json_each(${statusPages.monitors})
+        WHERE value != ${id}
+      )`,
+    })
+    .where(
+      sql`EXISTS (
+        SELECT 1 FROM json_each(${statusPages.monitors}) WHERE value = ${id}
+      )`,
+    )
+    .execute();
 }
 
 export async function updateMonitor(

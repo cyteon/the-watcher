@@ -42,5 +42,8 @@ export const statusPages = sqliteTable("status_pages", {
   id: integer("id").primaryKey(),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
-  monitors: text("monitors").notNull().default(""),
+  monitors: text("monitors", { mode: "json" })
+    .$type<number[]>()
+    .notNull()
+    .default([]),
 });

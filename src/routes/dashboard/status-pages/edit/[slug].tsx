@@ -27,7 +27,7 @@ export default function StatusPages() {
       setPage({
         name: statusPage.name,
         slug: statusPage.slug,
-        monitors: statusPage.monitors.split(",").filter(Boolean).map(Number),
+        monitors: statusPage.monitors.filter(Boolean).map(Number),
       });
     } catch (e) {
       console.error(e);

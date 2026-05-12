@@ -28,7 +28,7 @@ export async function getStatusPage(slug: string) {
 
   if (!page) throw new Error("Status page not found");
 
-  const monitorIds = page.monitors.split(",").filter(Boolean).map(Number);
+  const monitorIds = page.monitors.filter(Boolean).map(Number);
   let monitorsData = db
     .select()
     .from(monitors)

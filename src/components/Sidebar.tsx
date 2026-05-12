@@ -31,7 +31,7 @@ export default function Sidebar() {
               href={`/dashboard/monitors/${d.monitor.id}`}
               class="flex p-2 border rounded-md hover:border-neutral-700! hover:cursor-pointer"
             >
-              <p class="text-sm border rounded-md my-auto mr-2 w-16 text-center shrink-0">
+              <p class="text-sm border rounded-md my-auto mr-2 w-18 text-center shrink-0 p-1">
                 {d.uptimePercentage.toFixed(2)}%
               </p>
 

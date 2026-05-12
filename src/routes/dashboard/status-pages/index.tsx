@@ -23,7 +23,7 @@ export default function StatusPages() {
         </a>
       </div>
 
-      <div class="border rounded-md p-2 flex-1 flex flex-col mt-4">
+      <div class="border rounded-md p-2 flex-1 flex flex-col mt-4 gap-2">
         <For each={pages()}>
           {(page) => (
             <div

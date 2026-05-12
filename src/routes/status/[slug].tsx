@@ -29,7 +29,7 @@ export default function Monitor() {
       <For each={page()?.monitorsData}>
         {(monitor) => (
           <div class="w-full max-w-2xl mx-auto mt-4 p-2 rounded-md border flex items-center gap-4">
-            <p class="border rounded-md px-2 py-1 text-sm w-16 text-center  ">
+            <p class="border rounded-md px-2 py-1 text-sm w-18 text-center">
               {monitor.uptimePercentage.toFixed(2)}%
             </p>
 
