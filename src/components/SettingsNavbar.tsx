@@ -1,4 +1,6 @@
 import { useLocation } from "@solidjs/router";
+import { deleteCookie } from "@solidjs/start/http";
+import { logoutUser } from "~/lib/server/auth";
 
 export default function SettingsNavbar() {
   const location = useLocation();
@@ -11,6 +13,17 @@ export default function SettingsNavbar() {
       >
         account
       </a>
+
+      <p class="mx-2 text-neutral-500">\</p>
+
+      <button
+        onClick={async () => {
+          await logoutUser();
+        }}
+        class="no-style hover:underline text-red-400 hover:cursor-pointer"
+      >
+        log out
+      </button>
     </nav>
   );
 }

@@ -98,3 +98,12 @@ export async function updateUser(
 
   db.update(users).set(data).where(eq(users.id, user.id)).run();
 }
+
+export async function logoutUser() {
+  const token = getCookie("token");
+
+  if (token) {
+    db.delete(sessions).where(eq(sessions.id, token)).run();
+    setCookie("token", "", { maxAge: -1 });
+  }
+}
