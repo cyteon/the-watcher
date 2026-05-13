@@ -58,7 +58,7 @@ export default function StatusPages() {
       await updateStatusPage(params.slug!, {
         name: page()!.name,
         slug: page()!.slug,
-        monitors: page()!.monitors.join(","),
+        monitors: page()!.monitors,
       });
 
       navigate(`/status/${page()!.slug}`);

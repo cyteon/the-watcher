@@ -95,6 +95,11 @@ async function checkMonitor(monitor: typeof monitors.$inferSelect) {
     })
     .run();
 
+  db.update(monitors)
+    .set({ status: result.status })
+    .where(eq(monitors.id, monitor.id))
+    .run();
+
   const lastMessage = db
     .select()
     .from(messages)

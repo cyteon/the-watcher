@@ -110,10 +110,9 @@ export default function Monitor() {
         </div>
 
         <span
-          class={`ml-8 mr-7 justify-end border p-1 px-4 rounded-md text-neutral-900 font-semibold bg-${getStatusColor(monitor()?.heartbeats.slice(-1)[0]?.status || "pending")}`}
+          class={`ml-8 mr-7 justify-end border p-1 px-4 rounded-md text-neutral-900 font-semibold bg-${getStatusColor(monitor()?.monitor.status || "pending")}`}
         >
-          {monitor()?.heartbeats.slice(-1)[0]?.status.toUpperCase() ||
-            "PENDING"}
+          {monitor()?.monitor.status!.toUpperCase() || "PENDING"}
         </span>
       </div>
     </main>

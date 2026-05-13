@@ -1,0 +1,1 @@
+ALTER TABLE `monitors` ADD `status` text DEFAULT 'pending';

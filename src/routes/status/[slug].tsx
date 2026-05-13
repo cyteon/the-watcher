@@ -36,7 +36,7 @@ export default function Monitor() {
             <h2 class="text-lg">{monitor.name}</h2>
 
             <div
-              class="flex-1 min-w-0 ml-2 h-6 "
+              class="flex-1 min-w-0 ml-2 h-6"
               ref={(el) => {
                 const observer = new ResizeObserver(([entry]) => {
                   setMaxBars(Math.floor((entry.contentRect.width + 4) / 12));

@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, sql } from "drizzle-orm";
+import { count, eq, sql } from "drizzle-orm";
 import { getUser } from "./auth";
 import { addMonitor, updateMonitor as updateMonitorChecker } from "./checker";
 import { db } from "./db";
@@ -132,4 +132,29 @@ export async function updateMonitor(
 
   let updatedMonitor = { ...monitor, ...data };
   updateMonitorChecker(updatedMonitor);
+}
+
+export async function getOverview(): Promise<{
+  up: number;
+  down: number;
+  total: number;
+}> {
+  const user = await getUser();
+  if (!user) throw new Error("Unauthorized");
+
+  const [up, down, total] = await Promise.all([
+    db
+      .select({ count: count() })
+      .from(monitors)
+      .where(eq(monitors.status, "up"))
+      .execute(),
+    db
+      .select({ count: count() })
+      .from(monitors)
+      .where(eq(monitors.status, "down"))
+      .execute(),
+    db.select({ count: count() }).from(monitors).execute(),
+  ]);
+
+  return { up: up[0].count, down: down[0].count, total: total[0].count };
 }

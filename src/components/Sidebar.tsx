@@ -11,6 +11,8 @@ export default function Sidebar() {
 
   onMount(async () => {
     setMonitors(await getMonitors());
+
+    console.log(monitors());
   });
 
   createEffect(async () => {
@@ -34,7 +36,7 @@ export default function Sidebar() {
               <p
                 class={`
                   text-sm border rounded-md my-auto mr-2 w-18 text-center shrink-0 p-1
-                  text-${getStatusColor(d.heartbeats[d.heartbeats.length - 1].status)}
+                  text-${getStatusColor(d.monitor.status!)}
                 `}
               >
                 {d.uptimePercentage.toFixed(2)}%
@@ -43,12 +45,14 @@ export default function Sidebar() {
               <h2 class="shrink-0">{d.monitor.name}</h2>
 
               <div
-                class="flex-1 min-w-0 ml-2"
+                class="flex-1 min-w-0 ml-2 h-6"
                 ref={(el) => {
                   const observer = new ResizeObserver(([entry]) => {
                     setMaxBars(Math.floor((entry.contentRect.width + 4) / 12));
                   });
+
                   observer.observe(el);
+
                   onCleanup(() => observer.disconnect());
                 }}
               >

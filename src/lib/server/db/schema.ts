@@ -13,6 +13,10 @@ export const sessions = sqliteTable("sessions", {
 
 export const monitors = sqliteTable("monitors", {
   id: integer("id").primaryKey(),
+  status: text("status", {
+    enum: ["up", "down", "pending", "paused"],
+  }).default("pending"),
+
   name: text("name").notNull(),
   type: text("type", { enum: ["http", "ping"] }).notNull(),
   paused: integer("paused", { mode: "boolean" }).notNull().default(false),

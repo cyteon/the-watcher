@@ -15,6 +15,20 @@
       "when": 1776096755257,
       "tag": "0001_lowly_mandrill",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1778652536603,
+      "tag": "0002_romantic_blue_blade",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1778655108701,
+      "tag": "0003_mighty_marvel_boy",
+      "breakpoints": true
     }
   ]
 }
