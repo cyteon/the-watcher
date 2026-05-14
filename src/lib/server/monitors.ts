@@ -138,11 +138,12 @@ export async function getOverview(): Promise<{
   up: number;
   down: number;
   total: number;
+  latestMessages: (typeof messages.$inferSelect & { monitorName: string })[];
 }> {
   const user = await getUser();
   if (!user) throw new Error("Unauthorized");
 
-  const [up, down, total] = await Promise.all([
+  const [up, down, total, latestMessages] = await Promise.all([
     db
       .select({ count: count() })
       .from(monitors)
@@ -153,8 +154,25 @@ export async function getOverview(): Promise<{
       .from(monitors)
       .where(eq(monitors.status, "down"))
       .execute(),
+
     db.select({ count: count() }).from(monitors).execute(),
+
+    db
+      .select({
+        ...messages,
+        monitorName: monitors.name,
+      })
+      .from(messages)
+      .innerJoin(monitors, eq(messages.monitorId, monitors.id))
+      .orderBy(sql`${messages.timestamp} desc`)
+      .limit(10)
+      .all() as (typeof messages.$inferSelect & { monitorName: string })[],
   ]);
 
-  return { up: up[0].count, down: down[0].count, total: total[0].count };
+  return {
+    up: up[0].count,
+    down: down[0].count,
+    total: total[0].count,
+    latestMessages,
+  };
 }

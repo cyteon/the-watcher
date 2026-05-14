@@ -16,6 +16,15 @@ export default function SettingsNavbar() {
 
       <p class="mx-2 text-neutral-500">\</p>
 
+      <a
+        href="/dashboard/settings/notifications"
+        class={`hover:underline ${location.pathname === "/dashboard/settings/notifications" ? "underline" : ""}`}
+      >
+        notifications
+      </a>
+
+      <p class="mx-2 text-neutral-500">\</p>
+
       <button
         onClick={async () => {
           await logoutUser();

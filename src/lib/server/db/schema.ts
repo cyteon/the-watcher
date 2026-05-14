@@ -23,6 +23,12 @@ export const monitors = sqliteTable("monitors", {
 
   target: text("target").notNull(),
   interval: integer("interval").notNull(),
+
+  // targets to notify
+  notify: text("notify", { mode: "json" })
+    .$type<number[]>()
+    .notNull()
+    .default([]),
 });
 
 export const heartbeats = sqliteTable("heartbeats", {
@@ -50,4 +56,11 @@ export const statusPages = sqliteTable("status_pages", {
     .$type<number[]>()
     .notNull()
     .default([]),
+});
+
+export const notificationTargets = sqliteTable("notification_targets", {
+  id: integer("id").primaryKey(),
+  name: text("name").notNull(),
+  type: text("type", { enum: ["slack"] }).notNull(),
+  value: text("value").notNull(),
 });
