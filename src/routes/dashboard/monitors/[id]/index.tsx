@@ -16,10 +16,6 @@ export default function Monitor() {
   const [monitor, setMonitor] = createSignal<MonitorData | undefined>();
   const [maxBars, setMaxBars] = createSignal(20);
 
-  onMount(async () => {
-    setMonitor(await getMonitor(Number(params.id)));
-  });
-
   createEffect(async () => {
     setMonitor(await getMonitor(Number(params.id)));
   });

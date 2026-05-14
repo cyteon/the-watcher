@@ -4,6 +4,7 @@ import { heartbeats, messages, monitors } from "../db/schema";
 
 import { checkHttp } from "./types/http";
 import { checkPing } from "./types/ping";
+import { sendNotification } from "../notifications";
 
 const timers: Map<number, Timer> = new Map();
 
@@ -117,6 +118,8 @@ async function checkMonitor(monitor: typeof monitors.$inferSelect) {
         status: result.status,
       })
       .run();
+
+    await sendNotification(monitor, result);
   }
 
   // todo: notify

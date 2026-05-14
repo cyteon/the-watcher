@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "@solidjs/router";
-import { createSignal, For, Show, onMount } from "solid-js";
+import { createSignal, For, Show, createEffect } from "solid-js";
 import { getMonitors, MonitorData } from "~/lib/server/monitors";
 import { getStatusPage, updateStatusPage } from "~/lib/server/statusPages";
 
@@ -14,7 +14,7 @@ export default function StatusPages() {
   const [monitors, setMonitors] = createSignal<MonitorData[]>([]);
   const [dropdownOpen, setDropdownOpen] = createSignal(false);
 
-  onMount(async () => {
+  createEffect(async () => {
     try {
       setMonitors(await getMonitors());
     } catch (e) {
