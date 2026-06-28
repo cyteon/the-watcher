@@ -1,6 +1,6 @@
 "use server";
 
-import { getCookie, setCookie } from "@solidjs/start/http";
+import { setCookie, getCookie } from "vinxi/http";
 import bcrypt from "bcrypt";
 
 import { db } from "./db";
